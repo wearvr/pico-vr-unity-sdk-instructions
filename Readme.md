@@ -27,15 +27,20 @@ You can easily create a new Unity VR app, but the fastest way to get up and runn
 
 * [Installing and configuring the Pico VR Unity SDK](/docs/pico-vr-unity-sdk-installation.md)
 * [Camera & input module setup](/docs/pico-vr-camera-setup.md)
-* [Controller and headset inputs](/docs/pico-vr-unity-sdk-installation.md)
+* [Controller and headset inputs](/docs/pico-goblin-buttons-hummingbird-controller.md)
 * [Enabling USB debugging](/docs/pico-goblin-developer-mode-usb-debugging.md)
 * [Building to the device](/docs/building-to-pico-goblin.md)
+
+Optional:
+
+* [Working with the current user](/docs/pico-iap-payment-sdk-user-management.md)
+* [Adding in-app purchases](/docs/pico-payment-sdk-in-app-purchases.md)
 * [Troubleshooting](/docs/troubleshooting.md)
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
 
 ## Uploading and selling your experiences
 
-When you are ready, the easiest way to submit and manage your Pico VR experiences to the global and Chinese Pico stores is to [submit them to WEARVR.com](https://users.wearvr.com/apps) - the largest independent virtual reality app store.
+When you are ready, it's time to release your Pico VR experiences to the global and Chinese Pico stores [through WEARVR.com](https://users.wearvr.com/apps) - the largest independent virtual reality app store.
 
-We have partnered with Pico Interactive to help you with promotion, technical support and advice at no cost to you - you get the same high revenue share of 70% of all sales.
+WEARVR has partnered with Pico Interactive to help provide assistance with promotion, technical support and advice at no cost to you - you get the same high revenue share of 70% of all sales.
