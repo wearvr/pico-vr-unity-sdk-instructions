@@ -6,11 +6,11 @@ This is an optional step that is only required if your app has in-app purchases 
 
 ## Update AndroidManifest.xml
 
-Edit the `Plugins/Android/AndroidManifest.xml` file and add the following:
+Edit the `Plugins/Android/AndroidManifest.xml` file:
 
 ##### Permissions
 
-Add the following lines beneath the existing `<uses-permission ... />` declarations:
+Check the following lines are present:
 
 ```
 <!-- Access to the device's network interface -->
@@ -20,25 +20,6 @@ Add the following lines beneath the existing `<uses-permission ... />` declarati
 
 <!-- Access to configuration files on the device -->
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-```
-
-##### Activities
-
-Add the following lines beneath the existing `<activity ... />` declarations:
-
-```
-<activity android:name="com.pico.loginpaysdk.UnityAuthInterface">
-    <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-    </intent-filter>
-</activity>
-
-<activity android:name="com.pico.loginpaysdk.component.PicoSDKBrowser"
-    android:configChanges="keyboardHidden|orientation"
-    android:windowSoftInputMode="adjustResize"
-    android:exported="false">
-</activity>
 ```
 
 ##### Credentials
@@ -103,16 +84,21 @@ Before making any in-app purchases, you must first sign the user into their acco
 To display the Pico login interface:
 
 ```
+#if !UNITY_EDITOR
 void PicoPaymentSDK.Login();
+#endif
 ```
 
 To receive the result of the login, define a GameObject in your scene called `PicoPayment` (the name is important) and attach a script that defines a `LoginCallback` method.
+
 
 ```
 void LoginCallback(string result);
 ```
 
 Where `result` is a string containing a serialized JSON object representing the result of the sign in request.
+
+> The Pico SDK expects a GameObject called `PicoPayment` to receive callback information from the underlying operating system. This is currently hard-coded, so must match exactly or your callbacks will not be triggered.
 
 #### Successful sign in request
 
