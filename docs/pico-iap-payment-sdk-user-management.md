@@ -6,9 +6,11 @@ This is an optional step that is only required if your app has in-app purchases 
 
 ## Update AndroidManifest.xml
 
-Before enabling in-app purchases and user account features, you must first ensure the necessary values are present in the AndroidManifest.xml file in your project:
+Edit the `Plugins/Android/AndroidManifest.xml` file and add the following:
 
 ##### Permissions
+
+Add the following lines beneath the existing `<uses-permission ... />` declarations:
 
 ```
 <!-- Access to the device's network interface -->
@@ -21,6 +23,8 @@ Before enabling in-app purchases and user account features, you must first ensur
 ```
 
 ##### Activities
+
+Add the following lines beneath the existing `<activity ... />` declarations:
 
 ```
 <activity android:name="com.pico.loginpaysdk.UnityAuthInterface">
@@ -36,6 +40,59 @@ Before enabling in-app purchases and user account features, you must first ensur
     android:exported="false">
 </activity>
 ```
+
+##### Credentials
+
+If you have not already done so, you will need to log in to the WEARVR developer dashboard and [request credentials for your app](https://users.wearvr.com/developers/devices/pico-goblin/store-listings/).
+
+<p align="center">
+  <img alt="Select About device" width="500px" src="assets/RequestCredentials.png">
+</p>
+
+View the new app credentials by via the context menu:
+
+<p align="center">
+  <img alt="Select About device" width="500px" src="assets/ViewAppCredentials.png">
+</p>
+
+And a dialog with your app's Pico credentials will appear:
+
+<p align="center">
+  <img alt="Select About device" width="500px" src="assets/CredentialsDialog.png">
+</p>
+
+Replace the following lines:
+```
+<meta-data android:name="pico_merchant_id" android:value="81" />
+<meta-data android:name="pico_app_id" android:value="5a189befeb3b33f7df101fbecffe4f98" />
+<meta-data android:name="pico_app_key" android:value="25ba00fb73343ff1ec32e1c152fff291" />
+<meta-data android:name="pico_pay_key" android:value="d828c5d3a1cc11e6b7fe008cfaf3d930" />
+<meta-data android:name="pico_redirectUrl" android:value="http://www.picovr.com" />
+<!--授权范围-->
+<meta-data android:name="pico_scope" android:value="get_user_info" />
+```
+
+With these (substituting the `REPLACE_ME` values with the corresponding credentials from the WEARVR developer dashboard):
+
+> Make sure you use the same values for the `pico_*` and `pico_*_foreign` fields.
+
+```
+<!-- Allow distribution of your app through WEARVR on the Pico platform -->
+<meta-data android:name="pico_merchant_id" android:value="1335"/>
+
+<!-- Your app's credentials used for user sessions & payments within China -->
+<meta-data android:name="pico_app_id" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_app_key" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_pay_key" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_scope" android:value="SCOPE"/>
+
+<!-- Your app's credentials used for user sessions & payments outside of China (currently not supported, but necessary for testing) -->
+<meta-data android:name="pico_app_id_foreign" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_app_key_foreign" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_pay_key_foreign" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_scope_foreign" android:value="SCOPE"/>
+```
+
 
 ## Managing user sessions
 
