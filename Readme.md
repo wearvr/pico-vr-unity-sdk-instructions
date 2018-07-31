@@ -1,13 +1,22 @@
 # Pico Unity SDK Instructions
 
-Instructions for creating new Unity VR experiences (or porting existing ones) for the Pico Goblin headset for submission through WEARVR to the Chinese and global Pico stores.
-
+Instructions for how to create new Unity virtual reality experiences for the Pico Goblin headset (or port existing ones).
 
 <p align="center">
   <img alt="Pico Goblin" width="500px" src="/docs/assets/Pico.svg">
 </p>
 
-## Requesting a development kit
+## The Pico Goblin
+
+#### Support & Revenue share
+
+WEARVR.com, the world's largest independent VR app store, has partnered with Pico Interactive to provide development kits and assistance with promotion, technical support and advice to help get your content into Pico's global marketplace (including China) - at no cost to you. You get the same high revenue share of 70%.
+
+#### Specifications
+
+View the [full headset specifications](https://www.wearvr.com/developer-center/devices/pico).
+
+#### Requesting a development kit
 
 You can [request a Pico Goblin](/docs/pico-development-kit.md) to help get your VR experiences Pico-compatible.
 
@@ -20,6 +29,12 @@ You will require the following in order to develop a Pico app
 * A version of Unity 5.2 or greater (tested up to 2017.2.0) - there are known issues with Unity5.3.5f1.
 * Either an Android 4.4 (or later) phone running Android API Level 19 or above, or a Pico Goblin headset
 * JDK v1.7.0_01 or later
+
+### User accounts and adding in-app purchases
+
+To access user information on the Pico Goblin headset, or add in-app purchases to your VR content, your app will normally need to already be [registered through WEARVR](https://users.wearvr.com/apps) to generate the necessary access credentials.
+
+If this is a problem, you can get in touch via `devs@wearvr.com` to discuss your needs.
 
 ## Overview
 
@@ -41,6 +56,13 @@ There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use a
 
 ## Uploading and selling your experiences
 
-When you are ready, it's time to release your Pico VR experiences to the global and Chinese Pico stores [through WEARVR.com](https://users.wearvr.com/apps) - the largest independent virtual reality app store.
+When you are ready, it's time to release your Pico VR experiences to the global and Chinese Pico stores [through WEARVR.com](https://users.wearvr.com/apps).
 
-WEARVR has partnered with Pico Interactive to help provide assistance with promotion, technical support and advice at no cost to you - you get the same high revenue share of 70% of all sales.
+## Copyright & Trademarks
+
+These instructions and example project are maintained by WEARVR LLC, the largest independent virtual reality app store. WEARVR is interested in connecting VR content creators and consumers, globally. We love working with the VR community and would be delighted to hear from you at `devs@wearvr.com`.
+
+You can find more information about WEARVR at www.wearvr.com
+
+The Pico Interactive Inc trademark, Pico virtual reality headsets and Pico VR Unity SDK are all owned by [Pico Interactive Inc](https://www.pico-interactive.com/).
+

@@ -49,7 +49,7 @@ If you have not already done so, you will need to log in to the WEARVR developer
   <img alt="Select About device" width="500px" src="assets/RequestCredentials.png">
 </p>
 
-View the new app credentials by via the context menu:
+View your new app credentials via the context menu:
 
 <p align="center">
   <img alt="Select About device" width="500px" src="assets/ViewAppCredentials.png">
@@ -148,13 +148,13 @@ public class Callback : MonoBehaviour{
 
         if (response["cancel"] != null ) {
             // User closed sign in UI
-        } else (response["exception"] != null ) {
+        } else if (response["exception"] != null ) {
             // Sign in error occurred
         } else {
             // Access token and openID must be saved in CommonDic for user details
             // request to work later
-            CommonDic.getInstance().access_token = response["access_token"];
-            CommonDic.getInstance().open_id = response["open_id"];
+            CommonDic.getInstance().access_token = response["access_token"].toString();
+            CommonDic.getInstance().open_id = response["open_id"].toString();
         }
     }
 }

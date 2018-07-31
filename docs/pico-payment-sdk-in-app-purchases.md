@@ -1,14 +1,14 @@
 # Pico payment SDK and in-app purchases
 
-This is an optional step that is only required if your app has in-app purchases or needs user information to function.
+This is an optional step that is only required if your app has in-app purchases.
 
 Currently, only apps sold in China support in-app purchases.
 
-> If you wish to release your app in China with in-app purchases, you will need to submit different release builds: one with in-app purchases to be released in China and one without for the global market.
+> If you wish to release your app in China with in-app purchases, you will need to submit different release builds: one with in-app purchases to be released in China and one without, for the global market.
 
 All purchases through the Pico ecosystem are done in Pico’s own virtual currency as an integer value of P-Coins.
 
-Buyers in the Pico ecosystems add P-Coins to their account through Pico’s website and so does not need to be handled by your app.
+Buyers in the Pico ecosystems add P-Coins to their account through Pico’s website, so it does not need to be handled by your app.
 
 | P-Coins | Yuan | USD |
 | :---: | :---: | :---: |
@@ -40,7 +40,7 @@ Where `purchaseDetails` is a string containing a serialized JSON object with the
 | `"pay_code"` | String | Product code - this must match the one you have provided when registering your purchase item. |
 | `"goods_tag"` | String | An optional tag to attach to the purchase. |
 
-> It's important that the purchaseDetails not have a "total" attribute at all (with any value), if you use this option.
+> It's important the purchaseDetails *not* have a "total" attribute at all (with any value), if you use this option.
 
 ### Option 2: Creating purchases with arbitrary amounts
 
@@ -123,3 +123,7 @@ The following error conditions should not normally occur. If they do, they may i
 Once the Pico servers has confirmed the purchase was successful, it’s up to your application to record that a user has paid for a particular in-app purchase (this information is not easily queried at a later time, or on a different device).
 
 Saving a record of the purchase will typically involve a request to your own game servers to create a record of the item the user has just purchased, or to increase a value associated with the users account (e.g. gold coins, extra lives, etc).
+
+## Next: Submitting your app
+
+See [submitting your app](/Readme.md).
