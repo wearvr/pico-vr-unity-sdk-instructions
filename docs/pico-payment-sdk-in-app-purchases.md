@@ -124,6 +124,14 @@ Once the Pico servers has confirmed the purchase was successful, it’s up to yo
 
 Saving a record of the purchase will typically involve a request to your own game servers to create a record of the item the user has just purchased, or to increase a value associated with the users account (e.g. gold coins, extra lives, etc).
 
+## Testing
+
+Unfortunately, it's not currently possible to fully test your IAP integration without a Chinese version of the headset connected to a Chinese user account (which requires a bank account in China).
+
+However, WEARVR is able to test this for you. You can [submit a test build](https://users.wearvr.com/developers/devices/pico-goblin/test-builds) and include in the testing instructions that you would like the IAP integration tested. Or, you can get in touch with us on `devs@wearvr.com` and we'll be happy to work closely with you to ensure everything has been set up correctly.
+
+WEARVR is currently working with Pico Interactive on improving this process in the future to allow developers to test their IAPs directly.
+
 ## Next: Submitting your app
 
 See [submitting your app](/Readme.md).
