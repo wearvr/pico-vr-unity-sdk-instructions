@@ -4,7 +4,7 @@
 
 To download the latest unitypackage from WEARVR, you will need a [developer account](https://users.wearvr.com/developers/devices).
 
-You can then [download the Pico VR Unity SDK](https://api.wearvr.com/api/v3/developers/devices/pico-goblin/resources/vr-unity-package).
+You can then [download the Pico VR Unity SDK](https://users.wearvr.com/developers/devices/pico-goblin/resources/vr-unity-package).
 
 ## Importing the unitypackage
 
