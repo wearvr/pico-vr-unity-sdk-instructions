@@ -7,7 +7,7 @@ This example project demonstrates how to integrate with the VR SDK and respond t
 Clone this repository to your hard drive
 
 ```
-git clone
+git clone https://github.com/wearvr/pico-vr-unity-sdk-instructions
 ```
 
 Open this folder in Unity as a new project.
