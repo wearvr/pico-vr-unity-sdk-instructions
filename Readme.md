@@ -50,7 +50,7 @@ You can easily create a new Unity VR app, but the fastest way to get up and runn
 
 Optional:
 
-* [Working with the current user](/docs/pico-iap-payment-sdk-user-management.md)
+* [Working with the current user](/docs/pico-payment-sdk-user-management.md)
 * [Adding in-app purchases](/docs/pico-payment-sdk-in-app-purchases.md)
 * [Troubleshooting](/docs/troubleshooting.md)
 * [Optimizing Pico experiences](/docs/optimizing-pico-experiences.md)

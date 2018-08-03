@@ -16,7 +16,7 @@ Buyers in the Pico ecosystems add P-Coins to their account through Pico’s webs
 
 ## Creating in-app purchases
 
-> Before your app can create any in-app purchases, it must first [sign the current user in](/docs/pico-payment-sdk-in-app-purchases.md).
+> Before your app can create any in-app purchases, you must first have [requested credentials for your app](https://users.wearvr.com/developers/devices/pico-goblin/store-listings/) and [signed the current user in](/docs/pico-payment-sdk-user-management.md).
 
 To make an in-app purchase, you need to use the `PicoPaymentSDK.Pay()` method. You use it in one of two ways, depending on how you wish to register purchases.
 
