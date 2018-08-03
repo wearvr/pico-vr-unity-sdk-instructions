@@ -12,6 +12,10 @@ Instructions for how to create new Unity virtual reality experiences for the Pic
 
 WEARVR.com, the world's largest independent VR app store, has partnered with Pico Interactive to provide development kits and assistance with promotion, technical support and advice to help get your content into Pico's global marketplace (including China) - at no cost to you. You get the same high revenue share of 70%.
 
+| Region | Developer Revenue Share |
+| :---: | :----: |
+| Worldwide | 70% |
+
 #### Specifications
 
 View the [full headset specifications](https://www.wearvr.com/developer-center/devices/pico).
