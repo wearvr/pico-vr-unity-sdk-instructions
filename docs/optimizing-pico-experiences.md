@@ -78,3 +78,7 @@ When working correctly, you should see logging like the following appear at regu
 ## Understanding the logs
 
 Unity has an [excellent guide](https://docs.unity3d.com/Manual/iphone-InternalProfiler.html) that will help you interpret the performance profile logs. This should be read in conjunction with Unity’s explanation of [CPU bound and GPU bound performance issues](https://docs.unity3d.com/Manual/OptimizingGraphicsPerformance.html) to guide your approach to addressing performance problems.
+
+## Next: Submission
+
+It's time to [submit your VR experience](/Readme.md#uploading-and-selling-your-experiences).
