@@ -69,7 +69,6 @@ To reposition the Hummingbird controller in relation to the Pico headset, use a 
 
 Whether the current frame is the first in which key is pressed down.
 
-
 ```cs
 public bool UPvr_GetKeyDown (Pvr_KeyCode key)
 ```
@@ -83,7 +82,6 @@ public bool UPvr_GetKeyDown (Pvr_KeyCode key)
 #### UPvr_GetKeyUp
 
 Whether the current frame is the first one after key has been released.
-
 
 ```cs
 public bool UPvr_GetKeyUp (Pvr_KeyCode key)
@@ -296,3 +294,7 @@ public Quaternion UPvr_GetControllerQUA ()
 
 |:---|:---|
 | Return value | Hummingbird controller rotation quaternion |
+
+### Next: Enabling developer mode
+
+See [Enabling USB debugging](/docs/pico-goblin-developer-mode-usb-debugging.md)

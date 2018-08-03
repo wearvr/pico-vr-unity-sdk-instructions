@@ -22,9 +22,7 @@ You can [request a Pico Goblin](/docs/pico-development-kit.md) to help get your 
 
 ## Prerequisites
 
-The minimum supported version of Unity is V5.2.
-
-You will require the following in order to develop a Pico app
+You will require the following in order to develop a Pico app:
 
 * A version of Unity 5.2 or greater (tested up to 2017.2.0) - there are known issues with Unity5.3.5f1.
 * Either an Android 4.4 (or later) phone running Android API Level 19 or above, or a Pico Goblin headset
@@ -51,6 +49,7 @@ Optional:
 * [Working with the current user](/docs/pico-iap-payment-sdk-user-management.md)
 * [Adding in-app purchases](/docs/pico-payment-sdk-in-app-purchases.md)
 * [Troubleshooting](/docs/troubleshooting.md)
+* [Optimizing Pico experiences](/docs/optimizing-pico-experiences.md)
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
 

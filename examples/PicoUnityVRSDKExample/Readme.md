@@ -37,3 +37,7 @@ The project contains the following implementations:
 An event system with all the possible input modules attached, for quickly demoing them all (only one should be enabled at a time).
 
 To run the example project, download the zip below, extract it and open it with a compatible version of Unity.
+
+## Running the example
+
+If you want to run the example on the device, set the correct [build settings](/docs/building-to-pico-goblin.md) first.
