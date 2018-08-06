@@ -16,6 +16,12 @@ This will add a number of directories to your project:
   <img alt="Files included in the unity package"  width="500px" src="assets/VRSDKAssetsImage.png">
 </p>
 
+Delete the existing `MainCamera` from your scene and drag the prefab `PicoMobileSDK/Pvr_UnitySDK/Prefabs/Pvr_UnitySDK.prefab` in to replace it. If necessary, reposition the new camera prefab to where the old one was.
+
+<p align="center">
+  <img alt="Drag the Pvr_UnitySDK.prefab into your scene" width="500px" src="assets/DragPrefabIntoScene.png">
+</p>
+
 ## Project settings
 
 ### Disable multi-threaded rendering

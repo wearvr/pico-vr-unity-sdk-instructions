@@ -1,14 +1,40 @@
 # Pico VR Unity SDK camera setup
 
-Delete the existing MainCamera from your scene and drag the prefab `Pvr_UnitySDK/Prefabs/Pvr_UnitySDK.prefab` in to replace it. If necessary, reposition the new camera prefab to where the old one was.
+## Selecting correct degrees of freedom
+
+### Pico Goblin: 3 degrees of freedom
 
 <p align="center">
-  <img alt="Drag the Pvr_UnitySDK.prefab into your scene" width="500px" src="assets/DragPrefabIntoScene.png">
+  <img alt="Pico Goblin degrees of freedom" width="500px" src="assets/PicoGoblinDegreesOfFreedom.svg">
 </p>
+
+Once you have [dragged the `Pvr_UnitySDK` prefab into your scene](/docs/pico-vr-unity-sdk-installation.md), open it in the Inspector.
+
+If you want a build that works on both the Pico Goblin and the Pico Neo, ensure **Head Pose** is set to **Three Dof**.
+
+Both headsets ship with a 3 DoF controller, so leave the **Hand Pose** set to **Three Dof**, regardless.
+
+<p align="center">
+  <img alt="Check degrees of freedom settings" width="500px" src="assets/CheckDegreesOfFreedomSettings.png">
+</p>
+
+### Pico Neo: 6 degrees of freedom
+
+<p align="center">
+  <img alt="Pico Goblin degrees of freedom" width="500px" src="/docs/assets/PicoNeoDegreesOfFreedom.svg">
+</p>
+
+If you wish to develop a build that only works on the Pico Neo *and* takes advantage of all 6 degrees of freedom, then you can set the **Head Pose** to **Six Dof** and check **Enable 6Dof Position Reset**, to allow re-centering the view using the Pico Home button works correctly.
+
+The Pico Neo, when enabled for six degrees of freedom supports displaying a warning boundary. By checking **Show SafePanel**, the headset will display a warning overlay if the headset moves too far from its starting position during the course of playing your experience.
+
+The **Use Default Range** option indicates that your app should use the default safety range of 0.8 meters from the starting position before displaying the warning boundary.
+
+The **Moving Ratios** sets how movement in the real world corresponds to movement within your app. The default setting is 1:1.
 
 ## Running in the Unity editor
 
-Once you have dragged the `Pvr_UnitySDK` prefab into your scene, the Pico VR SDK supports running your VR app in the Unity editor. You can use this to test your progress as you complete the remaining instructions.
+The Pico VR SDK supports running your VR app in the Unity editor. You can use this to test your progress as you complete the remaining instructions.
 
 While running in the editor, the following controls are available to you to simulate head movement:
 
@@ -101,4 +127,4 @@ Either drag your script onto your UI component or GameObject to add it as a comp
 
 ### Next: Binding to buttons
 
-See [Pico goblin headset and hummingbird controller buttons](/docs/pico-goblin-buttons-hummingbird-controller.md).
+See [Pico headset and controller buttons](/docs/pico-goblin-buttons-hummingbird-controller.md).

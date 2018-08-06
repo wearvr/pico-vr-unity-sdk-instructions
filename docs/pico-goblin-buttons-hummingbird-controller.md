@@ -1,4 +1,4 @@
-# Pico Goblin headset and Hummingbird controller buttons
+# Pico Neo and Pico Goblin headset and controller buttons
 
 Once you have [installed the Pico VR Unity SDK](/docs/pico-vr-unity-sdk-installation.md), you can begin to bind to button events from the headset and Hummingbird controller.
 
@@ -17,13 +17,44 @@ Each Pico headset is sold with a Hummingbird input controller that provides more
 Integrating with the Hummbingbird gamepad is an **optional** step, but is highly encouraged for experiences that can make use of additional forms of input.
 
 <p align="center">
-  <img alt="Hummingbird button positions" width="500px" src="assets/ControllerButtonPlacementImage.png">
+  <img alt="Hummingbird button positions" width="500px" src="assets/HummingbirdDiagram.svg">
 </p>
 
-To install, drag the `Assets/Pvr_Controller/Prefabs/Pvr_Controller` prefab into your scene so it appears in `Pvr_UnitySDK` (under `Head`).
 
 <p align="center">
-  <img alt="Drag Pvr_Controller prefab to Pvr_UnitySDK/Head" width="500px" src="assets/InstallPVRControllerImage.png">
+  <img alt="Hummingbird button positions" width="500px" src="assets/PicoNeoController.svg">
+</p>
+
+To install, drag the `Assets/PicoMobileSDK/Pvr_Controller/Prefabs/PvrController0` prefab into your scene so it appears as a child of `Pvr_UnitySDK` (at the same level as `Head`).
+
+<p align="center">
+  <img alt="Drag Pvr_Controller0 prefab to Pvr_UnitySDK" width="500px" src="assets/InstallPVRControllerImage.png">
+</p>
+
+Then drag the `Assets/PicoMobileSDK/Pvr_Controller/Prefabs/ControllerManager` prefab into your scene.
+
+<p align="center">
+  <img alt="Drag ControllerManager into your scene" width="500px" src="assets/AddControllerManager.png">
+</p>
+
+Drag the `PvrController0 > Toast` from your scene to the **Toast** property of the **Pvr_Controller Manager (Script)** attached to the `ControllerManager`. Then, drag the `PvrController0` from your scene to the **Controller 0** property of the **Pvr_Controller (Script)** attached to the `ControllerManager`.
+
+<p align="center">
+  <img alt="Configure the ControllerManager" width="500px" src="assets/ConfigureControllerManager.png">
+</p>
+
+### Pico Neo: Enabling a second controller
+
+The Pico Neo supports a second controller, which you can enable by dragging the `Assets/PicoMobileSDK/Pvr_Controller/Prefabs/PvrController1` prefab into your scene as a child of `Pvr_UnitySDK`:
+
+<p align="center">
+  <img alt="Drag Pvr_Controller1 prefab to Pvr_UnitySDK" width="500px" src="assets/DragPvrController1IntoScene.png">
+</p>
+
+Then drag `Pvr_Controller1` to the **Controller 1** property on `ControllerManager`:
+
+<p align="center">
+  <img alt="Drag Pvr_Controller1 to ControllerManager" width="500px" src="assets/DragPvrController1toControllerManager.png">
 </p>
 
 #### Providing fallback headset controls
