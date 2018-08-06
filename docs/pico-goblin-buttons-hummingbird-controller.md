@@ -75,6 +75,7 @@ public bool UPvr_GetKeyDown (Pvr_KeyCode key)
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
 | Return value | `true` for the first frame in which `key` has been pressed down, else `false` |
@@ -89,6 +90,7 @@ public bool UPvr_GetKeyUp (Pvr_KeyCode key)
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
 | Return value | `true` for the first frame after `key` has been released, else `false` |
@@ -121,6 +123,7 @@ public bool UPvr_GetKey (Pvr_KeyCode key)
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
 | Return value | `true` if `key` is currently pressed, else `false` |
@@ -153,6 +156,7 @@ public bool UPvr_GetKeyLongPressed (Pvr_KeyCode key)
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
 | Return value | `true` if `key` is has been pressed for more than 20 frames, else `false` |
@@ -187,6 +191,7 @@ public bool UPvr_IsTouching ()
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | Return value | `true` if the touchpad is being touched in the current frame. |
 
@@ -218,6 +223,7 @@ public bool UPvr_GetSlipDirection (direction)
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | `direction` | `Pvr_SlipDirection.SlideDown` \| `Pvr_SlipDirection.SlideUp` \| `Pvr_SlipDirection.SlideLeft` \| `Pvr_SlipDirection.SlideRight` |
 | Return value | `true` if a slide gesture in `direction` was detected |
@@ -261,6 +267,7 @@ public bool UPvr_GetTouchPadPosition (axis)
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | `axis` | 0 will return the touch point’s value on the y axis, 1 will return the value on the x axis |
 | Return value | Float point on the x or y axis a touch is occurring |
@@ -292,6 +299,7 @@ public Quaternion UPvr_GetControllerQUA ()
 
 ##### Parameters & Return value
 
+| Name | Value |
 |:---|:---|
 | Return value | Hummingbird controller rotation quaternion |
 
