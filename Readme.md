@@ -64,7 +64,7 @@ There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use a
 
 ## Upgrade Guides
 
-[Upgrading from v2.5.0](/docs/upgrading-from-v2-5-0-to-v2-7-4.md)
+[Upgrading from v2.5.0](/docs/upgrading/upgrading-from-v2-5-0-to-v2-7-4.md)
 
 ## Uploading and selling your experiences
 
