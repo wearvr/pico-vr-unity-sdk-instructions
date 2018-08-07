@@ -2,17 +2,19 @@
 
 Once you have [installed the Pico VR Unity SDK](/docs/pico-vr-unity-sdk-installation.md), you can begin to bind to button events from the headset and Hummingbird controller.
 
-#### Headset buttons
+## Pico Goblin & Hummingbird controller
 
-The Pico Goblin headset provides basic gaze-based pointer input and some additional buttons for operating system functionality.
+#### Pico Goblin Headset buttons
+
+The Pico Goblin headset is a 3 degrees of freedom headset and provides basic gaze-based pointer input and some additional buttons for operating system functionality.
 
 <p align="center">
-  <img alt="Pico button positions" width="500px" src="assets/PicoButtonPositionImage.png">
+  <img alt="Pico button positions" width="500px" src="assets/PicoGoblinButtons.svg">
 </p>
 
 #### Hummingbird controller
 
-Each Pico headset is sold with a Hummingbird input controller that provides more opportunities for the user to interact with virtual reality experiences.
+Each Pico Goblin headset is sold with a Hummingbird input controller. The controller supports 3 degrees of freedom and provides more opportunities for the user to interact with virtual reality experiences.
 
 Integrating with the Hummbingbird gamepad is an **optional** step, but is highly encouraged for experiences that can make use of additional forms of input.
 
@@ -20,10 +22,21 @@ Integrating with the Hummbingbird gamepad is an **optional** step, but is highly
   <img alt="Hummingbird button positions" width="500px" src="assets/HummingbirdDiagram.svg">
 </p>
 
+## Pico Neo & Neo Controller
+
+The Pico Neo headset is a 6 degrees of freedom headset and provides the same basic gaze-based pointer input and buttons for operating system functionality that the Pico Goblin does.
+
+#### Pico Neo controller
+
+Each Pico Neo headset is sold with a single Pico Neo controller, but it also provides support for a second if you want your VR experiences to incorporate input from both of the player's hands. Pico Neo controllers support 3 degrees of freedom.
+
+Like the Humminegbird controller, integrating with the Neo controller(s) is an **optional** step, but is highly encouraged for experiences that can make use of additional forms of input.
 
 <p align="center">
   <img alt="Hummingbird button positions" width="500px" src="assets/PicoNeoController.svg">
 </p>
+
+## Integrating with headset and controller input
 
 To install, drag the `Assets/PicoMobileSDK/Pvr_Controller/Prefabs/PvrController0` prefab into your scene so it appears as a child of `Pvr_UnitySDK` (at the same level as `Head`).
 
@@ -43,7 +56,7 @@ Drag the `PvrController0 > Toast` from your scene to the **Toast** property of t
   <img alt="Configure the ControllerManager" width="500px" src="assets/ConfigureControllerManager.png">
 </p>
 
-### Pico Neo: Enabling a second controller
+#### Pico Neo: Enabling a second controller
 
 The Pico Neo supports a second controller, which you can enable by dragging the `Assets/PicoMobileSDK/Pvr_Controller/Prefabs/PvrController1` prefab into your scene as a child of `Pvr_UnitySDK`:
 
@@ -70,7 +83,7 @@ public class MyClass : MonoBehaviour {
 
     private void Update()
     {
-        if (Pvr_UnitySDKAPI.Controller.UPvr_GetControllerState() == Pvr_UnitySDKAPI.ControllerState.Connected)
+        if (Pvr_UnitySDKAPI.Controller.UPvr_GetControllerState(0) == Pvr_UnitySDKAPI.ControllerState.Connected)
         {
             // Control system when controller is connected
         } else {
@@ -80,19 +93,7 @@ public class MyClass : MonoBehaviour {
 }
 ```
 
-## Repositioning the Hummingbird controller
-
-To reposition the Hummingbird controller in relation to the Pico headset, use a long press on the Home button of the controller.
-
-<p align="center">
-  <img alt="Connect the Hummingbird controller" width="500px" src="assets/PicoControllerConnect.png">
-</p>
-
-<p align="center">
-  <img alt="Focus the Hummingbird controller" width="500px" src="assets/PicoControllerFocus.png">
-</p>
-
-## Pico Goblin & Hummingbird Unity API
+## Pico headset and controller Unity API
 
 ### Buttons
 
