@@ -95,6 +95,12 @@ public class MyClass : MonoBehaviour {
 
 ## Pico headset and controller Unity API
 
+### Controller indexes
+
+Unless you are using creating a Pico Neo experience and want to access the second controller, the `controllerIndex` parameter should always be `0` when calling any of the following API methods.
+
+If you do want to access the second controller, use a value of `1` instead.
+
 ### Buttons
 
 #### UPvr_GetKeyDown
@@ -102,14 +108,15 @@ public class MyClass : MonoBehaviour {
 Whether the current frame is the first in which key is pressed down.
 
 ```cs
-public bool UPvr_GetKeyDown (Pvr_KeyCode key)
+public bool UPvr_GetKeyDown (int controllerIndex, Pvr_KeyCode key)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
-| `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
+| `key` | enum `Pvr_KeyCode {TOUCHPAD, HOME, APP, VOLUMEUP, VOLUMMEDOWN }` |
 | Return value | `true` for the first frame in which `key` has been pressed down, else `false` |
 
 #### UPvr_GetKeyUp
@@ -117,14 +124,15 @@ public bool UPvr_GetKeyDown (Pvr_KeyCode key)
 Whether the current frame is the first one after key has been released.
 
 ```cs
-public bool UPvr_GetKeyUp (Pvr_KeyCode key)
+public bool UPvr_GetKeyUp (int controllerIndex, Pvr_KeyCode key)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
-| `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
+| `key` | enum `Pvr_KeyCode {TOUCHPAD, HOME, APP, VOLUMEUP, VOLUMMEDOWN }` |
 | Return value | `true` for the first frame after `key` has been released, else `false` |
 
 ##### Example
@@ -136,7 +144,7 @@ public class MyClass : MonoBehaviour {
 
     private void Update()
     {
-        if (Controller.UPvr_GetKeyUp(Pvr_KeyCode.TOUCHPAD))
+        if (Controller.UPvr_GetKeyUp(0, Pvr_KeyCode.TOUCHPAD))
         {
             // Touchpad was just released
         }
@@ -150,14 +158,15 @@ Whether a key is pressed down during the current frame.
 
 
 ```cs
-public bool UPvr_GetKey (Pvr_KeyCode key)
+public bool UPvr_GetKey (int controllerIndex, Pvr_KeyCode key)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
-| `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
+| `key` | enum `Pvr_KeyCode {TOUCHPAD, HOME, APP, VOLUMEUP, VOLUMMEDOWN }` |
 | Return value | `true` if `key` is currently pressed, else `false` |
 
 ##### Example
@@ -183,14 +192,15 @@ Whether a long press has occurred for key.
 
 
 ```cs
-public bool UPvr_GetKeyLongPressed (Pvr_KeyCode key)
+public bool UPvr_GetKeyLongPressed (int controllerIndex, Pvr_KeyCode key)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
-| `key` | `Pvr_KeyCode.TOUCHPAD` \| `Pvr_KeyCode.HOME` \| `Pvr_KeyCode.APP` \| `Pvr_KeyCode.VOLUMEUP` \| `Pvr_KeyCode.VOLUMEDOWN` |
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
+| `key` | enum `Pvr_KeyCode {TOUCHPAD, HOME, APP, VOLUMEUP, VOLUMMEDOWN }` |
 | Return value | `true` if `key` is has been pressed for more than 20 frames, else `false` |
 
 ##### Example
@@ -202,7 +212,7 @@ public class MyClass : MonoBehaviour {
 
     private void Update()
     {
-        if (Controller.UPvr_GetKeyLongPressed(Pvr_KeyCode.TOUCHPAD))
+        if (Controller.UPvr_GetKeyLongPressed(0, Pvr_KeyCode.TOUCHPAD))
         {
             // Touchpad has been pressed for at least 20 frames
         }
@@ -216,15 +226,15 @@ public class MyClass : MonoBehaviour {
 
 Whether the touch pad is being touched (but not necessarily pressed).
 
-
 ```cs
-public bool UPvr_IsTouching ()
+public bool UPvr_IsTouching (int controllerIndex)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
 | Return value | `true` if the touchpad is being touched in the current frame. |
 
 ##### Example
@@ -236,7 +246,7 @@ public class MyClass : MonoBehaviour {
 
     private void Update()
     {
-        if (Controller.UPvr_IsTouching())
+        if (Controller.UPvr_IsTouching(0))
         {
             // Touchpad is currently being touched (but not necessarily pressed)
         }
@@ -244,21 +254,22 @@ public class MyClass : MonoBehaviour {
 }
 ```
 
-#### UPvr_GetSlipDirection
+#### UPvr_GetSwipeDirection
 
 Whether a slide gesture was detected in a particular direction since the last frame.
 
 
 ```cs
-public bool UPvr_GetSlipDirection (direction)
+public static SwipeDirection UPvr_GetSwipeDirection (int controllerIndex)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
-| `direction` | `Pvr_SlipDirection.SlideDown` \| `Pvr_SlipDirection.SlideUp` \| `Pvr_SlipDirection.SlideLeft` \| `Pvr_SlipDirection.SlideRight` |
-| Return value | `true` if a slide gesture in `direction` was detected |
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
+| Return value | enum `SwipeDirection {No, SwipeUp, SwipeDown, SwipeRight, SwipeLeft}` |
+
 
 ##### Example
 
@@ -269,9 +280,11 @@ public class MyClass : MonoBehaviour {
 
     private void Update()
     {
-        if (Controller.UPvr_GetSlipDirection(Pvr_SlipDirection.SlideDown))
+        SwipeDirection swipeDirection = Controller.UPvr_GetSwipeDirection(0);
+
+        if (swipeDirection == SwipeDirection.SwipeDown)
         {
-            // Touchpad received a touch gesture downwards since the last frame
+            // Touchpad received swipe down gesture since the last frame
         }
     }
 }
@@ -279,7 +292,7 @@ public class MyClass : MonoBehaviour {
 
 #### UPvr_GetTouchPadPosition
 
-Get the x or y axis value of the point on the touchpad that is currently being touched.
+Get the coordinate of the point on the touchpad that is currently being touched.
 
 The y axis is from the bottom of the controller to the top, starting at 0.0 at the bottom-most point and going to 255 at the top-most point.
 
@@ -287,22 +300,21 @@ The x axis is from the left of the controller to the right, starting at 0.0 at t
 
 When the touchpad is not being touched at all, both axis values are 0.0.
 
-
 <p align="center">
   <img alt="Pico touchpad coordinates" width="200px" src="assets/PicoTouchpadCoordinatesImage.png">
 </p>
 
 
 ```cs
-public bool UPvr_GetTouchPadPosition (axis)
+public Vector2 UPvr_GetTouchPadPosition (int controllerIndex)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
-| `axis` | 0 will return the touch point’s value on the y axis, 1 will return the value on the x axis |
-| Return value | Float point on the x or y axis a touch is occurring |
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
+| Return value | Vector2: Point on the x or y axis a touch is occurring |
 
 ##### Example
 
@@ -313,8 +325,10 @@ public class MyClass : MonoBehaviour {
 
     private void Update()
     {
-	    float yCoordinate = Controller.UPvr_GetTouchPadPosition(0);
-	    float xCoordinate = Controller.UPvr_GetTouchPadPosition(1);
+	    Vector2 touchPosition = Controller.UPvr_GetTouchPadPosition(0);
+
+	    float yCoordinate = touchPosition.y;
+	    float xCoordinate = touchPosition.x;
     }
 }
 ```
@@ -326,13 +340,14 @@ public class MyClass : MonoBehaviour {
 Get the rotation quaternion of the Hummingbird Controller.
 
 ```cs
-public Quaternion UPvr_GetControllerQUA ()
+public Quaternion UPvr_GetControllerQUA (int controllerIndex)
 ```
 
 ##### Parameters & Return value
 
 | Name | Value |
 |:---|:---|
+| `controllerIndex` | The [index of the controller](#controller-indexes) you want to query |
 | Return value | Hummingbird controller rotation quaternion |
 
 ### Next: Enabling developer mode

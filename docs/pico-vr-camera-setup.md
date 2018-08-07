@@ -127,4 +127,4 @@ Either drag your script onto your UI component or GameObject to add it as a comp
 
 ### Next: Binding to buttons
 
-See [Pico headset and controller buttons](/docs/pico-goblin-buttons-hummingbird-controller.md).
+See [Pico headset and controller buttons](/docs/pico-goblin-and-neo-controllers.md).

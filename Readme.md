@@ -49,7 +49,7 @@ You can easily create a new Unity VR app, but the fastest way to get up and runn
 
 * [Installing and configuring the Pico VR Unity SDK](/docs/pico-vr-unity-sdk-installation.md)
 * [Camera & input module setup](/docs/pico-vr-camera-setup.md)
-* [Controller and headset inputs](/docs/pico-goblin-buttons-hummingbird-controller.md)
+* [Controller and headset inputs](/docs/pico-goblin-and-neo-controllers.md)
 * [Enabling USB debugging](/docs/pico-goblin-developer-mode-usb-debugging.md)
 * [Building to the device](/docs/building-to-pico-goblin.md)
 
@@ -61,6 +61,10 @@ Optional:
 * [Optimizing Pico experiences](/docs/optimizing-pico-experiences.md)
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
+
+## Upgrade Guides
+
+[Upgrading from v2.5.0](/docs/upgrading-from-v2-5-0-to-v2-7-4.md)
 
 ## Uploading and selling your experiences
 
