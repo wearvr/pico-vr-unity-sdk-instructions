@@ -5,7 +5,7 @@
 <a href="https://users.wearvr.com/developers/devices/pico-goblin/resources/vr-unity-package/versions/v2-7-4" target="_blank">Download v2.7.4 of the Pico VR Unity SDK</a> from WEARVR and import it into your Unity project
 
 <p align="center">
-  <img alt="Import the .unitypackage as custom package"  width="500px" src="/assets/ImportUnityPackageImage.png">
+  <img alt="Import the .unitypackage as custom package" width="500px" src="/docs/assets/ImportUnityPackageImage.png">
 </p>
 
 ### Remove old files
