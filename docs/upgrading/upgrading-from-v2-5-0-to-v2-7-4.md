@@ -10,15 +10,10 @@
 
 ### Remove old files
 
-Delete `Pico_PaymentSDK_Unity_V1.0.16.jar` and `Pico_PaymentSDK_Unity_V1.0.16.jar.meta` if they appear in your project - this is replaced by `Pico_PaymentSDK_Unity_V1.0.19.jar`.
+Delete `Assets/Plugins/Android/Pico_PaymentSDK_Unity_V1.0.16.jar` if it appears in your project - this is replaced by `Pico_PaymentSDK_Unity_V1.0.19.jar`.
 
-Delete `hummingbirdservicecontroller.jar` and `hummingbirdservicecontroller.jar.meta` if they appear in your project - this is replaced by `hbcserviceclient.jar`.
+Delete `Assets/Plugins/Android/hummingbirdservicecontroller.jar` if it appears in your project - this is replaced by `hbcserviceclient.jar`.
 
-### Use new prefabs
-
-Delete the existing `Pvr_UnitySDK` prefab from your scene and drag in the new one from `Pvr_UnitySDK/Prefabs/Pvr_UnitySDK.prefab`.
-
-Delete the old `Pvr_Controller` prefab from your scene and [set up the new one](/docs/pico-goblin-and-neo-controllers.md#integrating-with-headset-and-controller-input).
 ## API changes
 
 ### Add controller indexes
@@ -150,3 +145,9 @@ public class MyClass : MonoBehaviour {
     }
 }
 ```
+
+## Use new prefabs
+
+Delete the existing `Pvr_UnitySDK` prefab from your scene and drag in the new one from `Pvr_UnitySDK/Prefabs/Pvr_UnitySDK.prefab`.
+
+Delete the old `Pvr_Controller` prefab from your scene and [set up the new one](/docs/pico-goblin-and-neo-controllers.md#integrating-with-headset-and-controller-input).

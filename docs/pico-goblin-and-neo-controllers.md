@@ -9,7 +9,7 @@ Once you have [installed the Pico VR Unity SDK](/docs/pico-vr-unity-sdk-installa
 The Pico Goblin headset is a 3 degrees of freedom headset and provides basic gaze-based pointer input and some additional buttons for operating system functionality.
 
 <p align="center">
-  <img alt="Pico button positions" width="500px" src="assets/PicoGoblinButtons.svg">
+  <img alt="Pico Goblin button positions" width="500px" src="assets/PicoGoblinButtons.svg">
 </p>
 
 #### Hummingbird controller
@@ -25,6 +25,10 @@ Integrating with the Hummbingbird gamepad is an **optional** step, but is highly
 ## Pico Neo & Neo Controller
 
 The Pico Neo headset is a 6 degrees of freedom headset and provides the same basic gaze-based pointer input and buttons for operating system functionality that the Pico Goblin does.
+
+<p align="center">
+  <img alt="Pico Neo button positions" width="500px" src="assets/PicoNeoButtons.svg">
+</p>
 
 #### Pico Neo controller
 
