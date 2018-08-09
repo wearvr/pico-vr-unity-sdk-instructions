@@ -22,6 +22,20 @@ Delete the existing `MainCamera` from your scene and drag the prefab `PicoMobile
   <img alt="Drag the Pvr_UnitySDK.prefab into your scene" width="500px" src="assets/DragPrefabIntoScene.png">
 </p>
 
+### Fix broken reference
+
+Unfortunately, there is a bug in the latest version of the SDK that requires fixing. Replace line 944 of `Assets/Pvr_UnitySDK/Pvr_UnitySDKManager.cs`:
+
+```cs
+ViewerToast = transform.Find("Head").Find("Viewertoast").gameObject;
+```
+
+with the following:
+
+```cs
+ViewerToast = transform.Find("Height").Find("Head").Find("Viewertoast").gameObject;
+```
+
 ## Project settings
 
 ### Disable multi-threaded rendering

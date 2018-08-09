@@ -14,6 +14,20 @@ Delete `Assets/Plugins/Android/Pico_PaymentSDK_Unity_V1.0.16.jar` if it appears 
 
 Delete `Assets/Plugins/Android/hummingbirdservicecontroller.jar` if it appears in your project - this is replaced by `hbcserviceclient.jar`.
 
+### Fix broken reference
+
+Unfortunately, there is a bug in the latest version of the SDK that requires fixing. Replace line 944 of `Assets/Pvr_UnitySDK/Pvr_UnitySDKManager.cs`:
+
+```cs
+ViewerToast = transform.Find("Head").Find("Viewertoast").gameObject;
+```
+
+with the following:
+
+```cs
+ViewerToast = transform.Find("Height").Find("Head").Find("Viewertoast").gameObject;
+```
+
 ## API changes
 
 ### Add controller indexes
