@@ -58,16 +58,15 @@ With these (substituting the `REPLACE_ME` values with the corresponding credenti
 > Make sure you use the same values for the `pico_*` and `pico_*_foreign` fields.
 
 ```
-<!-- Allow distribution of your app through WEARVR on the Pico platform -->
-<meta-data android:name="pico_merchant_id" android:value="1335"/>
-
 <!-- Your app's credentials used for user sessions & payments within China -->
+<meta-data android:name="pico_merchant_id" android:value="1335"/>
 <meta-data android:name="pico_app_id" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_app_key" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_pay_key" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_scope" android:value="SCOPE"/>
 
 <!-- Your app's credentials used for user sessions & payments outside of China (currently not supported, but necessary for testing) -->
+<meta-data android:name="pico_merchant_id_foreign" android:value="1335"/>
 <meta-data android:name="pico_app_id_foreign" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_app_key_foreign" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_pay_key_foreign" android:value="REPLACE_ME"/>
