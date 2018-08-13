@@ -40,7 +40,37 @@ Like the Humminegbird controller, integrating with the Neo controller(s) is an *
   <img alt="Hummingbird button positions" width="500px" src="assets/PicoNeoController.svg">
 </p>
 
-## Integrating with headset and controller input
+## Binding to headset button input
+
+Pico headsets use Unity's standard `Input.GetKey` method:
+
+```cs
+public bool Input.GetKey(KeyCode key)
+```
+
+It is compatible with the following key codes:
+
+| Button | Available on Pico Neo | Available on Pico Goblin |
+|:---:|:---:|:---:|
+| `KeyCode.Escape` | Yes | No|
+| `KeyCode.JoystickButton0` | Yes | Yes |
+
+
+#### Example
+
+```cs
+public class MyClass : MonoBehaviour {
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.JoystickButton0))
+        {
+            // The "confirm" button is currently pressed on the headset
+        }
+    }
+}
+```
+
+## Binding to controller button input
 
 To install, drag the `Assets/PicoMobileSDK/Pvr_Controller/Prefabs/PvrController0` prefab into your scene so it appears as a child of `Pvr_UnitySDK` (at the same level as `Head`).
 
@@ -97,7 +127,7 @@ public class MyClass : MonoBehaviour {
 }
 ```
 
-## Pico headset and controller Unity API
+## Pico controller Unity API
 
 ### Controller indexes
 

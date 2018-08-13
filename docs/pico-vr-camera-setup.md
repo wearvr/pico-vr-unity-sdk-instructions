@@ -77,7 +77,7 @@ The Pico VR SDK adapts the motion of the headset or Hummingbird controller to Un
 
 The Pico SDK provides a choice of two input modules:
 
-`Pvr_UnitySDKSightInputModule`: Requires the user to look at an object or UGUI element and press theMenu button to trigger a click action. This is the default input module used in the `Pvr_UnitySDK` prefab and to use it, you do not need to make any changes.
+`Pvr_UnitySDKSightInputModule`: Requires the user to look at an object or UGUI element and press the **Menu** button to trigger a click action. This is the default input module used in the `Pvr_UnitySDK` prefab and to use it, you do not need to make any changes.
 
 `Pvr_GazeInputModule`: Displays a time-based cursor that “completes” when a user gazes at a GameObject or UGUI element for long enough to automatically trigger a click action.
 

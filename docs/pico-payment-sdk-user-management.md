@@ -88,11 +88,11 @@ void PicoPaymentSDK.Login();
 #endif
 ```
 
-To receive the result of the login, define a GameObject in your scene called `PicoPayment` (the name is important) and attach a script that defines a `LoginCallback` method.
+To receive the result of the login, define a GameObject in your scene called `PicoPayment` (the name is important) and attach a script that defines a `LoginOrUserInfoCallback` method.
 
 
 ```
-void LoginCallback(string result);
+void LoginOrUserInfoCallback(string result);
 ```
 
 Where `result` is a string containing a serialized JSON object representing the result of the sign in request.
@@ -101,22 +101,18 @@ Where `result` is a string containing a serialized JSON object representing the 
 
 #### Successful sign in request
 
-When the login has succeeded, the JSON object has only the following attributes:
+The JSON object has the following attributes:
 
-* `"access_token"` -  The user’s access token
-* `"open_id"` - The user’s OpenID token
-* `"refresh_token"` - Token for refreshing the user’s session
-* `"expires_in"` - Token describing when the user’s session will expire
+* `"isSuccess"` -  `"true"` when the request has succeed, otherwise `"false"`
+* `"msg"` - For successful requests, it is `"SUCCESS"`. For failed requests, it is a description of why the request failed.
 
 
 Example:
 
 ```
 {
-  "access_token": "25ba00fb73343ff1ec32e1c152fff291",
-  "open_id": "2890d4a291108e73ef0e87340affe7a4",
-  "refresh_token": "5a189befeb3b33f7df101fbecffe4f98",
-  "expires_in": "1d6ef7f25a7b0ec3bbd5b6bf247adf71"
+    "isSuccess":"true",
+    "msg":"SUCCESS"
 }
 ```
 
@@ -128,7 +124,7 @@ Example:
 using LitJson;
 
 public class Callback : MonoBehaviour{
-    public void LoginCallback(string result) {
+    public void LoginOrUserInfoCallback(string result) {
         JsonData response = JsonMapper.ToObject(result);
 
         if (response["cancel"] != null ) {
@@ -179,6 +175,7 @@ void UserInfoCallback(string result);
 Where `result` is a string containing a serialized JSON object representing the result of the request for the current user’s details.
 
 The JSON object has the following attributes:
+
 * `"ret_code"` - A code indicating the status of the request. See Current User Request Statuses below for all available codes.
 * `"ret_msg"` - A description of the response status. Use `"ret_code"` to check the status of the request rather than this attribute.
 * `"data"` - An object with the current user’s details. This attribute is only present when the request succeeds. See User Attributes below for further details.
@@ -251,7 +248,7 @@ The following error conditions should not normally occur. If they do, they may i
 
 | Response (after being parsed as JSON) | Description | Suggested app behaviour |
 | :---: | :--- | :--- |
-| `"ret_code": "00001000"` | The `access_key` or `open_id` parameters stored in `CommonDic` are invalid. | Check that you are setting access_key or open_id correctly in LoginCallback() before calling PicoPaymentSDK.GetUserAPI(). |
+| `"ret_code": "00001000"` | The `access_key` or `open_id` parameters stored in `CommonDic` are invalid. | Check that you are setting access_key or open_id correctly in LoginOrUserInfoCallback() before calling PicoPaymentSDK.GetUserAPI(). |
 | `"ret_code": "00070001"` | The App credentials failed validation. | Check the `pico_app_id` in your AndroidManifest. |
 | `"ret_code": "00071001"` | Invalid app secret key. | Check the `pico_app_key` in your AndroidManifest. |
 | `"ret_code": "00110001"` | Invalid Scope.	 | Check the `pico_scope` in your AndroidManifest. |

@@ -164,4 +164,11 @@ public class MyClass : MonoBehaviour {
 
 Delete the existing `Pvr_UnitySDK` prefab from your scene and drag in the new one from `Pvr_UnitySDK/Prefabs/Pvr_UnitySDK.prefab`.
 
-Delete the old `Pvr_Controller` prefab from your scene and [set up the new one](/docs/pico-goblin-and-neo-controllers.md#integrating-with-headset-and-controller-input).
+[Set up your camera for UI and GameObject interactions](/docs/pico-vr-unity-sdk-instructions.md).
+
+Then [set up the new `Pvr_Controller`](/docs/pico-goblin-and-neo-controllers.md#integrating-with-headset-and-controller-input).
+
+## Updating payment API
+
+If your app does not integrate the Pico's user or payment API, then you can skip this section.
+
