@@ -75,7 +75,6 @@ public class Pvr_Audio3D : MonoBehaviour {
     #region Unity API
     void Start()
     {
-        //底层有问题暂时注释掉！！！！
          bool enable = Pvr_UnitySDKAPI.Audio3D.UPvr_SpatializerUnlock();
          if (enable)
         {

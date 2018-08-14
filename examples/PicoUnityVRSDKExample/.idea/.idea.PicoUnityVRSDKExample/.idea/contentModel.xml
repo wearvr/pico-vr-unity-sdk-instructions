@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$PROJECT_DIR$" t="IncludeRecursive">
+      <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Plugins" t="Include">
+          <e p="Android" t="Include">
+            <e p="AndroidManifest.xml" t="Include" />
+          </e>
+          <e p="Editor" t="Include">
+            <e p="JetBrains" t="Include">
+              <e p="Unity3DRider.cs" t="Include" />
+            </e>
+          </e>
+          <e p="iOS" t="Include">
+            <e p="PicoVRSDK.framework" t="Include">
+              <e p="CMakeLists.txt" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Pvr_Audio3D" t="Include">
+          <e p="API" t="Include">
+            <e p="Pvr_Audio3DAPI.cs" t="Include" />
+          </e>
+          <e p="Scripts" t="Include">
+            <e p="Pvr_Audio3D.cs" t="Include" />
+            <e p="Pvr_AudioUnlock.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Pvr_Controller" t="Include">
+          <e p="API" t="Include">
+            <e p="Pvr_ControllerAPI.cs" t="Include" />
+          </e>
+          <e p="Resources" t="Include">
+            <e p="FillColor.shader" t="Include" />
+            <e p="Undistortion.shader" t="Include" />
+          </e>
+          <e p="Scripts" t="Include">
+            <e p="Pvr_Controller.cs" t="Include" />
+            <e p="Pvr_ControllerDemo.cs" t="Include" />
+            <e p="Pvr_ControllerEventsExamples.cs" t="Include" />
+            <e p="Pvr_ControllerInit.cs" t="Include" />
+            <e p="Pvr_ControllerLink.cs" t="Include" />
+            <e p="Pvr_ControllerManager.cs" t="Include" />
+            <e p="Pvr_ControllerModuleInit.cs" t="Include" />
+            <e p="Pvr_ControllerPower.cs" t="Include" />
+            <e p="Pvr_ControllerVisual.cs" t="Include" />
+            <e p="Pvr_ToolTips.cs" t="Include" />
+            <e p="Pvr_TouchVisual.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Pvr_ExtraSensor" t="Include">
+          <e p="Scripts" t="Include">
+            <e p="Pvr_ExtraSensor.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Pvr_Haptics" t="Include">
+          <e p="API" t="Include">
+            <e p="Pvr_HapticsAPI.cs" t="Include" />
+          </e>
+          <e p="Scripts" t="Include">
+            <e p="Pvr_Haptics.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Pvr_Payment" t="Include">
+          <e p="Demo" t="Include">
+            <e p="Scripts" t="Include">
+              <e p="DemoController.cs" t="Include" />
+              <e p="LoadingRatation.cs" t="Include" />
+            </e>
+            <e p="Utils" t="Include">
+              <e p="InputManager.cs" t="Include" />
+            </e>
+          </e>
+          <e p="Scripts" t="Include">
+            <e p="Callback.cs" t="Include" />
+            <e p="CommonDic.cs" t="Include" />
+            <e p="PicoPaymentSDK.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Pvr_TouchPad" t="Include">
+          <e p="API" t="Include">
+            <e p="placeholder.txt" t="Include" />
+            <e p="Pvr_TouchPadAPI.cs" t="Include" />
+          </e>
+          <e p="Scenes" t="Include">
+            <e p="placeholder.txt" t="Include" />
+          </e>
+          <e p="Scripts" t="Include">
+            <e p="Pvr_TouchPad.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Pvr_UnitySDK" t="Include">
+          <e p="API" t="Include">
+            <e p="Pvr_UnitySDKAPI.cs" t="Include" />
+          </e>
+          <e p="Editor" t="Include">
+            <e p="Pvr_UnitySDKManagerEditor.cs" t="Include" />
+            <e p="Pvr_UnitySDKSettings.cs" t="Include" />
+          </e>
+          <e p="LogUtils.cs" t="Include" />
+          <e p="Pvr_UnitySDKManager.cs" t="Include" />
+          <e p="QuitGame.cs" t="Include" />
+          <e p="Render" t="Include">
+            <e p="Pvr_UnitySDKEye.cs" t="Include" />
+            <e p="Pvr_UnitySDKEyeManager.cs" t="Include" />
+            <e p="Pvr_UnitySDKOverlay.cs" t="Include" />
+            <e p="Pvr_UnitySDKPostRender.cs" t="Include" />
+            <e p="Pvr_UnitySDKPreRender.cs" t="Include" />
+            <e p="Pvr_UnitySDKRender.cs" t="Include" />
+          </e>
+          <e p="Resources" t="Include">
+            <e p="Fade.shader" t="Include" />
+            <e p="FillColor.shader" t="Include" />
+            <e p="Undistortion.shader" t="Include" />
+          </e>
+          <e p="Scenes" t="Include">
+            <e p="examples" t="Include">
+              <e p="Sphere" t="Include">
+                <e p="Resources" t="Include">
+                  <e p="Undistortion.shader" t="Include" />
+                </e>
+                <e p="Scripts" t="Include">
+                  <e p="MoveCylinder.cs" t="Include" />
+                  <e p="MoveSphere.cs" t="Include" />
+                  <e p="Resetbutton.cs" t="Include" />
+                </e>
+              </e>
+            </e>
+          </e>
+          <e p="Sensor" t="Include">
+            <e p="Pvr_UnitySDKHeadTrack.cs" t="Include" />
+            <e p="Pvr_UnitySDKPose.cs" t="Include" />
+            <e p="Pvr_UnitySDKSensor.cs" t="Include" />
+          </e>
+          <e p="System" t="Include">
+            <e p="Config" t="Include">
+              <e p="Pvr_UnitySDKConfigProfile.cs" t="Include" />
+              <e p="Pvr_UnitySDKFPSs.cs" t="Include" />
+            </e>
+            <e p="Event" t="Include">
+              <e p="Pvr_GazeFuse.cs" t="Include" />
+              <e p="Pvr_GazeInputModule.cs" t="Include" />
+              <e p="Pvr_GazeInputModuleCrosshair.cs" t="Include" />
+              <e p="Pvr_UnitySDKPluginEvent.cs" t="Include" />
+              <e p="Pvr_UnitySDKSightInputModule.cs" t="Include" />
+            </e>
+            <e p="OBJLoader" t="Include">
+              <e p="Pvr_ObjImporter.cs" t="Include" />
+            </e>
+            <e p="UIEvent" t="Include">
+              <e p="Pvr_InputModule.cs" t="Include" />
+              <e p="Pvr_UICanvas.cs" t="Include" />
+              <e p="Pvr_UIDraggableItem.cs" t="Include" />
+              <e p="Pvr_UIDropZone.cs" t="Include" />
+              <e p="Pvr_UIGraphicRaycaster.cs" t="Include" />
+              <e p="Pvr_UIPointer.cs" t="Include" />
+            </e>
+          </e>
+          <e p="UnityEditor" t="Include">
+            <e p="Pvr_UnitySDKEditor.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Pvr_VolumePowerBrightness" t="Include">
+          <e p="API" t="Include">
+            <e p="Pvr_VolumePowerBrightnessAPI.cs" t="Include" />
+          </e>
+          <e p="Scripts" t="Include">
+            <e p="Pvr_VolumePowerBrightness.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Scripts" t="Include">
+          <e p="GameObjectConcreteButtonHandler.cs" t="Include" />
+          <e p="GameObjectConcretePointerHandler.cs" t="Include" />
+          <e p="GameObjectPointerEventHandlers.cs" t="Include" />
+          <e p="UGUIConcreteButtonHandler.cs" t="Include" />
+          <e p="UGUIConcretePointerHandler.cs" t="Include" />
+          <e p="UGUIPointerEventHandlers.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Library" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="PicoUnityVRSDKExample.sln" t="IncludeFlat" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
+    </e>
+    <e p="$USER_HOME$/Library/Caches/Rider2017.3/resharper-host/local/Transient/ReSharperHost/v11/SolutionCaches/_PicoUnityVRSDKExample.-173776971.00" t="ExcludeRecursive" />
+  </component>
+</project>

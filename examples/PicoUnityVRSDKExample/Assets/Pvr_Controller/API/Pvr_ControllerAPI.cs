@@ -18,21 +18,92 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 
 namespace Pvr_UnitySDKAPI
 {
+
+    public class PvrControllerKey
+    {
+        public bool State;
+        public bool PressedDown;
+        public bool PressedUp;
+        public bool LongPressed;
+        public float TimeCount;
+        public bool LongPressedClock;
+        public PvrControllerKey()
+        {
+            State = false;
+            PressedDown = false;
+            PressedUp = false;
+            LongPressed = false;
+            TimeCount = 0;
+            LongPressedClock = false;
+        }
+    }
+
+    public class ControllerHand
+    {
+        public PvrControllerKey AppKey;
+        public PvrControllerKey TouchKey;
+        public PvrControllerKey HomeKey;
+        public PvrControllerKey VolumeDownKey;
+        public PvrControllerKey VolumeUpKey;
+        public PvrControllerKey TriggerKey;
+        public Vector2 TouchPadPosition;
+        public int TriggerNum;
+        public Quaternion Rotation;
+        public Vector3 Position;
+        public int Battery;
+        public Vector2 touchDownPosition; 
+        public Vector2 touchUpPosition;
+        public Vector2 swipeData;
+        public bool isVertical;
+        public bool isHorizontal;
+        public bool touchClock;
+        public bool swipeClock;
+        public bool triggerClock;
+        public ControllerState ConnectState;
+        public SwipeDirection SwipeDirection;
+        public TouchPadClick TouchPadClick;
+
+        public ControllerHand()
+        {
+            AppKey = new PvrControllerKey();
+            TouchKey = new PvrControllerKey();
+            HomeKey = new PvrControllerKey();
+            VolumeDownKey = new PvrControllerKey();
+            VolumeUpKey = new PvrControllerKey();
+            TriggerKey = new PvrControllerKey();
+            TouchPadPosition = new Vector2();
+            Rotation = new Quaternion();
+            Position = new Vector3();
+            touchDownPosition = new Vector2();
+            touchUpPosition = new Vector2();
+            swipeData = new Vector2();
+            isVertical = false;
+            isHorizontal = false;
+            touchClock = false;
+            swipeClock = false;
+            triggerClock = false;
+            Battery = 0;
+            TriggerNum = 0;
+            ConnectState = ControllerState.Error;
+            SwipeDirection = SwipeDirection.No;
+            TouchPadClick = TouchPadClick.No;
+        }
+    }
+
     public enum ControllerState
     {
-        ERROR = -1,
-        Connected = 0,
-        Connecting = 1,
-        DisConnected = 2,
+        Error = -1,
+        DisConnected = 0,
+        Connected = 1,
     }
-    
     /// <summary>
-    /// 手柄按键值
+    /// controller key value
     /// </summary>
     public enum Pvr_KeyCode
     {
@@ -41,80 +112,36 @@ namespace Pvr_UnitySDKAPI
         HOME = 3,
         VOLUMEUP = 4,
         VOLUMEDOWN = 5,
+        TRIGGER = 6,
     }
     /// <summary>
-    /// 手柄Touchpad滑动方向
+    /// The controller Touchpad slides in the direction.
     /// </summary>
-    public enum Pvr_SlipDirection
+    public enum SwipeDirection
     {
-        SlideUp = 1,
-        SlideDown = 2,
-        SlideRight = 3,
-        SlideLeft = 4,
+        No =0 ,
+        SwipeUp = 1,
+        SwipeDown = 2,
+        SwipeRight = 3,
+        SwipeLeft = 4,
     }
-    /// <summary>
-    /// 手柄触摸板的XY坐标，范围为0-255
-    /// </summary>
-    public struct TouchPadPosition
-    {
-        public static int x;  
-        public static int y;
 
-    }
-    public struct APPKey
+    /// <summary>
+    /// The controller Touchpad click the direction.
+    /// </summary>
+    public enum TouchPadClick
     {
-        public static bool state;
-        public static bool pressedDown;
-        public static bool pressedUp;
-        public static bool longPressed;
-        public static float timecount;
-        public static bool longPressedClock;
-    }
-    public struct HomeKey
-    {
-        public static bool state;
-        public static bool pressedDown;
-        public static bool pressedUp;
-        public static bool longPressed;
-        public static bool longPressedClock;
-        public static float timecount;
-    }
-    public struct TouchPadKey
-    {
-        public static bool state;
-        public static bool pressedDown;
-        public static bool pressedUp;
-        public static bool longPressed;
-        public static float timecount;
-        public static bool slideup;
-        public static bool slidedown;
-        public static bool slideright;
-        public static bool slideleft;
-        public static bool longPressedClock;
-    }
-    public struct VolumeUpKey
-    {
-        public static bool state;
-        public static bool pressedDown;
-        public static bool pressedUp;
-        public static bool longPressed;
-        public static float timecount;
-        public static bool longPressedClock;
-    }
-    public struct VolumeDownKey
-    {
-        public static bool state;
-        public static bool pressedDown;
-        public static bool pressedUp;
-        public static bool longPressed;
-        public static float timecount;
-        public static bool longPressedClock;
+        No = 0,
+        ClickUp = 1,
+        ClickDown = 2,
+        ClickRight = 3,
+        ClickLeft = 4,
     }
 
     public struct Controller
     {
         /**************************** Private Static Funcations *******************************************/
-        #region Private Static Funcation
+#region Private Static Funcation
 
 #if ANDROID_DEVICE
         public const string LibFileName = "Pvr_UnitySDK";
@@ -128,184 +155,521 @@ namespace Pvr_UnitySDKAPI
         private static extern void Pvr_GetWristPose( float[] rotation,  float[] position);
         [DllImport(LibFileName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void Pvr_GetShoulderPose( float[] rotation,  float[] position);
-           [DllImport(LibFileName, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(LibFileName, CallingConvention = CallingConvention.Cdecl)]
         private static extern void Pvr_SetArmModelParameters(int hand, int gazeType, float elbowHeight, float elbowDepth, float pointerTiltAngle);
 #endif
-        #endregion
+#endregion
 
 
         /**************************** Public Static Funcations *******************************************/
-        #region Public Static Funcation  
+#region Public Static Funcation  
 
-        public static Quaternion ControllerQua = new Quaternion(0, 0, 0, 1);
+        
+        public static Vector2 UPvr_GetTouchPadPosition(int hand)
+        {
+            switch (hand)
+            {
+                case 0:
+                {
+                    var postion = Pvr_ControllerManager.controllerlink.Controller0.TouchPadPosition;
+                    return postion;
+                }
+                case 1:
+                {
+                    var postion = Pvr_ControllerManager.controllerlink.Controller1.TouchPadPosition;
+                    return postion;
+                }
+            }
+            return new Vector2(0, 0);
+        }
 
-        public static int BatteryLevel;
-
+        public static ControllerState UPvr_GetControllerState(int hand)
+        {
+            switch (hand)
+            {
+                case 0:
+                    Pvr_ControllerManager.controllerlink.Controller0.ConnectState = Pvr_ControllerManager.GetControllerConnectionState(0) == 1 ? ControllerState.Connected : ControllerState.DisConnected;
+                    return Pvr_ControllerManager.controllerlink.Controller0.ConnectState;
+                case 1:
+                    if (Pvr_ControllerManager.controllerlink.neoserviceStarted)
+                    {
+                        Pvr_ControllerManager.controllerlink.Controller1.ConnectState = Pvr_ControllerManager.GetControllerConnectionState(1) == 1 ? ControllerState.Connected : ControllerState.DisConnected;
+                    }
+                    return Pvr_ControllerManager.controllerlink.Controller1.ConnectState;
+                 
+            }
+            return ControllerState.Error;
+        }
         /// <summary>
-        /// 获取Touchpad的触摸值，传0，返回X，传1返回Y
+        /// Get the controller rotation data.
         /// </summary>
-        /// <param name="tp"></param>
+        /// <param name="hand">0,1</param>
         /// <returns></returns>
-        public static int UPvr_GetTouchPadPosition(int tp)
+        public static Quaternion UPvr_GetControllerQUA(int hand)
         {
-            if(tp == 0)
+            switch (hand)
             {
-                return TouchPadPosition.x;
+                case 0:
+                    return Pvr_ControllerManager.controllerlink.Controller0.Rotation;
+                case 1:
+                    return Pvr_ControllerManager.controllerlink.Controller1.Rotation;
             }
-            else if(tp == 1)
-            {
-                return TouchPadPosition.y;
-            }
-            else
-            {
-                return 0;
-            }
-            
+            return new Quaternion(0, 0, 0, 1);
         }
-
-        public static ControllerState UPvr_GetControllerState()
+        /// <summary>
+        /// Get the controller position data.
+        /// </summary>
+        /// <param name="hand">0,1</param>
+        /// <returns></returns>
+        public static Vector3 UPvr_GetControllerPOS(int hand)
         {
-            if (Pvr_ControllerManager.GetHBConnectionState() == 0)
+            switch (hand)
             {
-                return ControllerState.DisConnected;
+                case 0:
+                    return Pvr_ControllerManager.controllerlink.Controller0.Position;
+                case 1:
+                    return Pvr_ControllerManager.controllerlink.Controller1.Position;
             }
-            else if (Pvr_ControllerManager.GetHBConnectionState() == 1)
+            return new Vector3(0, 0, 0);
+        }
+        /// <summary>
+        /// Get the value of the trigger key 
+        /// </summary>
+        /// <param name="hand"></param>
+        /// <returns>Neo:0-255,Goblin2:0/1</returns>
+        public static int UPvr_GetControllerTriggerValue(int hand)
+        {
+            switch (hand)
             {
-                return ControllerState.Connecting;
+                case 0:
+                    return Pvr_ControllerManager.controllerlink.Controller0.TriggerNum;
+                case 1:
+                    return Pvr_ControllerManager.controllerlink.Controller1.TriggerNum;
             }
-            else if (Pvr_ControllerManager.GetHBConnectionState() == 2)
+            return 0;
+        }
+        /// <summary>
+        /// Get the power of the controller, neo power is 1-10, goblin/goblin2 power is 1-4.
+        /// </summary>
+        public static int UPvr_GetControllerPower(int hand)
+        {
+            switch (hand)
             {
-                return ControllerState.Connected;
+                case 0:
+                    return Pvr_ControllerManager.controllerlink.Controller0.Battery;
+                case 1:
+                    return Pvr_ControllerManager.controllerlink.Controller1.Battery;
             }
-            return ControllerState.ERROR;
+            return 0;
+        }
+        /// <summary>
+        /// Get the sliding direction of the touchpad.
+        /// </summary>
+        /// <param name="hand"></param>
+        /// <returns></returns>
+        public static SwipeDirection UPvr_GetSwipeDirection(int hand)
+        {
+            switch (hand)
+            {
+                case 0:
+                    return Pvr_ControllerManager.controllerlink.Controller0.SwipeDirection;
+                case 1:
+                    return Pvr_ControllerManager.controllerlink.Controller1.SwipeDirection;
+            }
+            return SwipeDirection.No;
+        }
+        /// <summary>
+        /// Get the click direction of the touchpad.
+        /// </summary>
+        /// <param name="hand"></param>
+        /// <returns></returns>
+        public static TouchPadClick UPvr_GetTouchPadClick(int hand)
+        {
+            switch (hand)
+            {
+                case 0:
+                    return Pvr_ControllerManager.controllerlink.Controller0.TouchPadClick;
+                case 1:
+                    return Pvr_ControllerManager.controllerlink.Controller1.TouchPadClick;
+            }
+            return TouchPadClick.No;
         }
 
         /// <summary>
-        /// 获取手柄转动四元数
+        /// Get the key state
         /// </summary>
-        public static Quaternion UPvr_GetControllerQUA()
+        /// <param name="hand">0,1</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static bool UPvr_GetKey(int hand, Pvr_KeyCode key)
         {
-            return ControllerQua;
-        }
-
-        /// <summary>
-        /// 获取手柄的电量，目前为1234，四档
-        /// </summary>
-        public static int UPvr_GetControllerPower()
-        {
-            return BatteryLevel;
-        }
-        public static bool UPvr_GetSlipDirection(Pvr_SlipDirection dir)
-        {
-            switch(dir)
+            if (hand == 0)
             {
-                case Pvr_SlipDirection.SlideUp:
-                    return TouchPadKey.slideup;
-                case Pvr_SlipDirection.SlideDown:
-                    return TouchPadKey.slidedown;
-                case Pvr_SlipDirection.SlideRight:
-                    return TouchPadKey.slideright;
-                case Pvr_SlipDirection.SlideLeft:
-                    return TouchPadKey.slideleft;
-
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.AppKey.State;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller0.HomeKey.State;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TouchKey.State;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeUpKey.State;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeDownKey.State;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TriggerKey.State;
+                    default:
+                        return false;
+                }
+            }
+            if (hand == 1)
+            {
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.AppKey.State;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller1.HomeKey.State;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TouchKey.State;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeUpKey.State;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeDownKey.State;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TriggerKey.State;
+                    default:
+                        return false;
+                }
             }
             return false;
         }
 
         /// <summary>
-        /// 获取Key的状态
+        /// Get the pressed state of the key
         /// </summary>
-        public static bool UPvr_GetKey(Pvr_KeyCode key)
+        /// <param name="hand">0,1</param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static bool UPvr_GetKeyDown(int hand, Pvr_KeyCode key)
         {
-            switch (key)
+            if (hand == 0)
             {
-                case Pvr_KeyCode.APP:
-                    return APPKey.state;
-                case Pvr_KeyCode.HOME:
-                    return HomeKey.state;
-                case Pvr_KeyCode.TOUCHPAD:
-                    return TouchPadKey.state;
-                case Pvr_KeyCode.VOLUMEUP:
-                    return VolumeUpKey.state;
-                case Pvr_KeyCode.VOLUMEDOWN:
-                    return VolumeDownKey.state;
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.AppKey.PressedDown;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller0.HomeKey.PressedDown;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TouchKey.PressedDown;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeUpKey.PressedDown;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeDownKey.PressedDown;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TriggerKey.PressedDown;
+                    default:
+                        return false;
+                }
+            }
+            if(hand == 1)
+            {
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.AppKey.PressedDown;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller1.HomeKey.PressedDown;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TouchKey.PressedDown;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeUpKey.PressedDown;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeDownKey.PressedDown;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TriggerKey.PressedDown;
+                    default:
+                        return false;
+                }
             }
             return false;
         }
 
         /// <summary>
-        /// 获取Key的状态，仅当按下时为true，一次性事件
+        /// Gets the lift state of the key.
         /// </summary>
-        public static bool UPvr_GetKeyDown(Pvr_KeyCode key)
+        /// <param name="hand"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static bool UPvr_GetKeyUp(int hand, Pvr_KeyCode key)
         {
-            switch (key)
+            if (hand == 0)
             {
-                case Pvr_KeyCode.APP:
-                    return APPKey.pressedDown;
-                case Pvr_KeyCode.HOME:
-                    return HomeKey.pressedDown;
-                case Pvr_KeyCode.TOUCHPAD:
-                    return TouchPadKey.pressedDown;
-                case Pvr_KeyCode.VOLUMEUP:
-                    return VolumeUpKey.pressedDown;
-                case Pvr_KeyCode.VOLUMEDOWN:
-                    return VolumeDownKey.pressedDown;
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.AppKey.PressedUp;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller0.HomeKey.PressedUp;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TouchKey.PressedUp;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeUpKey.PressedUp;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeDownKey.PressedUp;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TriggerKey.PressedUp;
+                    default:
+                        return false;
+                }
+            }
+            if (hand == 1)
+            {
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.AppKey.PressedUp;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller1.HomeKey.PressedUp;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TouchKey.PressedUp;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeUpKey.PressedUp;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeDownKey.PressedUp;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TriggerKey.PressedUp;
+                    default:
+                        return false;
+                }
             }
             return false;
         }
 
         /// <summary>
-        /// 获取Key的状态，仅当抬起时为true，一次性事件
+        /// Gets the long press state of the Key.
         /// </summary>
-        public static bool UPvr_GetKeyUp(Pvr_KeyCode key)
+        public static bool UPvr_GetKeyLongPressed(int hand, Pvr_KeyCode key)
         {
-            switch (key)
+            if (hand == 0)
             {
-                case Pvr_KeyCode.APP:
-                    return APPKey.pressedUp;
-                case Pvr_KeyCode.HOME:
-                    return HomeKey.pressedUp;
-                case Pvr_KeyCode.TOUCHPAD:
-                    return TouchPadKey.pressedUp;
-                case Pvr_KeyCode.VOLUMEUP:
-                    return VolumeUpKey.pressedUp;
-                case Pvr_KeyCode.VOLUMEDOWN:
-                    return VolumeDownKey.pressedUp;
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.AppKey.LongPressed;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller0.HomeKey.LongPressed;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TouchKey.LongPressed;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeUpKey.LongPressed;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller0.VolumeDownKey.LongPressed;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller0.TriggerKey.LongPressed;
+                    default:
+                        return false;
+                }
+            }
+            if (hand == 1)
+            {
+                switch (key)
+                {
+                    case Pvr_KeyCode.APP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.AppKey.LongPressed;
+                    case Pvr_KeyCode.HOME:
+                        return Pvr_ControllerManager.controllerlink.Controller1.HomeKey.LongPressed;
+                    case Pvr_KeyCode.TOUCHPAD:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TouchKey.LongPressed;
+                    case Pvr_KeyCode.VOLUMEUP:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeUpKey.LongPressed;
+                    case Pvr_KeyCode.VOLUMEDOWN:
+                        return Pvr_ControllerManager.controllerlink.Controller1.VolumeDownKey.LongPressed;
+                    case Pvr_KeyCode.TRIGGER:
+                        return Pvr_ControllerManager.controllerlink.Controller1.TriggerKey.LongPressed;
+                    default:
+                        return false;
+                }
             }
             return false;
         }
 
+        public static bool UPvr_IsTouching(int hand)
+        {
+            const float tolerance = 0;
+            switch (hand)
+            {
+                case 0:
+                {
+                    return Math.Abs(Pvr_ControllerManager.controllerlink.Controller0.TouchPadPosition.x) > tolerance ||
+                           Math.Abs(Pvr_ControllerManager.controllerlink.Controller0.TouchPadPosition.y) > tolerance;
+                }
+                case 1:
+                {
+                    return Math.Abs(Pvr_ControllerManager.controllerlink.Controller1.TouchPadPosition.x) > tolerance ||
+                           Math.Abs(Pvr_ControllerManager.controllerlink.Controller1.TouchPadPosition.y) > tolerance;
+                }
+            }
+            return false;
+        }
         /// <summary>
-        /// 获取Key的状态，仅当长按2s时为true，一次性事件
+        /// The service type that currently needs bind.
         /// </summary>
-        public static bool UPvr_GetKeyLongPressed(Pvr_KeyCode key)
+        /// <returns>1：Goblin service 2:Neo service </returns>
+        public static int UPvr_GetPreferenceDevice()
         {
-            switch (key)
+            var trackingmode = Pvr_ControllerManager.controllerlink.trackingmode;
+            var systemproc = Pvr_ControllerManager.controllerlink.systemProp;
+            if (trackingmode == 0 || trackingmode == 1)
             {
-                case Pvr_KeyCode.APP:
-                    return APPKey.longPressed;
-                case Pvr_KeyCode.HOME:
-                    return HomeKey.longPressed;
-                case Pvr_KeyCode.TOUCHPAD:
-                    return TouchPadKey.longPressed;
-                case Pvr_KeyCode.VOLUMEUP:
-                    return VolumeUpKey.longPressed;
-                case Pvr_KeyCode.VOLUMEDOWN:
-                    return VolumeDownKey.longPressed;
+                return 1;
             }
-            return false;
+            if (trackingmode == 2)
+            {
+                return 2;
+            }
+            if (trackingmode == 3)
+            {
+                if (systemproc == 0 || systemproc == 1)
+                {
+                    return 1;
+                }
+                if (systemproc == 2)
+                {
+                    return 2;
+                }
+                if (systemproc == 3)
+                {
+                    return 1;
+                }
+            }
+            return 1;
         }
 
-        public static bool UPvr_IsTouching()
+        public static bool UPvr_IsEnbleTrigger()
         {
-            return (TouchPadPosition.x != 0 || TouchPadPosition.y != 0) ? true : false;
-        }    
-
-        public static Vector3 Upvr_GetAngularVelocity()
+            return Pvr_ControllerManager.controllerlink.IsEnbleTrigger();
+        }
+        /// <summary>
+        ///Gets the controller type of the current connection.
+        /// </summary>
+        /// <returns>0: no connection 1：goblin1 2:Neo 3:goblin2 </returns>
+        public static int UPvr_GetDeviceType()
+        {
+            return Pvr_ControllerManager.controllerlink.GetDeviceType();
+        }
+        /// <summary>
+        /// Gets the current master hand for which 0/1.
+        /// </summary>
+        /// <returns></returns>
+        public static int UPvr_GetMainHandNess()
+        {
+            return Pvr_ControllerManager.controllerlink.GetMainControllerIndex();
+        }
+        /// <summary>
+        /// Set the current controller as the master controller.
+        /// </summary>
+        public static void UPvr_SetMainHandNess(int hand)
+        {
+            Pvr_ControllerManager.controllerlink.SetMainController(hand);
+        }
+        /// <summary>
+        /// Ability to obtain the current controller (3dof/6dof)
+        /// </summary>
+        /// <param name="hand">0/1</param>
+        /// <returns>-1:error 0：6dof  1：3dof 2:6dof </returns>
+        public static int UPvr_GetControllerAbility(int hand)
+        {
+            return Pvr_ControllerManager.controllerlink.GetControllerAbility(hand);
+        }
+        //get controller version
+        public static string UPvr_GetControllerVersion()
+        {
+            return Pvr_ControllerManager.controllerlink.GetControllerVersion();
+        }
+        //Get version number deviceType: 0-station 1- controller 0 2- controller 1.
+        public static void UPvr_GetDeviceVersion(int deviceType)
+        {
+            Pvr_ControllerManager.controllerlink.GetDeviceVersion(deviceType);
+        }
+        //Get the controller Sn number controllerSerialNum: 0- controller 0 1- controller 1.
+        public static void UPvr_GetControllerSnCode(int controllerSerialNum)
+        {
+            Pvr_ControllerManager.controllerlink.GetControllerSnCode(controllerSerialNum);
+        }
+        //Unlash the controller controllerSerialNum: 0- controller 0 1- controller 1.
+        public static void UPvr_SetControllerUnbind(int controllerSerialNum)
+        {
+            Pvr_ControllerManager.controllerlink.SetControllerUnbind(controllerSerialNum);
+        }
+        //Restart the station
+        public static void UPvr_SetStationRestart()
+        {
+            Pvr_ControllerManager.controllerlink.SetStationRestart();
+        }
+        //Launch station OTA upgrade.
+        public static void UPvr_StartStationOtaUpdate()
+        {
+            Pvr_ControllerManager.controllerlink.StartStationOtaUpdate();
+        }
+        //Launch controller ota upgrade mode: 1-rf upgrade communication module 2- upgrade STM32 module;ControllerSerialNum: 0- controller 0 1- controller 1.
+        public static void UPvr_StartControllerOtaUpdate(int mode, int controllerSerialNum)
+        {
+            Pvr_ControllerManager.controllerlink.StartControllerOtaUpdate(mode, controllerSerialNum);
+        }
+        //Enter the pairing mode controllerSerialNum: 0- controller 0 1- controller 1.
+        public static void UPvr_EnterPairMode(int controllerSerialNum)
+        {
+            Pvr_ControllerManager.controllerlink.EnterPairMode(controllerSerialNum);
+        }
+        //controller shutdown controllerSerialNum: 0- controller 0 1- controller 1.
+        public static void UPvr_SetControllerShutdown(int controllerSerialNum)
+        {
+            Pvr_ControllerManager.controllerlink.SetControllerShutdown(controllerSerialNum);
+        }
+        // Retrieves the pairing status of the current station with 0- unpaired state 1- pairing.
+        public static int UPvr_GetStationPairState()
+        {
+            return Pvr_ControllerManager.controllerlink.GetStationPairState();
+        }
+        //Get the upgrade of station ota.
+        public static int UPvr_GetStationOtaUpdateProgress()
+        {
+            return Pvr_ControllerManager.controllerlink.GetStationOtaUpdateProgress();
+        }
+        //Get the Controller ota upgrade progress.
+        //Normal 0-100
+        //Exception 101: failed to receive a successful upgrade of id 102: the controller did not enter the upgrade status 103: upgrade interrupt exception.
+        public static int UPvr_GetControllerOtaUpdateProgress()
+        {
+            return Pvr_ControllerManager.controllerlink.GetControllerOtaUpdateProgress();
+        }
+        //Also get the controller version number and SN number controllerSerialNum: 0- controller 0 1- controller 1.
+        public static void UPvr_GetControllerVersionAndSN(int controllerSerialNum)
+        {
+            Pvr_ControllerManager.controllerlink.GetControllerVersionAndSN(controllerSerialNum);
+        }
+        //Gets the unique identifier of the controller.
+        public static void UPvr_GetControllerUniqueID()
+        {
+            Pvr_ControllerManager.controllerlink.GetControllerUniqueID();
+        }
+        //Disconnect the station from the current pairing mode.
+        public void UPvr_InterruptStationPairMode()
+        {
+            Pvr_ControllerManager.controllerlink.InterruptStationPairMode();
+        }
+        
+        // <summary>
+        // Obtain the controller's gyroscope data.
+        // </summary>
+        public static Vector3 UPvr_GetAngularVelocity(int num)
         {
             Vector3 Aglr = new Vector3(0.0f, 0.0f, 0.0f);
 #if ANDROID_DEVICE
-            Aglr = Pvr_ControllerManager.Instance.GetAngularVelocity();
+            Aglr = Pvr_ControllerManager.Instance.GetAngularVelocity(num);
 #elif IOS_DEVICE
             float[] Angulae = new float[3] { 0, 0, 0 };
             getHbAngularVelocity(Angulae);
@@ -314,11 +678,11 @@ namespace Pvr_UnitySDKAPI
             return Aglr;
         }       
 
-        public static Vector3 Upvr_GetAcceleration()
+        public static Vector3 UPvr_GetAcceleration(int num)
         {
             Vector3 Acc = new Vector3(0.0f, 0.0f, 0.0f);
 #if ANDROID_DEVICE
-            Acc = Pvr_ControllerManager.Instance.GetAcceleration();
+            Acc = Pvr_ControllerManager.Instance.GetAcceleration(num);
 #elif IOS_DEVICE
             float[] Accel = new float[3] { 0, 0, 0 };
             getHbAcceleration(Accel);
@@ -388,7 +752,7 @@ namespace Pvr_UnitySDKAPI
         [DllImport("__Internal")]
         public static extern int Pvr_ResetSensor(int index); //reset sensor index = 3
 #endif
-        #endregion
+#endregion
     }
 
 }

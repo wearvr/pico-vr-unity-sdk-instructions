@@ -16,21 +16,30 @@ public class GameObjectConcreteButtonHandler : MonoBehaviour {
     }
 
 	private void Update() {
-	    if (Controller.UPvr_GetKey(Pvr_KeyCode.TOUCHPAD))
+	    if (Controller.UPvr_GetKey(0, Pvr_KeyCode.TOUCHPAD))
 	    {
 		    currentColor = Color.cyan;
 	    }
-	    else if (Controller.UPvr_GetKey(Pvr_KeyCode.APP))
+	    else if (Controller.UPvr_GetKey(0, Pvr_KeyCode.APP))
 	    {
 		    currentColor = Color.red;
 	    }
-	    else if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEUP))
+	    else if (Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEUP))
 	    {
 		    currentColor = Color.grey;
 	    }
-	    else if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEDOWN))
+	    else if (Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEDOWN))
 	    {
 		    currentColor = Color.white;
+	    } 
+	    // Headset buttons: 
+	    else if (Input.GetKey(KeyCode.JoystickButton0))
+	    {
+		    currentColor = Color.black;
+	    }
+	    else
+	    {
+		    currentColor = originalColor;
 	    }
 
 		meshRenderer.material.color = currentColor;

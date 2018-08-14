@@ -21,10 +21,12 @@ using System;
 using System.Collections;
 using LitJson;
 using Pvr_UnitySDKAPI;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class Pvr_ControllerManager : MonoBehaviour
 {
+
     /************************************    Properties  *************************************/
     private static Pvr_ControllerManager instance = null;
 
@@ -48,33 +50,82 @@ public class Pvr_ControllerManager : MonoBehaviour
     }
     #region Properties
 
-    private string lark2state;
-    private string lark2key;
-    private float lark2w = 1.0f, lark2x = 0f, lark2y = 0f, lark2z = 0f;
-    private int lark2touchx = 0, lark2touchy = 0, lark2home = 0, lark2app = 0, lark2click = 0, lark2volup = 0, lark2voldown = 0, lark2power = 0;
-    private int touchXBegin = 0, touchXEnd = 0, touchYBegin = 0, touchYEnd = 0;
-    private bool touchClock = false;
-    public static bool longPressclock = false;
+    public static bool longPressclock;
     public static Pvr_ControllerLink controllerlink;
-    public bool ExtendedAPI;
     private float cTime = 1.0f;
-    private int touchNum = 0;
-    public int slipNum = 100;  //滑动值，0-255，滑动超过此值，则判定为成功，若感觉太灵敏则调高，反之调低
-    private bool stopConnect = false;
+    private float longpresstime = 0.5f; 
+    private bool stopConnect; 
     private SystemLanguage localanguage;
     public Text toast;
-    private bool controllerServicestate = false;
+    private bool controllerServicestate;
     private float disConnectTime;
-    private float longPressTime = 0.5f;
-    private bool enableKeyEvent = true;
+    private int triggernum;
+
     #endregion
 
+    //Service Start Success
+    //The service startup is successful and the API interface can be used normally.
+    public delegate void PvrServiceStartSuccess();
+    public static event PvrServiceStartSuccess PvrServiceStartSuccessEvent;
+    //Controller State event
+    //1.Goblin controller，"int a"，0：Disconnect 1：Connect
+    //2.Neo controller，"int a,int b"，a(0:controller0,1：controller1)，b(0:Disconnect，1：Connect)  
+    public delegate void PvrControllerStateChanged(string data);
+    public static event PvrControllerStateChanged PvrControllerStateChangedEvent;
+    //Master control hand change
+    public delegate void ChangeMainControllerCallBack(string index);
+    public static event ChangeMainControllerCallBack ChangeMainControllerCallBackEvent;
 
+
+    //The following is the separation of platform events, suggesting the use of the above events.
+    //goblin service bind success
+    public delegate void SetHbServiceBindState();
+    public static event SetHbServiceBindState SetHbServiceBindStateEvent;
+    //neo ControllerThread start-up success
+    public delegate void ControllerThreadStartedCallback();
+    public static event ControllerThreadStartedCallback ControllerThreadStartedCallbackEvent;
+    //neo service Bind success
+    public delegate void SetControllerServiceBindState();
+    public static event SetControllerServiceBindState SetControllerServiceBindStateEvent;
+    //goblin Controller connection status change
     public delegate void ControllerStatusChange(string isconnect);
     public static event ControllerStatusChange ControllerStatusChangeEvent;
-
-
-
+    //neo Controller connection status change
+    public delegate void SetControllerAbility(string data);
+    public static event SetControllerAbility SetControllerAbilityEvent;
+    //neo Controller connection status change
+    public delegate void SetControllerStateChanged(string data);
+    public static event SetControllerStateChanged SetControllerStateChangedEvent;
+    //goblin Mac
+    public delegate void SetHbControllerMac(string mac);
+    public static event SetHbControllerMac SetHbControllerMacEvent;
+    //Get the version
+    public delegate void ControllerDeviceVersionCallback(string data);
+    public static event ControllerDeviceVersionCallback ControllerDeviceVersionCallbackEvent;
+    //Acquisition controller SN
+    public delegate void ControllerSnCodeCallback(string data);
+    public static event ControllerSnCodeCallback ControllerSnCodeCallbackEvent;
+    //controller unbundling
+    public delegate void ControllerUnbindCallback(string status);
+    public static event ControllerUnbindCallback ControllerUnbindCallbackEvent;
+    //Station working status.
+    public delegate void ControllerStationStatusCallback(string status);
+    public static event ControllerStationStatusCallback ControllerStationStatusCallbackEvent;
+    //Station is busy.
+    public delegate void ControllerStationBusyCallback(string status);
+    public static event ControllerStationBusyCallback ControllerStationBusyCallbackEvent;
+    //OTA upgrade error
+    public delegate void ControllerOtaStartCodeCallback(string data);
+    public static event ControllerOtaStartCodeCallback ControllerOtaStartCodeCallbackEvent;
+    //controller version and SN 
+    public delegate void ControllerDeviceVersionAndSNCallback(string data);
+    public static event ControllerDeviceVersionAndSNCallback ControllerDeviceVersionAndSNCallbackEvent;
+    //The controller's unique identification code
+    public delegate void ControllerUniqueIDCallback(string data);
+    public static event ControllerUniqueIDCallback ControllerUniqueIDCallbackEvent;
+    //The combined to controller
+    public delegate void ControllerCombinedKeyUnbindCallback(string data);
+    public static event ControllerCombinedKeyUnbindCallback ControllerCombinedKeyUnbindCallbackEvent;
     /*************************************  Unity API ****************************************/
     #region Unity API
     void Awake()
@@ -92,462 +143,120 @@ public class Pvr_ControllerManager : MonoBehaviour
         {
             controllerlink = new Pvr_ControllerLink(this.gameObject.name);
         }
-        ControllerStatusChangeEvent += ControllerStatusChangeEventDebug;
     }
     // Use this for initialization
     void Start()
     {
         localanguage = Application.systemLanguage;
-#if ANDROID_DEVICE
-        if(!controllerlink.notPhone)
+
+        if (controllerlink.trackingmode != 2 && controllerlink.trackingmode != 3)
         {
             Invoke("CheckControllerService", 10.0f);
         }
-		
-		if (GetHBConnectionState() == 2)
-        {
-            controllerlink.isConnect = true;
-        }
-#endif
-
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        #region AndroidData
 #if UNITY_ANDROID
-
-        if (controllerlink.isConnect)
+        if (controllerlink.neoserviceStarted)
         {
-            //手柄转动四元数
-            lark2state = controllerlink.GetHBSensorState();
-            JsonData Jstate = JsonMapper.ToObject(lark2state);
-            lark2w = Convert.ToSingle(Jstate[0].ToString());
-            lark2x = Convert.ToSingle(Jstate[1].ToString());
-            lark2y = Convert.ToSingle(Jstate[2].ToString());
-            lark2z = Convert.ToSingle(Jstate[3].ToString());
-            Controller.ControllerQua = new Quaternion(lark2x, lark2y, lark2z, lark2w);
-
-            //lark2手柄键值TouchpadX,TouchpadY,HomeKeyPress,AppKeyPress,ClickKeyPress,VolumeUpKeyPress,VolumeDownKeyPress,BatteryLevel
-            lark2key = controllerlink.javaHummingbirdClass.CallStatic<string>("getHBKeyEvent");
-            if (enableKeyEvent)
+            if (controllerlink.controller0Connected)
             {
-                JsonData JKey = JsonMapper.ToObject(lark2key);
-                if (Convert.ToInt16(JKey[0].ToString()) > 0 || Convert.ToInt16(JKey[1].ToString()) > 0)
-                {
-                    if (Convert.ToInt16(JKey[0].ToString()) == 0)
-                    {
-                        TouchPadPosition.x = 1;
-                    }
-                    if (Convert.ToInt16(JKey[1].ToString()) == 0)
-                    {
-                        TouchPadPosition.y = 1;
-                    }
-                    TouchPadPosition.x = Convert.ToInt16(JKey[0].ToString());
-                    TouchPadPosition.y = Convert.ToInt16(JKey[1].ToString());
-                }
-                else
-                {
-                    touchNum++;
-                    if (touchNum >= 1)
-                    {
-                        TouchPadPosition.x = 0;
-                        TouchPadPosition.y = 0;
-                        touchNum = 0;
-                    }
-                }
-                Controller.BatteryLevel = Convert.ToInt16(JKey[7].ToString());
-
-                #region base api 
-                //键值状态
-                //Home Key
-                if (Convert.ToInt16(JKey[2].ToString()) == 1)
-                {
-                    if (!HomeKey.state)
-                    {
-                        HomeKey.pressedDown = true;
-                        longPressclock = false;
-                    }
-                    else
-                    {
-                        HomeKey.pressedDown = false;
-                    }
-                    HomeKey.state = true;
-                }
-                else
-                {
-                    if (HomeKey.state)
-                    {
-                        HomeKey.pressedUp = true;
-                    }
-                    else
-                    {
-                        HomeKey.pressedUp = false;
-                    }
-                    HomeKey.state = false;
-                    HomeKey.pressedDown = false;
-                }
-                //APP Key
-                if (Convert.ToInt16(JKey[3].ToString()) == 1)
-                {
-                    if (!APPKey.state)
-                    {
-                        APPKey.pressedDown = true;
-                        longPressclock = false;
-                    }
-                    else
-                    {
-                        APPKey.pressedDown = false;
-                    }
-                    APPKey.state = true;
-                }
-                else
-                {
-                    if (APPKey.state)
-                    {
-                        APPKey.pressedUp = true;
-                    }
-                    else
-                    {
-                        APPKey.pressedUp = false;
-                    }
-                    APPKey.state = false;
-                    APPKey.pressedDown = false;
-                }
-                //Touchpad Key
-                if (Convert.ToInt16(JKey[4].ToString()) == 1)
-                {
-                    if (!TouchPadKey.state)
-                    {
-                        TouchPadKey.pressedDown = true;
-                        longPressclock = false;
-                    }
-                    else
-                    {
-                        TouchPadKey.pressedDown = false;
-                    }
-                    TouchPadKey.state = true;
-                }
-                else
-                {
-                    if (TouchPadKey.state)
-                    {
-                        TouchPadKey.pressedUp = true;
-                    }
-                    else
-                    {
-                        TouchPadKey.pressedUp = false;
-                    }
-                    TouchPadKey.state = false;
-                    TouchPadKey.pressedDown = false;
-                }
-                //VolumeUP Key
-                if (Convert.ToInt16(JKey[5].ToString()) == 1)
-                {
-                    if (!VolumeUpKey.state)
-                    {
-                        VolumeUpKey.pressedDown = true;
-                        longPressclock = false;
-                    }
-                    else
-                    {
-                        VolumeUpKey.pressedDown = false;
-                    }
-                    VolumeUpKey.state = true;
-                }
-                else
-                {
-                    if (VolumeUpKey.state)
-                    {
-                        VolumeUpKey.pressedUp = true;
-                    }
-                    else
-                    {
-                        VolumeUpKey.pressedUp = false;
-                    }
-                    VolumeUpKey.state = false;
-                    VolumeUpKey.pressedDown = false;
-                }
-                //VolumeDown Key
-                if (Convert.ToInt16(JKey[6].ToString()) == 1)
-                {
-                    if (!VolumeDownKey.state)
-                    {
-                        VolumeDownKey.pressedDown = true;
-                        longPressclock = false;
-                    }
-                    else
-                    {
-                        VolumeDownKey.pressedDown = false;
-                    }
-                    VolumeDownKey.state = true;
-                }
-                else
-                {
-                    if (VolumeDownKey.state)
-                    {
-                        VolumeDownKey.pressedUp = true;
-                    }
-                    else
-                    {
-                        VolumeDownKey.pressedUp = false;
-                    }
-                    VolumeDownKey.state = false;
-                    VolumeDownKey.pressedDown = false;
-                }
+                var pose0 = controllerlink.GetCvControllerPoseData(0);
+                controllerlink.Controller0.Rotation = new Quaternion(pose0[0], pose0[1], pose0[2], pose0[3]);
+                controllerlink.Controller0.Position = new Vector3(pose0[4] / 1000.0f, pose0[5] / 1000.0f, -pose0[6] / 1000.0f);
+                
+                var key0 = controllerlink.GetCvControllerKeyData(0);
+                controllerlink.Controller0.TouchPadPosition = new Vector2(key0[0], key0[1]);
+                
+                SetSwipeData(controllerlink.Controller0);
+                
+                SetTouchPadClick(controllerlink.Controller0);
+               
+                TransformData(controllerlink.Controller0.HomeKey, key0[2]);
+                
+                TransformData(controllerlink.Controller0.AppKey, key0[3]);
+                
+                TransformData(controllerlink.Controller0.TouchKey, key0[4]);
+              
+                TransformData(controllerlink.Controller0.VolumeUpKey, key0[5]);
+              
+                TransformData(controllerlink.Controller0.VolumeDownKey, key0[6]);
+               
+                controllerlink.Controller0.TriggerNum = key0[7];
+                
+                SetTriggerClick(controllerlink.Controller0.TriggerKey, key0[7]);
+                
+                controllerlink.Controller0.Battery = key0[8];
+            }
+            if (controllerlink.controller1Connected)
+            {
+                var pose1 = controllerlink.GetCvControllerPoseData(1);
+                controllerlink.Controller1.Rotation = new Quaternion(pose1[0], pose1[1], pose1[2], pose1[3]);
+                controllerlink.Controller1.Position = new Vector3(pose1[4] / 1000.0f, pose1[5] / 1000.0f, -pose1[6] / 1000.0f);
+                
+                var key1 = controllerlink.GetCvControllerKeyData(1);
+                controllerlink.Controller1.TouchPadPosition = new Vector2(key1[0], key1[1]);
+                
+                SetSwipeData(controllerlink.Controller1);
+             
+                SetTouchPadClick(controllerlink.Controller1);
+             
+                TransformData(controllerlink.Controller1.HomeKey, key1[2]);
+              
+                TransformData(controllerlink.Controller1.AppKey, key1[3]);
+              
+                TransformData(controllerlink.Controller1.TouchKey, key1[4]);
+                
+                TransformData(controllerlink.Controller1.VolumeUpKey, key1[5]);
+                
+                TransformData(controllerlink.Controller1.VolumeDownKey, key1[6]);
+                
+                controllerlink.Controller1.TriggerNum = key1[7];
+                
+                SetTriggerClick(controllerlink.Controller1.TriggerKey, key1[7]);
+               
+                controllerlink.Controller1.Battery = key1[8];
             }
             
-            #endregion
-
-            #region extended api
-            //打开扩展API后，提供长按和滑动功能
-            if (ExtendedAPI)
-            {
-                //slip
-                if (TouchPadPosition.x > 0 || TouchPadPosition.y > 0)
-                {
-                    if (!touchClock)
-                    {
-                        touchXBegin = TouchPadPosition.x;
-                        touchYBegin = TouchPadPosition.y;
-                        touchClock = true;
-                    }
-                    touchXEnd = TouchPadPosition.x;
-                    touchYEnd = TouchPadPosition.y;
-                }
-                else
-                {
-                    if (touchXEnd > touchXBegin)
-                    {
-                        if (touchYEnd > touchYBegin)
-                        {
-                            if (touchXEnd - touchXBegin > slipNum && ((touchXEnd - touchXBegin) > (touchYEnd - touchYBegin)))
-                            {
-                                //slide up
-                                TouchPadKey.slideup = true;
-                            }
-                            if (touchYEnd - touchYBegin > slipNum && ((touchYEnd - touchYBegin) > (touchXEnd - touchXBegin)))
-                            {
-                                //slide right
-                                TouchPadKey.slideright = true;
-                            }
-                        }
-                        else if (touchYEnd < touchYBegin)
-                        {
-                            if (touchXEnd - touchXBegin > slipNum && ((touchXEnd - touchXBegin) > (touchYBegin - touchYEnd)))
-                            {
-                                //slide up
-                                TouchPadKey.slideup = true;
-                            }
-                            if (touchYBegin - touchYEnd > slipNum && ((touchYBegin - touchYEnd) > (touchXEnd - touchXBegin)))
-                            {
-                                //slide left
-                                TouchPadKey.slideleft = true;
-                            }
-                        }
-                    }
-                    else if (touchXEnd < touchXBegin)
-                    {
-                        if (touchYEnd > touchYBegin)
-                        {
-                            if (touchXBegin - touchXEnd > slipNum && ((touchXBegin - touchXEnd) > (touchYEnd - touchYBegin)))
-                            {
-                                //slide down
-                                TouchPadKey.slidedown = true;
-                            }
-                            if (touchYEnd - touchYBegin > slipNum && ((touchYEnd - touchYBegin) > (touchXBegin - touchXEnd)))
-                            {
-                                //slide right
-                                TouchPadKey.slideright = true;
-                            }
-                        }
-                        else if (touchYEnd < touchYBegin)
-                        {
-                            if (touchXBegin - touchXEnd > slipNum && ((touchXBegin - touchXEnd) > (touchYBegin - touchYEnd)))
-                            {
-                                //slide down 
-                                TouchPadKey.slidedown = true;
-                            }
-                            if (touchYBegin - touchYEnd > slipNum && ((touchYBegin - touchYEnd) > (touchXBegin - touchXEnd)))
-                            {
-                                //slide left
-                                TouchPadKey.slideleft = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        TouchPadKey.slideright = false;
-                        TouchPadKey.slideleft = false;
-                        TouchPadKey.slidedown = false;
-                        TouchPadKey.slideup = false;
-                    }
-                    touchXBegin = 0;
-                    touchXEnd = 0;
-                    touchYBegin = 0;
-                    touchYEnd = 0;
-                    touchClock = false;
-                }
-
-                //longpress
-                if (HomeKey.state)
-                {
-                    HomeKey.timecount += Time.deltaTime;
-                    if (HomeKey.timecount >= longPressTime && !HomeKey.longPressedClock)
-                    {
-                        HomeKey.longPressed = true;
-                        HomeKey.longPressedClock = true;
-                        longPressclock = true;
-                    }
-                    else
-                    {
-                        HomeKey.longPressed = false;
-                    }
-                }
-                else
-                {
-                    HomeKey.longPressedClock = false;
-                    HomeKey.timecount = 0;
-                    HomeKey.longPressed = false;
-                }
-                if (APPKey.state)
-                {
-                    APPKey.timecount += Time.deltaTime;
-                    if (APPKey.timecount >= longPressTime && !APPKey.longPressedClock)
-                    {
-                        APPKey.longPressed = true;
-                        APPKey.longPressedClock = true;
-                        longPressclock = true;
-                    }
-                    else
-                    {
-                        APPKey.longPressed = false;
-                    }
-                }
-                else
-                {
-                    APPKey.longPressedClock = false;
-                    APPKey.timecount = 0;
-                    APPKey.longPressed = false;
-                }
-                if (TouchPadKey.state)
-                {
-                    TouchPadKey.timecount += Time.deltaTime;
-                    if (TouchPadKey.timecount >= longPressTime && !TouchPadKey.longPressedClock)
-                    {
-                        TouchPadKey.longPressed = true;
-                        TouchPadKey.longPressedClock = true;
-                        longPressclock = true;
-                    }
-                    else
-                    {
-                        TouchPadKey.longPressed = false;
-                    }
-                }
-                else
-                {
-                    TouchPadKey.longPressedClock = false;
-                    TouchPadKey.timecount = 0;
-                    TouchPadKey.longPressed = false;
-                }
-                if (VolumeUpKey.state)
-                {
-                    VolumeUpKey.timecount += Time.deltaTime;
-                    if (VolumeUpKey.timecount >= longPressTime && !VolumeUpKey.longPressedClock)
-                    {
-                        VolumeUpKey.longPressed = true;
-                        VolumeUpKey.longPressedClock = true;
-                        longPressclock = true;
-                    }
-                    else
-                    {
-                        VolumeUpKey.longPressed = false;
-                    }
-                }
-                else
-                {
-                    VolumeUpKey.longPressedClock = false;
-                    VolumeUpKey.timecount = 0;
-                    VolumeUpKey.longPressed = false;
-                }
-                if (VolumeDownKey.state)
-                {
-                    VolumeDownKey.timecount += Time.deltaTime;
-                    if (VolumeDownKey.timecount >= longPressTime && !VolumeDownKey.longPressedClock)
-                    {
-                        VolumeDownKey.longPressed = true;
-                        VolumeDownKey.longPressedClock = true;
-                        longPressclock = true;
-                    }
-                    else
-                    {
-                        VolumeDownKey.longPressed = false;
-                    }
-                }
-                else
-                {
-                    VolumeDownKey.longPressedClock = false;
-                    VolumeDownKey.timecount = 0;
-                    VolumeDownKey.longPressed = false;
-                }
-
-            }
-            #endregion
-
-
-            if (controllerlink.notPhone)
-            {
-                if (!longPressclock && Controller.UPvr_GetKeyUp(Pvr_KeyCode.HOME) && !stopConnect)
-                {
-                    controllerlink.RebackToLauncher();
-                }
-                if (!longPressclock && Controller.UPvr_GetKeyUp(Pvr_KeyCode.VOLUMEUP))
-                {
-                    controllerlink.TurnUpVolume();
-                }
-                if (!longPressclock && Controller.UPvr_GetKeyUp(Pvr_KeyCode.VOLUMEDOWN))
-                {
-                    controllerlink.TurnDownVolume();
-                }
-                if (!Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEUP) && !Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEDOWN))
-                {
-                    cTime = 1.0f;
-                }
-                if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEUP))
-                {
-                    cTime -= Time.deltaTime;
-                    if (cTime <= 0)
-                    {
-                        cTime = 0.2f;
-                        controllerlink.TurnUpVolume();
-                    }
-                }
-                if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEDOWN))
-                {
-                    cTime -= Time.deltaTime;
-                    if (cTime <= 0)
-                    {
-                        cTime = 0.2f;
-                        controllerlink.TurnDownVolume();
-                    }
-                }
-            }
-
-            if (Controller.UPvr_GetKey(Pvr_KeyCode.HOME) && Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEDOWN) && !stopConnect)
-            {
-                disConnectTime += Time.deltaTime;
-                if (disConnectTime > 1.0)
-                {
-                    DisConnectBLE();
-                    controllerlink.hummingBirdMac = "";
-                    stopConnect = true;
-                }
-            }
         }
+        //Goblin controller
+        if (controllerlink.goblinserviceStarted && controllerlink.controller0Connected)
+        {
+            var pose0 = controllerlink.GetHBControllerPoseData();
+            var jpose = JsonMapper.ToObject(pose0);
+            controllerlink.Controller0.Rotation = new Quaternion(Convert.ToSingle(jpose[1].ToString()), Convert.ToSingle(jpose[2].ToString()), Convert.ToSingle(jpose[3].ToString()), Convert.ToSingle(jpose[0].ToString()));
+            PLOG.D("PvrLog GoblinController X:" + controllerlink.Controller0.Rotation.eulerAngles.x + " Y:" +
+                      controllerlink.Controller0.Rotation.eulerAngles.y + " Z:" +
+                      controllerlink.Controller0.Rotation.eulerAngles.z);
+           
+            var key0 = controllerlink.GetHBControllerKeyData();
+            var jkey = JsonMapper.ToObject(key0);
+            controllerlink.Controller0.TouchPadPosition = new Vector2(Convert.ToInt16(jkey[0].ToString()), Convert.ToInt16(jkey[1].ToString()));
+            
+            SetSwipeData(controllerlink.Controller0);
+            
+            SetTouchPadClick(controllerlink.Controller0);
+            
+            TransformData(controllerlink.Controller0.HomeKey, Convert.ToInt16(jkey[2].ToString()));
+            
+            TransformData(controllerlink.Controller0.AppKey, Convert.ToInt16(jkey[3].ToString()));
+            
+            TransformData(controllerlink.Controller0.TouchKey, Convert.ToInt16(jkey[4].ToString()));
+           
+            TransformData(controllerlink.Controller0.VolumeUpKey, Convert.ToInt16(jkey[5].ToString()));
+            
+            TransformData(controllerlink.Controller0.VolumeDownKey, Convert.ToInt16(jkey[6].ToString()));
+            
+            controllerlink.Controller0.Battery = Convert.ToInt16(jkey[7].ToString());
+            
+            TransformData(controllerlink.Controller0.TriggerKey, controllerlink.GetTriggerKeyEvent());
+            
+        }
+        
+        SetSystemKey();
 #endif
-        #endregion
         #region IOSData
 #if IOS_DEVICE
         Controller.PVR_GetLark2SensorMessage(ref lark2x, ref lark2y, ref lark2z, ref lark2w);
@@ -579,7 +288,7 @@ public class Pvr_ControllerManager : MonoBehaviour
         }
         Controller.BatteryLevel = lark2power;
         #region base api 
-        //键值状态
+        
         //Home Key
         if (lark2home == 1)
         {
@@ -720,7 +429,7 @@ public class Pvr_ControllerManager : MonoBehaviour
         #endregion
 
         #region extended api
-        //打开扩展API后，提供长按和滑动功能
+        
         if (ExtendedAPI)
         {
             //slip
@@ -913,27 +622,68 @@ public class Pvr_ControllerManager : MonoBehaviour
             }
 
         }
+        if (Controller.UPvr_GetKeyLongPressed(0, Pvr_KeyCode.HOME))
+        {
+            Pvr_UnitySDKManager.pvr_UnitySDKSensor.ResetUnitySDKSensor();
+            ResetController(0);
+        }
         #endregion
 #endif
         #endregion
 
-        if (Controller.UPvr_GetKeyLongPressed(Pvr_KeyCode.HOME))
-        {
-            Pvr_UnitySDKManager.pvr_UnitySDKSensor.ResetUnitySDKSensor();
-            ResetController();
-        }
     }
-
-    void OnDestroy()
+    void OnApplicationQuit()
     {
-        ControllerStatusChangeEvent -= ControllerStatusChangeEventDebug;
+        var headdof = Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof ? 1 : 0;
+        var handdof = Pvr_UnitySDKManager.SDK.HandDofNum == HandDofNum.SixDof ? 1 : 0;
+      
+        if (controllerlink.neoserviceStarted)
+        {
+            controllerlink.StopControllerThread(headdof, handdof);
+        }
+            
+    }
+    private void OnApplicationPause(bool pause)
+    {
+        var headdof = Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof ? 1 : 0;
+        var handdof = Pvr_UnitySDKManager.SDK.HandDofNum == HandDofNum.SixDof ? 1 : 0;
+        if (pause)
+        {
+          
+            if (controllerlink.neoserviceStarted)
+            {
+                controllerlink.SetGameObjectToJar("");
+                controllerlink.StopControllerThread(headdof, handdof);
+            }
+            if(controllerlink.goblinserviceStarted)
+            {
+                controllerlink.StopLark2Receiver();
+            }
+        }
+        else
+        {
+            controllerlink.Controller0 = new ControllerHand();
+            controllerlink.Controller1 = new ControllerHand();
+            if (controllerlink.neoserviceStarted)
+            {
+                controllerlink.SetGameObjectToJar(controllerlink.gameobjname);
+                controllerlink.StartControllerThread(headdof, handdof);
+            }
+            if (controllerlink.goblinserviceStarted)
+            {
+                controllerlink.StartLark2Receiver();
+                controllerlink.controller0Connected = GetControllerConnectionState(0) == 1;
+                if (PvrServiceStartSuccessEvent != null)
+                    PvrServiceStartSuccessEvent();
+            }
+        }
     }
     #endregion
 
     /************************************ Public Interfaces  *********************************/
     #region Public Interfaces
 
-
+   
     public void StopLark2Service()
     {
         if (controllerlink != null)
@@ -941,38 +691,30 @@ public class Pvr_ControllerManager : MonoBehaviour
             controllerlink.StopLark2Service();
         }
     }
-
-
-    public Vector3 GetAngularVelocity()
+  
+    public Vector3 GetAngularVelocity(int num)
     {
         if (controllerlink != null)
         {
-            return controllerlink.GetAngularVelocity();
+            return controllerlink.GetAngularVelocity(num);
+        }
+        return new Vector3(0.0f, 0.0f, 0.0f);
+    }
+   
+    public Vector3 GetAcceleration(int num)
+    {
+        if (controllerlink != null)
+        {
+            return controllerlink.GetAcceleration(num);
         }
         return new Vector3(0.0f, 0.0f, 0.0f);
     }
 
-    public Vector3 GetAcceleration()
+    public void BindService()
     {
         if (controllerlink != null)
         {
-            return controllerlink.GetAcceleration();
-        }
-        return new Vector3(0.0f, 0.0f, 0.0f);
-    }
-
-    public void StartLark2Service()
-    {
-        if (controllerlink != null)
-        {
-            controllerlink.StartLark2Service();
-        }
-    }
-    public void BindHBService()
-    {
-        if (controllerlink != null)
-        {
-            controllerlink.BindHBService();
+            controllerlink.BindService();
         }
     }
     public void StartScan()
@@ -993,17 +735,17 @@ public class Pvr_ControllerManager : MonoBehaviour
             controllerlink.StopScan();
         }
     }
-    public void ResetController()
+   
+    public void ResetController(int num)
     {
         if (controllerlink != null)
         {
-            controllerlink.ResetController();
+            controllerlink.ResetController(num);
         }
     }
-    public static int GetHBConnectionState()
+    public static int GetControllerConnectionState(int num)
     {
-        int sta;
-        sta = controllerlink.GetHBConnectionState();
+        var sta = controllerlink.GetControllerConnectionState(num);
         return sta;
     }
     public void ConnectBLE()
@@ -1042,26 +784,22 @@ public class Pvr_ControllerManager : MonoBehaviour
     }
     public static string GetBLEImageType()
     {
-        string type;
-        type = controllerlink.GetBLEImageType();
+        var type = controllerlink.GetBLEImageType();
         return type;
     }
     public static long GetBLEVersion()
     {
-        long version;
-        version = controllerlink.GetBLEVersion();
+        var version = controllerlink.GetBLEVersion();
         return version;
     }
     public static string GetFileImageType()
     {
-        string type;
-        type = controllerlink.GetFileImageType();
+        var type = controllerlink.GetFileImageType();
         return type;
     }
     public static long GetFileVersion()
     {
-        long version;
-        version = controllerlink.GetFileVersion();
+        var version = controllerlink.GetFileVersion();
         return version;
     }
     public static void AutoConnectHbController(int scans)
@@ -1083,8 +821,11 @@ public class Pvr_ControllerManager : MonoBehaviour
     //--------------
     public void setHbControllerMac(string mac)
     {
+        PLOG.I("PvrLog HBMacRSSI" + mac);
         controllerlink.hummingBirdMac = mac.Substring(0, 17);
         controllerlink.hummingBirdRSSI = Convert.ToInt16(mac.Remove(0, 18));
+        if (SetHbControllerMacEvent != null)
+            SetHbControllerMacEvent(mac.Substring(0, 17));
     }
     public int GetControllerRSSI()
     {
@@ -1093,70 +834,220 @@ public class Pvr_ControllerManager : MonoBehaviour
 
     public void setHbServiceBindState(string state)
     {
+        PLOG.I("PvrLog HBBindCallBack" + state);
         controllerServicestate = true;
-        //state：0-已解绑，1-已绑定，2-未知
+        //State: 0- unbound, 1- bound, 2- timed.
         if (Convert.ToInt16(state) == 0)
         {
-            Invoke("BindHBService", 0.5f);
+            Invoke("BindService", 0.5f);
+            controllerlink.goblinserviceStarted = false;
         }
         else if (Convert.ToInt16(state) == 1)
         {
-
+            controllerlink.goblinserviceStarted = true;
+            controllerlink.controller0Connected = GetControllerConnectionState(0) == 1;
+            if (SetHbServiceBindStateEvent != null)
+            {
+                SetHbServiceBindStateEvent();
+            }
+            if (PvrServiceStartSuccessEvent != null)
+            {
+                PvrServiceStartSuccessEvent();
+            }
         }
     }
-
+    public void setControllerServiceBindState(string state)
+    {
+        PLOG.I("PvrLog CVBindCallBack" + state);
+        //state:0 unbind,1:bind
+        if (Convert.ToInt16(state) == 0)
+        {
+            Invoke("BindService", 0.5f);
+            controllerlink.neoserviceStarted = false;
+        }
+        else if (Convert.ToInt16(state) == 1)
+        {
+            controllerlink.neoserviceStarted = true;
+            var headdof = Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof ? 1 : 0;
+            var handdof = Pvr_UnitySDKManager.SDK.HandDofNum == HandDofNum.SixDof ? 1 : 0;
+            controllerlink.StartControllerThread(headdof, handdof);
+            if (SetControllerServiceBindStateEvent != null)
+                SetControllerServiceBindStateEvent();
+        }
+    }
     public void setHbControllerConnectState(string isconnect)
     {
-        if (ControllerStatusChangeEvent !=null)
+        PLOG.I("PvrLog HBControllerConnect" + isconnect);
+        controllerlink.controller0Connected = Convert.ToInt16(isconnect) == 1;
+        if (!controllerlink.controller0Connected)
         {
-            ControllerStatusChangeEvent(isconnect);
+            controllerlink.Controller0 = new ControllerHand();
         }
-        controllerlink.controllerState = Convert.ToInt16(isconnect);
-        //state：0-断开，1-已连接，2-未知
+        else
+        {
+            ResetController(0);
+        }
+        //State: 0- disconnect, 1- connected, 2- unknown.
         stopConnect = false;
-        if (int.Parse(isconnect) == 1)
+        if (ControllerStatusChangeEvent != null)
+            ControllerStatusChangeEvent(isconnect);
+        if (PvrControllerStateChangedEvent != null)
+            PvrControllerStateChangedEvent(isconnect);
+    }
+    
+    public void setControllerStateChanged(string state)
+    {
+        PLOG.I("PvrLog CVControllerStateChanged" + state);
+        if (SetControllerStateChangedEvent != null)
+            SetControllerStateChangedEvent(state);
+        if (PvrControllerStateChangedEvent != null)
+            PvrControllerStateChangedEvent(state);
+        
+        int controller = Convert.ToInt16(state.Substring(0, 1));
+        if (controller == 0)
         {
-            controllerlink.isConnect = true;
+            controllerlink.controller0Connected = Convert.ToBoolean(Convert.ToInt16(state.Substring(2, 1)));
+            if (!controllerlink.controller0Connected)
+                controllerlink.Controller0 = new ControllerHand();
         }
-        if (int.Parse(isconnect) == 0)
+        else
         {
-            controllerlink.isConnect = false;
-            ResetAllKeyState();
+            controllerlink.controller1Connected = Convert.ToBoolean(Convert.ToInt16(state.Substring(2, 1)));
+            if (!controllerlink.controller1Connected)
+                controllerlink.Controller1 = new ControllerHand();
+        }
+        if (Convert.ToBoolean(Convert.ToInt16(state.Substring(2, 1))))
+        {
+            controllerlink.ResetController(controller);
         }
     }
-    public void ControllerStatusChangeEventDebug (string isconnect)
+ 
+    public void setControllerAbility(string data)
     {
-        Debug.Log("Waring : Controller Status Changed + " + isconnect);
+        //data format is ID,ability,state.
+        //ID 0/1 represents two handles.
+        //ability 1/2 1:3dof controller 2. 6dof controller.
+        //state 0/1 0: disconnect 1: connection.
+        //this callback for setControllerStateChanged extended edition, on the basis of this callback to increase the ability of controller
+        PLOG.I("PvrLog setControllerAbility" + data);
+        if (SetControllerAbilityEvent != null)
+            SetControllerAbilityEvent(data);
     }
 
+    public void controllerThreadStartedCallback()
+    {
+        PLOG.I("PvrLog ThreadStartSuccess");
+        GetCVControllerState();
+        if (ControllerThreadStartedCallbackEvent != null)
+            ControllerThreadStartedCallbackEvent();
+        if (PvrServiceStartSuccessEvent != null)
+            PvrServiceStartSuccessEvent();
+    }
+
+
+    public void controllerDeviceVersionCallback(string data)
+    {
+        PLOG.I("PvrLog VersionCallBack" + data);
+        //data format device, deviceVersion
+        //device: 0-station 1- controller 0 2- controller 1 deviceVersion: version number.
+        if (ControllerDeviceVersionCallbackEvent != null)
+            ControllerDeviceVersionCallbackEvent(data);
+    }
+
+    public void controllerSnCodeCallback(string data)
+    {
+        PLOG.I("PvrLog SNCodeCallBack" + data);
+        //data formats: controllerSerialNum, controllerSn
+        //controllerSerialNum: 0- controller 1 controllerSn: the unique identification of the controller of Sn.
+        if (ControllerSnCodeCallbackEvent != null)
+            ControllerSnCodeCallbackEvent(data);
+    }
+   
+    public void controllerUnbindCallback(string status)
+    {
+        PLOG.I("PvrLog ControllerUnBindCallBack" + status);
+        // status: 0- failure 1- success 
+        if (ControllerUnbindCallbackEvent != null)
+            ControllerUnbindCallbackEvent(status);
+    }
+    
+    public void controllerStationStatusCallback(string status)
+    {
+        PLOG.I("PvrLog StationStatusCallBack" + status);
+        //STATION_STATUS{NORMAL = 0, QUERYING = 1, PAIRING = 2, OTA = 3, RESTARTING = 4, CTRLR_UNBINDING = 5, CTRLR_SHUTTING_DOWN = 6};
+        if (ControllerStationStatusCallbackEvent != null)
+            ControllerStationStatusCallbackEvent(status);
+    }
+    
+    public void controllerStationBusyCallback(string status)
+    {
+        PLOG.I("PvrLog StationBusyCallBack" + status);
+        //STATION_STATUS{NORMAL = 0, QUERYING, PAIRING, OTA, RESTARTING, CTRLR_UNBINDING, CTRLR_SHUTTING_DOWN};
+        if (ControllerStationBusyCallbackEvent != null)
+            ControllerStationBusyCallbackEvent(status);
+    }
+   
+    public void controllerOTAStartCodeCallback(string data)
+    {
+        PLOG.I("PvrLog OTAUpdateCallBack" + data);
+        //data:deviceType,statusCode
+        // deviceType:0-station 1-controller statusCode: 0- upgrade launch success 1- upgrade file not found 2- upgrade file failed to open.
+        if (ControllerOtaStartCodeCallbackEvent != null)
+            ControllerOtaStartCodeCallbackEvent(data);
+    }
+ 
+    public void controllerDeviceVersionAndSNCallback(string data)
+    {
+        PLOG.I("PvrLog DeviceVersionAndSNCallback" + data);
+        //data controllerSerialNum,deviceVersion
+        //controllerSerialNum : 0- controller 0 1- controller 1 deviceVersion: version and SN 
+        if (ControllerDeviceVersionAndSNCallbackEvent != null)
+            ControllerDeviceVersionAndSNCallbackEvent(data);
+    }
+    
+    public void controllerUniqueIDCallback(string data)
+    {
+        PLOG.I("PvrLog controllerUniqueIDCallback" + data);
+        //data controller0ID，controller1ID
+        //controller0ID ：ID of controller 0;Controller1ID: ID of controller 1 (if the current controller is not connected, the ID will return to 0)
+        if (ControllerUniqueIDCallbackEvent != null)
+            ControllerUniqueIDCallbackEvent(data);
+    }
+    
+    public void controllerCombinedKeyUnbindCallback(string controllerSerialNum)
+    {
+        //controllerSerialNum 0：controller0 1：controller1
+        if (ControllerCombinedKeyUnbindCallbackEvent != null)
+            ControllerCombinedKeyUnbindCallbackEvent(controllerSerialNum);
+    }
     public void setupdateFailed()
     {
-        //回调方法
+        
     }
 
     public void setupdateSuccess()
     {
-        //回调方法
+        
     }
 
     public void setupdateProgress(string progress)
     {
-        //回调方法
-        //升级进度 0-100 
+        //The upgrade progress 0-100 
     }
 
     public void setHbAutoConnectState(string state)
     {
-        //UNKNOW = -1; //默认值
-        //NO_DEVICE = 0;//没有扫描到HB手柄
-        //ONLY_ONE = 1;//只扫描到一只HB手柄
-        //MORE_THAN_ONE = 2;// 扫描到多只HB手柄
-        //LAST_CONNECTED = 3;//扫描到上一次连接过的HB手柄
-        //FACTORY_DEFAULT = 4;//扫描到工厂绑定的HB手柄（暂未启用）
+        PLOG.I("PvrLog HBAutoConnectState" + state);
+        // UNKNOW = 1; the default value
+        // NO_DEVICE = 0; No scan to HB controller.
+        // ONLY_ONE = 1; Scan only one HB controller.
+        // MORE_THAN_ONE = 2; Scan to multiple HB handles.
+        // LAST_CONNECTED = 3; Scan the HB controller that was last connected.
+        // FACTORY_DEFAULT = 4; Scan the HB controller of the factory binding(temporarily not enabled)
         controllerServicestate = true;
         if (Convert.ToInt16(state) == 0)
         {
-            if (controllerlink.GetHBConnectionState() == 0)
+            if (GetControllerConnectionState(0) == 0)
             {
                 ShowToast(2);
             }
@@ -1165,14 +1056,14 @@ public class Pvr_ControllerManager : MonoBehaviour
         {
             ShowToast(3);
         }
-
     }
 
     public void callbackControllerServiceState(string state)
     {
-        //state = 0,非手机平台，服务没有启动
-        //state = 1,手机平台，服务没有启动，但是系统会主动启动服务
-        //state = 2,手机平台，服务apk没有安装，需要安装
+        PLOG.I("PvrLog HBServiceState" + state);
+        //state = 0,Non-mobile platform, service is not started.
+        //state = 1,The mobile platform, the service is not started, but the system will initiate the service.
+        //state = 2,Mobile platform, service apk is not installed, need to install.
         controllerServicestate = true;
         if (Convert.ToInt16(state) == 0)
         {
@@ -1180,19 +1071,27 @@ public class Pvr_ControllerManager : MonoBehaviour
         }
         if (Convert.ToInt16(state) == 1)
         {
-            BindHBService();
+            BindService();
         }
         if (Convert.ToInt16(state) == 2)
         {
             ShowToast(1);
         }
     }
+  
+    public void changeMainControllerCallback(string index)
+    {
+        PLOG.I("PvrLog MainControllerCallBack" + index);
+        //index = 0/1
+        if (ChangeMainControllerCallBackEvent != null)
+            ChangeMainControllerCallBackEvent(index);
+    }
 
     private void ShowToast(int type)
     {
         switch (type)
         {
-            case 0: //非手机平台，手柄服务没有启动
+            case 0: 
                 if (toast != null)
                 {
                     if (localanguage == SystemLanguage.Chinese || localanguage == SystemLanguage.ChineseSimplified)
@@ -1206,7 +1105,7 @@ public class Pvr_ControllerManager : MonoBehaviour
                     Invoke("HideToast", 5.0f);
                 }
                 break;
-            case 1: //手机平台，服务apk没安装，提示安装
+            case 1: 
                 if (toast != null)
                 {
                     if (localanguage == SystemLanguage.Chinese || localanguage == SystemLanguage.ChineseSimplified)
@@ -1220,7 +1119,7 @@ public class Pvr_ControllerManager : MonoBehaviour
                     Invoke("HideToast", 5.0f);
                 }
                 break;
-            case 2: //没有扫描到手柄
+            case 2: 
                 if (toast != null)
                 {
                     if (localanguage == SystemLanguage.Chinese || localanguage == SystemLanguage.ChineseSimplified)
@@ -1236,7 +1135,7 @@ public class Pvr_ControllerManager : MonoBehaviour
                 }
 
                 break;
-            case 3: //扫描到多个手柄
+            case 3: 
                 if (toast != null)
                 {
                     if (localanguage == SystemLanguage.Chinese || localanguage == SystemLanguage.ChineseSimplified)
@@ -1251,7 +1150,7 @@ public class Pvr_ControllerManager : MonoBehaviour
                     Invoke("HideToast", 5.0f);
                 }
                 break;
-            case 4: //服务没有启动
+            case 4: 
                 if (toast != null)
                 {
                     if (localanguage == SystemLanguage.Chinese || localanguage == SystemLanguage.ChineseSimplified)
@@ -1267,7 +1166,6 @@ public class Pvr_ControllerManager : MonoBehaviour
             default:
                 return;
         }
-
     }
     private void HideToast()
     {
@@ -1284,34 +1182,332 @@ public class Pvr_ControllerManager : MonoBehaviour
             ShowToast(4);
         }
     }
-    private void ResetAllKeyState()
+
+    private void GetCVControllerState()
     {
-        HomeKey.longPressed = false;
-        HomeKey.state = false;
-        HomeKey.pressedDown = false;
-        HomeKey.pressedUp = false;
-        APPKey.longPressed = false;
-        APPKey.state = false;
-        APPKey.pressedDown = false;
-        APPKey.pressedUp = false;
-        TouchPadKey.longPressed = false;
-        TouchPadKey.state = false;
-        TouchPadKey.pressedDown = false;
-        TouchPadKey.pressedUp = false;
-        VolumeDownKey.longPressed = false;
-        VolumeDownKey.state = false;
-        VolumeDownKey.pressedDown = false;
-        VolumeDownKey.pressedUp = false;
-        VolumeUpKey.longPressed = false;
-        VolumeUpKey.state = false;
-        VolumeUpKey.pressedDown = false;
-        VolumeUpKey.pressedUp = false;
+        var state0 = GetControllerConnectionState(0);
+        var state1 = GetControllerConnectionState(1);
+        PLOG.I("PvrLog CVconnect" + state0 + state1);
+        if (state0 == -1 && state1 == -1)
+        {
+            Invoke("GetCVControllerState", 0.02f);
+        }
+        if (state0 != -1 && state1 != -1)
+        {
+            controllerlink.controller0Connected = state0 == 1;
+            controllerlink.controller1Connected = state1 == 1;
+            if (!controllerlink.controller0Connected && controllerlink.controller1Connected)
+            {
+                if (Controller.UPvr_GetMainHandNess() == 0)
+                {
+                    Controller.UPvr_SetMainHandNess(1);
+                }
+            }
+        }
     }
-    public void EnableKeyEvent(bool state)
+
+    private void SetSystemKey()
     {
-        enableKeyEvent = state;
-        ResetAllKeyState();
+        if (controllerlink.switchHomeKey)
+        {
+            if (Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.ThreeDof || Pvr_UnitySDKManager.SDK.SixDofRecenter)
+            {
+                if (Controller.UPvr_GetKeyLongPressed(0, Pvr_KeyCode.HOME))
+                {
+                    if (Pvr_UnitySDKManager.SDK.safeToast.activeSelf)
+                    {
+                        Pvr_UnitySDKManager.SDK.safeToast.SetActive(false);
+                        Pvr_UnitySDKManager.pvr_UnitySDKSensor.OptionalResetUnitySDKSensor(1, 1);
+                    }
+                    else
+                    {
+                        Pvr_UnitySDKManager.pvr_UnitySDKSensor.OptionalResetUnitySDKSensor(1, 0);
+                    }
+                    if (Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof && Pvr_UnitySDKManager.SDK.SixDofRecenter)
+                    {
+                        controllerlink.ResetHeadSensorForController();
+                    }
+                    ResetController(0);
+                }
+                if (Controller.UPvr_GetKeyLongPressed(1, Pvr_KeyCode.HOME))
+                {
+                    if (Pvr_UnitySDKManager.SDK.safeToast.activeSelf)
+                    {
+                        Pvr_UnitySDKManager.SDK.safeToast.SetActive(false);
+                        Pvr_UnitySDKManager.pvr_UnitySDKSensor.OptionalResetUnitySDKSensor(1, 1);
+                    }
+                    else
+                    {
+                        Pvr_UnitySDKManager.pvr_UnitySDKSensor.OptionalResetUnitySDKSensor(1, 0);
+                    }
+                    if (Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof && Pvr_UnitySDKManager.SDK.SixDofRecenter)
+                    {
+                        controllerlink.ResetHeadSensorForController();
+                    }
+                    ResetController(1);
+                }
+            }
+            else
+            {
+                if (Controller.UPvr_GetKeyLongPressed(0, Pvr_KeyCode.HOME))
+                {
+                    ResetController(0);
+                }
+                if (Controller.UPvr_GetKeyLongPressed(1, Pvr_KeyCode.HOME))
+                {
+                    ResetController(1);
+                }
+            }
+        }
+        
+        
+        if (controllerlink.picoDevice)
+        {
+            if (controllerlink.switchHomeKey)
+            {
+                if (!longPressclock && (Controller.UPvr_GetKeyUp(0, Pvr_KeyCode.HOME) || Controller.UPvr_GetKeyUp(1, Pvr_KeyCode.HOME)) && !stopConnect)
+                {
+                    controllerlink.RebackToLauncher();
+                }
+            }
+            if (!longPressclock && (Controller.UPvr_GetKeyUp(0, Pvr_KeyCode.VOLUMEUP) || Controller.UPvr_GetKeyUp(1, Pvr_KeyCode.VOLUMEUP)))
+            {
+                controllerlink.TurnUpVolume();
+            }
+            if (!longPressclock && (Controller.UPvr_GetKeyUp(0, Pvr_KeyCode.VOLUMEDOWN) || Controller.UPvr_GetKeyUp(1, Pvr_KeyCode.VOLUMEDOWN)))
+            {
+                controllerlink.TurnDownVolume();
+            }
+            if (!Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEUP) && !Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEDOWN) && !Controller.UPvr_GetKey(1, Pvr_KeyCode.VOLUMEUP) && !Controller.UPvr_GetKey(1, Pvr_KeyCode.VOLUMEDOWN))
+            {
+                cTime = 1.0f;
+            }
+            if (Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEUP) || Controller.UPvr_GetKey(1, Pvr_KeyCode.VOLUMEUP))
+            {
+                cTime -= Time.deltaTime;
+                if (cTime <= 0)
+                {
+                    cTime = 0.2f;
+                    controllerlink.TurnUpVolume();
+                }
+            }
+            if (!Controller.UPvr_GetKey(0, Pvr_KeyCode.HOME) && !Controller.UPvr_GetKey(1, Pvr_KeyCode.HOME) && (Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEDOWN) || Controller.UPvr_GetKey(1, Pvr_KeyCode.VOLUMEDOWN)))
+            {
+                cTime -= Time.deltaTime;
+                if (cTime <= 0)
+                {
+                    cTime = 0.2f;
+                    controllerlink.TurnDownVolume();
+                }
+            }
+        }
+        if (controllerlink.goblinserviceStarted)
+        {
+            if (Controller.UPvr_GetKey(0, Pvr_KeyCode.HOME) && Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEDOWN) && !stopConnect)
+            {
+                disConnectTime += Time.deltaTime;
+                if (disConnectTime > 1.0)
+                {
+                    DisConnectBLE();
+                    controllerlink.hummingBirdMac = "";
+                    stopConnect = true;
+                    disConnectTime = 0;
+                }
+            }
+        }
     }
+
+    private void SetSwipeData(ControllerHand hand)
+    {
+        if (hand.TouchPadPosition != Vector2.zero)
+        {
+            if (!hand.touchClock)
+            {
+                hand.touchDownPosition = hand.TouchPadPosition;
+                hand.touchClock = true;
+            }
+            hand.touchUpPosition = hand.TouchPadPosition;
+
+            hand.swipeData = hand.touchUpPosition - hand.touchDownPosition;
+            hand.isVertical = Mathf.Abs(hand.swipeData.x) > 50;
+            hand.isHorizontal = Mathf.Abs(hand.swipeData.y) > 60;
+
+            if (hand.isVertical && hand.isHorizontal && Mathf.Abs(hand.swipeData.y) / Mathf.Abs(hand.swipeData.x) > 1.732)
+            {
+                hand.isVertical = false;
+            }
+
+            if (hand.isVertical || hand.isHorizontal)
+            {
+                if (!hand.swipeClock)
+                {
+                    if (hand.swipeData.x > 0f && hand.isVertical)
+                    {
+                        hand.SwipeDirection = SwipeDirection.SwipeUp;
+                    }
+                    else if (hand.swipeData.x < 0f && hand.isVertical)
+                    {
+                        hand.SwipeDirection = SwipeDirection.SwipeDown;
+                    }
+                    else if (hand.swipeData.y > 0f && hand.isHorizontal)
+                    {
+                        hand.SwipeDirection = SwipeDirection.SwipeRight;
+                    }
+                    else if (hand.swipeData.y < 0f && hand.isHorizontal)
+                    {
+                        hand.SwipeDirection = SwipeDirection.SwipeLeft;
+                    }
+                    else
+                    {
+                        hand.SwipeDirection = SwipeDirection.No;
+                    }
+                    hand.swipeClock = true;
+                }
+                else
+                {
+                    hand.SwipeDirection = SwipeDirection.No;
+                }
+            }
+        }
+        else
+        {
+            hand.touchDownPosition = Vector2.zero;
+            hand.touchUpPosition = Vector2.zero;
+            hand.touchClock = false;
+            hand.swipeClock = false;
+            hand.SwipeDirection = SwipeDirection.No;
+        }
+    }
+
+    private void SetTriggerClick(PvrControllerKey trigger,int value)
+    {
+        if (value >= 170)
+        {
+            trigger.PressedUp = false;
+            if (!trigger.State)
+            {
+                trigger.PressedDown = true;
+                longPressclock = false;
+            }
+            else
+            {
+                trigger.PressedDown = false;
+            }
+            trigger.State = true;
+        }
+        else
+        {
+            trigger.PressedUp = trigger.State;
+            trigger.State = false;
+            trigger.PressedDown = false;
+        }
+        if (trigger.State)
+        {
+            trigger.TimeCount += Time.deltaTime;
+            if (trigger.TimeCount >= longpresstime &&
+                !trigger.LongPressedClock)
+            {
+                trigger.LongPressed = true;
+                trigger.LongPressedClock = true;
+                longPressclock = true;
+            }
+            else
+            {
+                trigger.LongPressed = false;
+            }
+        }
+        else
+        {
+            trigger.LongPressedClock = false;
+            trigger.TimeCount = 0;
+            trigger.LongPressed = false;
+        } 
+    }
+
+    private void SetTouchPadClick(ControllerHand hand)
+    {
+        if (hand.TouchKey.State)
+        {
+            if (hand.TouchPadPosition.x <= 255 && hand.TouchPadPosition.x >= 127f + 63.5f * Mathf.Sin(45) &&
+                hand.TouchPadPosition.y <= 127f + 63.5f * Mathf.Sin(45) &&
+                hand.TouchPadPosition.y >= 127f - 63.5f * Mathf.Sin(45))
+            {
+                hand.TouchPadClick = TouchPadClick.ClickUp;
+            }
+            else if (hand.TouchPadPosition.x > 0 && hand.TouchPadPosition.x <= 127f - 63.5f * Mathf.Sin(45) &&
+                     hand.TouchPadPosition.y <= 127f + 63.5f * Mathf.Sin(45) &&
+                     hand.TouchPadPosition.y >= 127f - 63.5f * Mathf.Sin(45))
+            {
+                hand.TouchPadClick = TouchPadClick.ClickDown;
+            }
+            else if (hand.TouchPadPosition.y > 0 && hand.TouchPadPosition.y <= 127f - 63.5f * Mathf.Sin(45) &&
+                     hand.TouchPadPosition.x <= 127f + 63.5f * Mathf.Sin(45) &&
+                     hand.TouchPadPosition.x >= 127f - 63.5f * Mathf.Sin(45))
+            {
+                hand.TouchPadClick = TouchPadClick.ClickLeft;
+            }
+            else if (hand.TouchPadPosition.y <= 255 && hand.TouchPadPosition.y >= 127f + 63.5f * Mathf.Sin(45) &&
+                     hand.TouchPadPosition.x <= 127f + 63.5f * Mathf.Sin(45) &&
+                     hand.TouchPadPosition.x >= 127f - 63.5f * Mathf.Sin(45))
+            {
+                hand.TouchPadClick = TouchPadClick.ClickRight;
+            }
+            else
+            {
+                hand.TouchPadClick = TouchPadClick.No;
+            }
+        }
+        else
+        {
+            hand.TouchPadClick = TouchPadClick.No;
+        }
+    }
+
+    private void TransformData(PvrControllerKey key, int keystate)
+    {
+        if (keystate == 1)
+        {
+            key.PressedUp = false;
+            if (!key.State)
+            {
+                key.PressedDown = true;
+                longPressclock = false;
+            }
+            else
+            {
+                key.PressedDown = false;
+            }
+            key.State = true;
+        }
+        else
+        {
+            key.PressedUp = key.State;
+            key.State = false;
+            key.PressedDown = false;
+        }
+        if (key.State)
+        {
+            key.TimeCount += Time.deltaTime;
+            if (key.TimeCount >= longpresstime &&
+                !key.LongPressedClock)
+            {
+                key.LongPressed = true;
+                key.LongPressedClock = true;
+                longPressclock = true;
+            }
+            else
+            {
+                key.LongPressed = false;
+            }
+        }
+        else
+        {
+            key.LongPressedClock = false;
+            key.TimeCount = 0;
+            key.LongPressed = false;
+        }
+    }
+
     #endregion
 
 }

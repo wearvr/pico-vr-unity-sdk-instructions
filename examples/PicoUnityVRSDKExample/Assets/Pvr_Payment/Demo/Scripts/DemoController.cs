@@ -95,7 +95,9 @@ public class DemoController : MonoBehaviour {
         //判断网络
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            GameObject.Find("MassageInfo").GetComponent<Text>().text = "{code:exception,msg:无网络，请检查网络}";
+            GameObject.Find("MassageInfo").GetComponent<Text>().text = "{" +
+            "\"ret_code\":\"5000\",\n" +
+            "\"ret_msg\":\"NETWORK_ERROR\"" + "}";
             return;
         }
         switch (btnObj.name)
@@ -115,16 +117,16 @@ public class DemoController : MonoBehaviour {
                 CommonDic.getInstance().setParameters("pay_code", "");
 
                 StartLoading();
-                if (!VerifyLocalToken()) {
-                    return;
-                }
+                //if (!VerifyLocalToken()) {
+                //    return;
+                //}
                 PicoPaymentSDK.Pay(CommonDic.getInstance().PayOrderString());
 
                 break;
             case "PayCode": //使用商品码支付1P币
-                if (!VerifyLocalToken()) {
-                    return;
-                }
+                //if (!VerifyLocalToken()) {
+                //    return;
+                //}
                 /*
                 if (CommonDic.getInstance().access_token.Equals(""))
                 {
@@ -140,13 +142,13 @@ public class DemoController : MonoBehaviour {
 
             case "QueryOrder": //查询订单
                 StartLoading();
-                if (currentOrderID.Equals(""))
-                {
-                    GameObject.Find("MassageInfo").GetComponent<Text>().text = "{code:exception,msg:请先支付}";
+                //if (currentOrderID.Equals(""))
+                //{
+                //    GameObject.Find("MassageInfo").GetComponent<Text>().text = "{code:exception,msg:请先支付}";
 
-                    StopLoading();
-                    return;
-                }
+                //    StopLoading();
+                //    return;
+                //}
                 PicoPaymentSDK.QueryOrder(currentOrderID);
                 break;
 

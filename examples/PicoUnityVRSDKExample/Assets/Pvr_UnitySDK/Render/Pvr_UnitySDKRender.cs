@@ -21,9 +21,9 @@ using UnityEngine;
 public class Pvr_UnitySDKRender
 {
 
-    public  Pvr_UnitySDKRender()
+    public Pvr_UnitySDKRender()
     {
-         if(!canConnecttoActivity)
+        if (!canConnecttoActivity)
         {
 
             ConnectToAndriod();
@@ -37,7 +37,8 @@ public class Pvr_UnitySDKRender
 #if ANDROID_DEVICE
     public AndroidJavaObject activity;
     public static AndroidJavaClass javaVrActivityClass;
-    public static AndroidJavaClass javaSysActivityClass;   
+    public static AndroidJavaClass javaSysActivityClass;  
+    public static AndroidJavaClass javaserviceClass;
 	public static AndroidJavaClass javaVrActivityLongReceiver;
 #endif
 
@@ -61,10 +62,10 @@ public class Pvr_UnitySDKRender
 
     /************************************   Public Interfaces **********************************/
     #region       PublicInterfaces
-    
-     public   void Init()
+    public void Init()
     {
-        if (InitRenderAbility()) {
+        if (InitRenderAbility())
+        {
             Debug.Log("Init Render Ability Success!");
             isInitrenderThread = false;
         }
@@ -78,7 +79,6 @@ public class Pvr_UnitySDKRender
         }
 
     }
-
     private void AutoAdpatForPico1s()
     {
         Vector2 finger1 = Input.touches[0].position;
@@ -92,29 +92,53 @@ public class Pvr_UnitySDKRender
         prefinger1 = finger1;
         prefinger2 = finger2;
     }
-    // 获取texture 大小
+    
     public Vector2 GetRendentextureSize()
     {
         Vector2 RendentextureWH;
         int w = 1024;
         int h = 1024;
-        try
+        if (Pvr_UnitySDKManager.SDK.DefaultRenderTexture)
         {
-            int enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RESOLUTION0;
-            Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref w);
-            enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RESOLUTION1;
-            Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref h);
+            try
+            {
+                int enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RESOLUTION0;
+                Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref w);
+                enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RESOLUTION1;
+                Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref h);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("GetRendentextureSize ERROR! " + e.Message);
+                throw;
+            }
         }
-        catch (System.Exception e)
+        else
         {
-            Debug.LogError("GetRendentextureSize ERROR! " + e.Message);
-            throw;
+            if (Pvr_UnitySDKManager.SDK.RtLevel == Pvr_UnitySDKAPI.RenderTextureLevel.High)
+            {
+                int enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RES_HIGH;
+                Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref w);
+            }
+            else
+            {
+                int enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RES_NORMAL;
+                Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref w);
+            }
+            h = w;
+            if (w == 0)
+            {
+                int enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RESOLUTION0;
+                Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref w);
+                enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.EYE_TEXTURE_RESOLUTION1;
+                Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex, ref h);
+            }
         }
         RendentextureWH = new Vector2(w, h);
         return RendentextureWH;
     }
 
-    // 获取FOV
+    
     public float GetEyeFOV()
     {
         float fov = 102;
@@ -135,17 +159,12 @@ public class Pvr_UnitySDKRender
 
         return fov;
     }
-
     public bool GetUsePredictedMatrix()
     {
         return true;
     }
 
-    /// <summary>
-    /// 连接安卓
-    /// </summary>
-    /// 
-
+    
     public void ConnectToAndriod()
     {
 
@@ -156,6 +175,7 @@ public class Pvr_UnitySDKRender
             UnityEngine.AndroidJavaClass unityPlayer = new UnityEngine.AndroidJavaClass("com.unity3d.player.UnityPlayer");
             activity = unityPlayer.GetStatic<UnityEngine.AndroidJavaObject>("currentActivity");
             javaVrActivityClass = new UnityEngine.AndroidJavaClass("com.psmart.vrlib.VrActivity");
+            javaserviceClass = new AndroidJavaClass("com.picovr.picovrlib.hummingbirdclient.UnityClient");
 			javaVrActivityLongReceiver = new UnityEngine.AndroidJavaClass("com.psmart.vrlib.HomeKeyReceiver");
             javaSysActivityClass = new UnityEngine.AndroidJavaClass("com.psmart.aosoperation.SysActivity");
 			Pvr_UnitySDKAPI.System.Pvr_SetInitActivity(activity.GetRawObject(), javaVrActivityClass.GetRawClass());
@@ -173,11 +193,16 @@ public class Pvr_UnitySDKRender
             int platformType = -1 ;
             int enumindex = (int)Pvr_UnitySDKAPI.GlobalIntConfigs.PLATFORM_TYPE;
             Pvr_UnitySDKAPI.Render.UPvr_GetIntConfig(enumindex,ref platformType);
-            
-            if(platformType == 0)
+
+            string systemfps = "";
+            Pvr_UnitySDKAPI.System.UPvr_CallStaticMethod<string>(ref systemfps, javaserviceClass, "getSysproc", "persist.pvr.debug.appfps");
+            if(systemfps != "")
+                Pvr_UnitySDKManager.SDK.systemFPS = Convert.ToBoolean(Convert.ToInt16(systemfps));
+        
+            if (platformType == 0)
             {
                  Pvr_UnitySDKAPI.Render.UPvr_ChangeScreenParameters(model, (int)parameters[0], (int)parameters[1], parameters[2], parameters[3], parameters[4]);				 
-				Screen.sleepTimeout = SleepTimeout.NeverSleep;
+				 Screen.sleepTimeout = SleepTimeout.NeverSleep;
             }
             //Pvr_UnitySDKAPI.Render.UPvr_ChangeHeadwear(Headweartype);
         
@@ -241,35 +266,81 @@ public class Pvr_UnitySDKRender
 
     }
 
+    private void ConfigureOverlayTexture(int index, Vector2 Size)
+    {
+
+        int x = (int)Size.x;
+        int y = (int)Size.y;
+        Pvr_UnitySDKManager.SDK.overlayTextures[index] = new RenderTexture(x, y, (int)Pvr_UnitySDKManager.SDK.RtBitDepth, Pvr_UnitySDKManager.SDK.RtFormat);
+        Pvr_UnitySDKManager.SDK.overlayTextures[index].anisoLevel = 0;
+        Pvr_UnitySDKManager.SDK.overlayTextures[index].antiAliasing = Mathf.Max(QualitySettings.antiAliasing, (int)Pvr_UnitySDKManager.SDK.RtAntiAlising);
+
+        Pvr_UnitySDKManager.SDK.overlayTextures[index].Create();
+        if (Pvr_UnitySDKManager.SDK.overlayTextures[index].IsCreated())
+        {
+            Pvr_UnitySDKManager.SDK.overlayTextureIds[index] = Pvr_UnitySDKManager.SDK.overlayTextures[index].GetNativeTexturePtr().ToInt32();
+            Debug.LogFormat("overlayTextureIndex : {0:D}, id : {0:D}", index, Pvr_UnitySDKManager.SDK.overlayTextureIds[index]);
+        }
+
+    }
+
+
     private bool CreatRendertexture()
     {
-        Vector2 renderTexSize = GetRendentextureSize();
-
-        // change   renderTexSize  if need   
-        // renderTexSize =new Vector2( Pvr_UnitySDKManager.SDK.RtSizeWH, Pvr_UnitySDKManager.SDK.RtSizeWH);
-
-        Debug.Log("renderTexSize " + renderTexSize.x + "    " + renderTexSize.y);
-
-        for (int i = 0; i < Pvr_UnitySDKManager.eyeTextureCount; i++)
+        if (!Pvr_UnitySDKManager.SDK.IsViewerLogicFlow)
         {
-            if (null == Pvr_UnitySDKManager.SDK.eyeTextures[i])
+            Vector2 renderTexSize = GetRendentextureSize();
+            Pvr_UnitySDKManager.SDK.eyeTextures = new RenderTexture[Pvr_UnitySDKManager.eyeTextureCount];
+            // change   renderTexSize  if need   
+            // renderTexSize =new Vector2( Pvr_UnitySDKManager.SDK.RtSizeWH, Pvr_UnitySDKManager.SDK.RtSizeWH);
+
+            Debug.Log("renderTexSize " + renderTexSize.x + "    " + renderTexSize.y);
+
+            for (int i = 0; i < Pvr_UnitySDKManager.eyeTextureCount; i++)
             {
-                try
+                if (null == Pvr_UnitySDKManager.SDK.eyeTextures[i])
                 {
-                    ConfigureEyeTexture(i, renderTexSize);
+                    try
+                    {
+                        ConfigureEyeTexture(i, renderTexSize);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("ConfigureEyeTexture ERROR " + e.Message);
+                        throw;
+                    }
                 }
-                catch (Exception e)
+                if (!Pvr_UnitySDKManager.SDK.eyeTextures[i].IsCreated())
                 {
-                    Debug.LogError("ConfigureEyeTexture ERROR " + e.Message);
-                    throw;
+                    Pvr_UnitySDKManager.SDK.eyeTextures[i].Create();
+                    Pvr_UnitySDKManager.SDK.eyeTextureIds[i] = Pvr_UnitySDKManager.SDK.eyeTextures[i].GetNativeTexturePtr().ToInt32();
                 }
-            }
-            if (!Pvr_UnitySDKManager.SDK.eyeTextures[i].IsCreated())
-            {
-                Pvr_UnitySDKManager.SDK.eyeTextures[i].Create();
                 Pvr_UnitySDKManager.SDK.eyeTextureIds[i] = Pvr_UnitySDKManager.SDK.eyeTextures[i].GetNativeTexturePtr().ToInt32();
             }
-            Pvr_UnitySDKManager.SDK.eyeTextureIds[i] = Pvr_UnitySDKManager.SDK.eyeTextures[i].GetNativeTexturePtr().ToInt32();
+
+            Pvr_UnitySDKManager.SDK.overlayTextures = new RenderTexture[Pvr_UnitySDKManager.eyeTextureCount];
+            int overlayNum = Pvr_UnitySDKManager.SDK.overlayCamNum * (Pvr_UnitySDKManager.eyeTextureCount / 2);
+            for (int i = 0; i < overlayNum; i++)
+            {
+                if (null == Pvr_UnitySDKManager.SDK.overlayTextures[i])
+                {
+                    try
+                    {
+                        ConfigureOverlayTexture(i, renderTexSize);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("ConfigureOverlayTexture ERROR " + e.Message);
+                        throw;
+                    }
+                }
+                if (!Pvr_UnitySDKManager.SDK.overlayTextures[i].IsCreated())
+                {
+                    Pvr_UnitySDKManager.SDK.overlayTextures[i].Create();
+                    Pvr_UnitySDKManager.SDK.overlayTextureIds[i] = Pvr_UnitySDKManager.SDK.overlayTextures[i].GetNativeTexturePtr().ToInt32();
+                }
+                Pvr_UnitySDKManager.SDK.overlayTextureIds[i] = Pvr_UnitySDKManager.SDK.overlayTextures[i].GetNativeTexturePtr().ToInt32();
+            }
         }
         return true;
     }

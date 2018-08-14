@@ -13,6 +13,7 @@ using System.Collections;
 [RequireComponent(typeof(Camera))]
 public class Pvr_UnitySDKEye : MonoBehaviour
 {
+
     /************************************    Properties  *************************************/
     #region Properties
     public Eye eye;
@@ -50,17 +51,19 @@ public class Pvr_UnitySDKEye : MonoBehaviour
     public bool isFadeUSing = false;
 
     public float fadeTime = 5.0f;
-    public Color fadeColor = new Color(0.01f, 0.01f, 0.01f, 1.0f); 
+    private float blacklastTime = 0.5f;
+    public Color fadeColor = new Color(0f, 0f, 0f, 1.0f); 
     private Material fadeMaterial = null;
     private bool isFading = false;
-
+    private float initialBlackTime = 0.0f;
+    private float totalBlackTime = 0.0f;
 
 
     #endregion
 
     /************************************ Public Interfaces  *********************************/
     #region Public Interfaces
-   
+
     public void EyeRender()
     {
         SetupUpdate();
@@ -84,6 +87,21 @@ public class Pvr_UnitySDKEye : MonoBehaviour
 #if UNITY_EDITOR
         eyecamera.rect = Pvr_UnitySDKManager.SDK.EyeRect(eye);
 #endif
+
+        //  AW     
+
+        if (Pvr_UnitySDKManager.SDK.IsViewerLogicFlow)
+        {
+            eyecamera.rect = Pvr_UnitySDKManager.SDK.EyeRect(eye);
+            Rect left = new Rect(0.0f, 0.0f, 0.5f, 1.0f);
+            Rect right = new Rect(0.5f, 0.0f, 0.5f, 1.0f);
+            if (eye == Eye.LeftEye)
+                eyecamera.rect = left;
+            else
+                eyecamera.rect = right;
+            eyecamera.fieldOfView = Pvr_UnitySDKManager.SDK.EyeFov;
+        }
+        //  AW
         eventType = (eye == Pvr_UnitySDKAPI.Eye.LeftEye) ?
                         RenderEventType.LeftEyeEndFrame :
                         RenderEventType.RightEyeEndFrame;
@@ -135,6 +153,7 @@ public class Pvr_UnitySDKEye : MonoBehaviour
             GL.PopMatrix();
         }
     }
+    
     IEnumerator  ScreenFade()
     {
         float elapsedTime = 0.0f;
@@ -187,7 +206,11 @@ public class Pvr_UnitySDKEye : MonoBehaviour
     void Awake()
     {
         eyecamera = this.GetComponent<Camera>();
-       
+        if (Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof)
+        {
+            initialBlackTime = 0.0f;
+            fadeMaterial = new Material(Shader.Find("Pvr_UnitySDK/Fade"));
+        }
     }
 
     void Start()
@@ -197,6 +220,56 @@ public class Pvr_UnitySDKEye : MonoBehaviour
         eyecamera.enabled = true;    
     }
 
+    void OnApplicationPause(bool pause)
+    {
+        if (!pause)
+        {
+            if (Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof)
+            {
+                initialBlackTime = 0.0f;
+            }
+        }
+    }
+    void Update()
+    {
+#if !UNITY_EDITOR && UNITY_ANDROID
+        if (Pvr_UnitySDKManager.SDK.HeadDofNum == HeadDofNum.SixDof)
+        {
+            if (Pvr_UnitySDKManager.SDK.DefaultRange)
+            {
+                if (Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.x) >= 0.8f || Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.z) >= 0.8f)
+                {
+                    isFading = true;
+                    fadeMaterial.color = new Color(0f, 0f, 0f,
+                        Mathf.Clamp((Mathf.Max(Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.x),
+                                         Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.z)) - 0.8f) /
+                                    0.16f, 0f, 0.3f));
+                }
+                else
+                {
+                    fadeMaterial.color = new Color(0f, 0f, 0f, 0f);
+                    isFading = false;
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.x) >= Pvr_UnitySDKManager.SDK.CustomRange || Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.z) >= Pvr_UnitySDKManager.SDK.CustomRange)
+                {
+                    isFading = true;
+                    fadeMaterial.color = new Color(0f, 0f, 0f,
+                        Mathf.Clamp((Mathf.Max(Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.x),
+                                         Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.z)) - Pvr_UnitySDKManager.SDK.CustomRange) /
+                                    (Pvr_UnitySDKManager.SDK.CustomRange / 5f), 0f, 0.3f));
+                }
+                else
+                {
+                    fadeMaterial.color = new Color(0f, 0f, 0f, 0f);
+                    isFading = false;
+                }
+            }
+        }
+#endif
+    }
     void OnEnable()
     {
         isFadeUSing = Pvr_UnitySDKManager.SDK.ScreenFade;  
@@ -215,7 +288,7 @@ public class Pvr_UnitySDKEye : MonoBehaviour
             StartCoroutine(ScreenFade());
         }
     }
-
+   /*
     void OnPreCull()
     {
         if (!Pvr_UnitySDKManager.SDK.VRModeEnabled)
@@ -230,14 +303,27 @@ public class Pvr_UnitySDKEye : MonoBehaviour
         //    eyecamera.targetTexture = Pvr_UnitySDKManager.SDK.eyeTextures[IDIndex];
         //}
     }
-
+    */
+	public static bool setLevel = false;
     void OnPostRender()
     {
-        DrawVignetteLine();
+        //DrawVignetteLine();
+        screenFade();
         int eyeTextureId = Pvr_UnitySDKManager.SDK.eyeTextureIds[IDIndex];
        // SaveImage(Pvr_UnitySDKManager.SDK.eyeTextures[IDIndex], eye.ToString()); 
         Pvr_UnitySDKPluginEvent.IssueWithData(eventType, eyeTextureId);
-     }  
+#if !UNITY_EDITOR && UNITY_ANDROID
+		if (eye == Eye.LeftEye && !setLevel && Pvr_UnitySDKManager.SDK.IsViewerLogicFlow)
+        {   
+            AndroidJavaClass AvrAPI = new UnityEngine.AndroidJavaClass("com.unity3d.player.AvrAPI");
+            Pvr_UnitySDKAPI.System.UPvr_CallStaticMethod(AvrAPI, "setVrThread"); 
+            setLevel = true;
+            Debug.Log("Viewer setVrThread");
+        }
+        else
+            return;
+#endif
+    }
 
 #if UNITY_EDITOR
     void OnRenderImage(RenderTexture source, RenderTexture dest)
@@ -277,5 +363,5 @@ public class Pvr_UnitySDKEye : MonoBehaviour
     }
 #endif
     #endregion
-    
+
 }

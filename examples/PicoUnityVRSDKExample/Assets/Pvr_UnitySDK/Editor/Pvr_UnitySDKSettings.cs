@@ -26,7 +26,7 @@ public class Pvr_UnitySDKParameter
  [InitializeOnLoad]
 public class Pvr_UnitySDKQualitySettings
 {
-  
+
     public static string Pvr_UnityGetcurrentBuildTarget()
     {
         string returnstring = "Sorry !!  This platform we are NOT support.";
@@ -56,10 +56,25 @@ public class Pvr_UnitySDKQualitySettings
         return returnstring;
     }
     static bool xmlUpdate = false;
-   [InitializeOnLoadMethod]
+    static int QulityRtMass = 0;
+
+    public delegate void Change(int Msaa);
+    static public Change MSAAChange;
+
+    [InitializeOnLoadMethod]
     static void UnitySDKQualitySettings()    
     {
         Pvr_UnityGetcurrentBuildTarget();
+#if UNITY_2017_2_OR_NEWER
+        PlayerSettings.Android.blitType = AndroidBlitType.Never;
+#endif
+#if UNITY_2017_1_OR_NEWER
+        PlayerSettings.colorSpace = ColorSpace.Gamma;
+#endif
+        Pvr_UnitySDKManagerEditor.HeadDofChangedEvent += UpdateXMLHeadDof;
+
+	    Pvr_UnitySDKManagerEditor.MSAAChange += UpdateXMLMsaa;
+
         if (!xmlUpdate)
         {
 
@@ -114,6 +129,91 @@ public class Pvr_UnitySDKQualitySettings
             xmlEle.SetAttribute( "value", android.NamespaceName, Value);      
             applicationNode.AppendChild(xmlEle);    
             xmlDoc.Save(m_sXmlPath); 
+        }
+    }
+
+
+    static void UpdateXMLHeadDof(string dof)
+    {
+		XNamespace android = "http://schemas.android.com/apk/res/android";
+        string m_sXmlPath = "Assets/Plugins/Android/AndroidManifest.xml";
+        if (File.Exists(m_sXmlPath))
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(m_sXmlPath);
+            XmlNodeList nodeList;
+            XmlElement root = xmlDoc.DocumentElement;
+
+            nodeList = root.SelectNodes("/manifest/application/meta-data");
+            foreach (XmlNode node in nodeList)
+            {
+                if (node.Attributes.GetNamedItem("name", android.NamespaceName) != null)
+                {
+                    if (node.Attributes.GetNamedItem("name", android.NamespaceName).Value == "com.pvr.hmd.trackingmode")
+                    {
+                        if (node.Attributes.GetNamedItem("value", android.NamespaceName).Value == dof)
+                        {
+                            PLOG.I("com.pvr.hmd.trackingmode = " + dof.ToString());
+                        }
+                        else
+                        {
+                            node.Attributes.GetNamedItem("value", android.NamespaceName).Value = dof;
+
+                            xmlDoc.Save(m_sXmlPath);
+                        }
+                        return;
+					}
+                }
+            }
+            XmlNode applicationNode = xmlDoc.SelectSingleNode("/manifest/application");
+            XmlElement xmlEle = xmlDoc.CreateElement("meta-data");
+            xmlEle.SetAttribute("name", android.NamespaceName, "com.pvr.hmd.trackingmode");
+            xmlEle.SetAttribute("value", android.NamespaceName, dof);
+
+            Debug.Log(android.NamespaceName.ToString());
+            applicationNode.AppendChild(xmlEle);
+            xmlDoc.Save(m_sXmlPath);
+        }
+    }
+    static void UpdateXMLMsaa(int MassValue)
+    {
+      
+        XNamespace android = "http://schemas.android.com/apk/res/android";
+        string m_sXmlPath = "Assets/Plugins/Android/AndroidManifest.xml";
+        if (File.Exists(m_sXmlPath))
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(m_sXmlPath);
+            XmlNodeList nodeList;
+            XmlElement root = xmlDoc.DocumentElement;
+            nodeList = root.SelectNodes("/manifest/application/meta-data");     
+            foreach (XmlNode node in nodeList)
+            {
+              
+                if (node.Attributes.GetNamedItem("name", android.NamespaceName) != null)
+                { 
+                    if (node.Attributes.GetNamedItem("name", android.NamespaceName).Value == "MSAA")
+                    {  
+                        if (node.Attributes.GetNamedItem("value", android.NamespaceName).Value == MassValue.ToString())
+                        {
+                            Debug.Log("MSAA = " + MassValue.ToString());
+                        }
+                        else
+                        {
+                            node.Attributes.GetNamedItem("value", android.NamespaceName).Value = MassValue.ToString();
+                            xmlDoc.Save(m_sXmlPath);
+                        }
+                        return;
+					}
+                }
+            }
+            XmlNode applicationNode = xmlDoc.SelectSingleNode("/manifest/application");
+            XmlElement xmlEle = xmlDoc.CreateElement("meta-data");
+            Debug.Log(android.NamespaceName.ToString());
+            xmlEle.SetAttribute("name", android.NamespaceName, "MSAA");
+            xmlEle.SetAttribute("value", android.NamespaceName, MassValue.ToString());
+            applicationNode.AppendChild(xmlEle);
+            xmlDoc.Save(m_sXmlPath);
         }
     }
     static void SetvSyncCount()
@@ -196,11 +296,13 @@ public class Pvr_UnitySDKBuilSetting : Editor
         PlayerSettings.MTRendering = true;
         PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
         PlayerSettings.companyName = Pvr_UnitySDKParameter.Pvr_UnitySDKName;
-#if UNITY_5
+#if UNITY_5 || UNITY_2017_1
         PlayerSettings.mobileMTRendering = false;
-#else
-        //PlayerSettings.SetMobileMTRendering(BuildTargetGroup.Android, false);
 #endif
+#if UNITY_2017_2_OR_NEWER
+        PlayerSettings.SetMobileMTRendering(BuildTargetGroup.Android, false);
+#endif
+
         PlayerSettings.productName = Pvr_UnitySDKParameter.Pvr_UnitySDKName;
         PlayerSettings.displayResolutionDialog = ResolutionDialogSetting.Enabled;//Disabled;
         PlayerSettings.defaultIsFullScreen = true;
@@ -230,19 +332,25 @@ public class Pvr_UnitySDKBuilSetting : Editor
     static void PerformAndroidAPKBuild()
     {
         EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.Android);
-        PlayerSettings.MTRendering = true;
+        PlayerSettings.MTRendering = false;
         PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
         PlayerSettings.companyName = Pvr_UnitySDKParameter.Pvr_UnitySDKName;
-#if UNITY_5
+#if UNITY_5 || UNITY_2017_1
         PlayerSettings.mobileMTRendering = false;
-#else
-       // PlayerSettings.SetMobileMTRendering(BuildTargetGroup.Android, false);
 #endif
-        PlayerSettings.productName = Pvr_UnitySDKParameter.Pvr_UnitySDKName;
-        //PlayerSettings.applicationIdentifier = "com.cn." + Pvr_UnitySDKParameter.Pvr_UnitySDKName;
+#if UNITY_2017_2_OR_NEWER
+        PlayerSettings.SetMobileMTRendering(BuildTargetGroup.Android, false);
+#endif
+        PlayerSettings.productName = Pvr_UnitySDKParameter.Pvr_UnitySDKName; 
         QualitySettings.vSyncCount = 0;  
-		PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new UnityEngine.Rendering.GraphicsDeviceType[]{ UnityEngine.Rendering.GraphicsDeviceType.OpenGLES2, UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3});
-
+		PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new UnityEngine.Rendering.GraphicsDeviceType[]{ UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3, UnityEngine.Rendering.GraphicsDeviceType.OpenGLES2});
+                
+        string[] aaa = Application.unityVersion.Split('.');
+                                              
+        if (aaa != null && int.Parse(aaa[0])>= 2017 && int.Parse(aaa[1])>=2)
+        {
+            Debug.Log(Application.unityVersion + "     "); 
+        }
     }
 	const string MenuItemNameIOS = Pvr_UnitySDKParameter.Pvr_UnitySDKName + "/IOS App Setting";
 	[MenuItem(MenuItemNameIOS)]
@@ -273,17 +381,94 @@ public class Pvr_UnitySDKBuilSetting : Editor
         }
       }
 }
-
+/*
 [InitializeOnLoad]
-public class Pvr_UnitySDKLogWindowsWizard : ScriptableWizard
+public class Pvr_UnitySDKSelectPlatWizard : EditorWindow
 {
-    void OnWizardUpdate()
-    {
-        helpString = "Hi Pay Attention to you target platform!!!";
-    }
-    void OnWizardCreate() { }
-}
+    const bool showOnce = false;
+    const BuildTarget androidTarget = BuildTarget.Android;
+    const string cancel = "Cancle.";
+    const string buildTarget = "BuildTarget";
+    int setingCount = 0;
 
+    static Pvr_UnitySDKSelectPlatWizard window;
+
+    static Pvr_UnitySDKSelectPlatWizard()
+    {
+        EditorApplication.update += Update;
+    }
+
+    static void Update()
+    {
+        bool show =
+            (!EditorPrefs.HasKey(cancel + buildTarget) &&
+                EditorUserBuildSettings.activeBuildTarget != androidTarget) || showOnce;
+
+        if (show)
+        {
+            window = GetWindow<Pvr_UnitySDKSelectPlatWizard>(true);
+            window.minSize = new Vector2(320, 440); 
+        }  
+      
+        EditorApplication.update -= Update;
+    }
+
+    public void OnGUI()
+    {
+#region  BuildTarget
+        if (!EditorPrefs.HasKey(cancel + buildTarget) &&
+       EditorUserBuildSettings.activeBuildTarget != androidTarget)
+        {
+            ++setingCount;
+
+            GUILayout.Label(buildTarget + string.Format("{0}", EditorUserBuildSettings.activeBuildTarget));
+
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(string.Format("{0}", androidTarget)))
+            {
+				EditorUserBuildSettings.SwitchActiveBuildTarget(androidTarget);  
+            }
+
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Ignore"))
+            {
+                EditorPrefs.SetBool(cancel + buildTarget, true);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+#endregion
+
+#region  BuildTarget
+        if (!EditorPrefs.HasKey(cancel + buildTarget) &&
+       EditorUserBuildSettings.activeBuildTarget != androidTarget)
+        {
+            ++setingCount;
+
+            GUILayout.Label(buildTarget + string.Format("{0}", EditorUserBuildSettings.activeBuildTarget));
+
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(string.Format("{0}", androidTarget)))
+            {
+                EditorUserBuildSettings.SwitchActiveBuildTarget(androidTarget);
+            }
+
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Ignore"))
+            {
+                EditorPrefs.SetBool(cancel + buildTarget, true);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+#endregion
+    }
+}
+*/
 
 public class Pvr_UnitySDKAbilitiesSlecetWindows : ScriptableWizard
 {

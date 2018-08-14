@@ -24,8 +24,8 @@ namespace Pvr_UnitySDKAPI
 {
     public enum DeviceCommand
     {
-        SET_PICO_NEO_HMD_BRIGHTNESS = 12,//操作屏幕亮度，包括设置以及获取，需要PicoNeo头戴固件版B55之上
-        SET_PICO_NEO_HMD_SLEEPDELAY = 13//操作熄屏时间，包括设置以及获取，多长时间后休眠，时间单位为秒
+        SET_PICO_NEO_HMD_BRIGHTNESS = 12,
+        SET_PICO_NEO_HMD_SLEEPDELAY = 13
     }
     public enum BrightnessLevel
     {
@@ -55,16 +55,25 @@ namespace Pvr_UnitySDKAPI
         #region Public Static Funcation
         public static bool UPvr_IsHmdExist()
         {
+#if ANDROID_DEVICE
             return Pvr_IsHmdExist();
+#endif
+            return false;
         }
         public static int UPvr_GetHmdScreenBrightness()
         {
+#if ANDROID_DEVICE
             return Pvr_GetHmdScreenBrightness();
+#endif
+            return 0;
         }
 
         public static bool UPvr_SetHmdScreenBrightness(int brightness)
         {
+#if ANDROID_DEVICE
             return Pvr_SetHmdScreenBrightness(brightness);
+#endif
+            return false;
         }
         public static bool UPvr_SetCommonBrightness(int brightness)
         {
@@ -111,6 +120,37 @@ namespace Pvr_UnitySDKAPI
         public static string UPvr_GetDevicePropForUser(DeviceCommand deviceid)
         {
             return getDevicePropForUser(deviceid);
+        }
+        public static bool UPvr_InitBatteryClass()
+        {
+#if ANDROID_DEVICE
+            try
+            {
+                if (javaSysActivityClass == null)
+                {
+                    javaSysActivityClass = new UnityEngine.AndroidJavaClass("com.psmart.aosoperation.SysActivity");
+
+                }
+
+                if (javaSysActivityClass != null &&Pvr_UnitySDKManager.pvr_UnitySDKRender.activity != null)
+                {
+                    if (batteryjavaVrActivityClass ==null)
+                    {
+                        batteryjavaVrActivityClass = new UnityEngine.AndroidJavaClass("com.psmart.aosoperation.BatteryReceiver");
+
+                    }
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("startReceiver Error :" + e.ToString());
+                return false;
+            }
+#endif
+            return true;
         }
         public static bool UPvr_InitBatteryVolClass()
         {
@@ -161,7 +201,7 @@ namespace Pvr_UnitySDKAPI
 #if ANDROID_DEVICE
             try
             {
-                Pvr_UnitySDKAPI.System.UPvr_CallStaticMethod(batteryjavaVrActivityClass, "stopReceiver", Pvr_UnitySDKManager.pvr_UnitySDKRender.activity);
+                Pvr_UnitySDKAPI.System.UPvr_CallStaticMethod(batteryjavaVrActivityClass, "Pvr_StopReceiver", Pvr_UnitySDKManager.pvr_UnitySDKRender.activity);
                 return true;
             }
             catch (Exception e)
@@ -359,12 +399,10 @@ namespace Pvr_UnitySDKAPI
         {
             return false;
         }
-        //jar 调用 unity
-                             
-      
+        
 #endregion
 
-        #region DllFuncation
+#region DllFuncation
 
         //Brightness
         [DllImport(LibFileName, CallingConvention = CallingConvention.Cdecl)]
@@ -376,13 +414,13 @@ namespace Pvr_UnitySDKAPI
         [DllImport(LibFileName, CallingConvention = CallingConvention.Cdecl)]
         private static extern bool Pvr_SetHmdScreenBrightness(int brightness);
 
-        #endregion
+#endregion
 
-        #region Pravite Static Funcation
+#region Pravite Static Funcation
         private static string getDevicePropForUser(DeviceCommand deviceid)
         {
             string istrue = "0";
-#if  ANDROID_DEVICE
+#if ANDROID_DEVICE
               Pvr_UnitySDKAPI.System.UPvr_CallStaticMethod<string>(ref istrue, Pvr_UnitySDKRender.javaVrActivityClass, "getDevicePropForUser", (int)deviceid);
 #endif
             return istrue;
@@ -390,12 +428,12 @@ namespace Pvr_UnitySDKAPI
         private static bool setDevicePropForUser(DeviceCommand deviceid, string number)
         {
             bool istrue = false;
-#if  ANDROID_DEVICE
+#if ANDROID_DEVICE
              Pvr_UnitySDKAPI.System.UPvr_CallStaticMethod<bool>(ref istrue, Pvr_UnitySDKRender.javaVrActivityClass, "setDevicePropForUser", (int)deviceid, number);
 #endif
             return istrue;
-        } //jar 调用 unity
-        #endregion
+        } 
+#endregion
     }
 
 }

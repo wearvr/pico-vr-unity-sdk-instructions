@@ -17,23 +17,23 @@ public class UGUIConcreteButtonHandler : MonoBehaviour {
     
     private void Update() {
 
-        if (Controller.UPvr_GetKey(Pvr_KeyCode.TOUCHPAD))
+        if (Controller.UPvr_GetKey(0, Pvr_KeyCode.TOUCHPAD))
         {
             label.text = "Pressed Touchpad";
         }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.HOME))
+        else if (Controller.UPvr_GetKey(0, Pvr_KeyCode.HOME))
         {
             label.text = "Pressed Home Button";
         }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.APP))
+        else if (Controller.UPvr_GetKey(0, Pvr_KeyCode.APP))
         {
             label.text = "Pressed App";
         }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEUP))
+        else if (Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEUP))
         {
             label.text = "Pressed Volume+";
         }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEDOWN))
+        else if (Controller.UPvr_GetKey(0, Pvr_KeyCode.VOLUMEDOWN))
         {
             label.text = "Pressed Volume-";
         }

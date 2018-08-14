@@ -195,9 +195,7 @@ namespace Pvr_UnitySDKAPI
             return false;
 #endif
         }
-
-
-
+        
         #endregion
 
     }

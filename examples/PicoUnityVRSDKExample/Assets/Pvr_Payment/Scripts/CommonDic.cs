@@ -53,6 +53,9 @@ public class CommonDic
     private string _merchant_ID=null;
     private string _payKey = null;
 
+    private string _isSuucess = null;
+    private string _loginMsg = null;
+
     //填写订单参数
     public void setParameters(string name, string value) {
         if (name.Equals("subject")) {
@@ -156,6 +159,19 @@ public class CommonDic
         get { return _expires_in; }
         set { _expires_in = value; }
     }
+
+    public string isSuccess
+    {
+        get { return _isSuucess; }
+        set { _isSuucess = value; }
+    }
+
+    public string loginMsg
+    {
+        get { return _loginMsg; }
+        set { _loginMsg = value; }
+    }
+
     //用户信息Json原串
     public string user_info{
         get { return _user_info; }

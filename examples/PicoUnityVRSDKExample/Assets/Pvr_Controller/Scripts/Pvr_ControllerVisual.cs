@@ -1,82 +1,97 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Pvr_UnitySDKAPI;
+using UnityEngine.UI;
 
-public class Pvr_ControllerVisual : MonoBehaviour {
 
-    private Renderer controllerRenderer;
-    private Renderer touchRenderer;
-    private float tipsAlpha = 0;
+namespace Pvr_UnitySDKAPI
+{
+    public enum ControllerDevice
+    {
+        Goblin1,
+        Neo,
+        Goblin2,
+        NewController,
+    }
+}
 
-    public GameObject touchpoint;
-    public Transform tips;
-    public Material m_idle;
-    public Material m_app;
-    public Material m_home;
-    public Material m_touchpad;
-    public Material m_volUp;
-    public Material m_volDn;
+public class Pvr_ControllerVisual : MonoBehaviour
+{
     
+    public ControllerDevice currentDevice;
+    
+    public Texture2D m_idle;
+    public Texture2D m_app;
+    public Texture2D m_home;
+    public Texture2D m_touchpad;
+    public Texture2D m_volUp;
+    public Texture2D m_volDn;
+    public Texture2D m_trigger;
+    
+    private Renderer controllerRenderMat;
+
+    [HideInInspector]
+    public ControllerVariety variety;
+
     void Awake()
     {
-        controllerRenderer = GetComponent<Renderer>();
-        touchRenderer = touchpoint.GetComponent<Renderer>();
+        controllerRenderMat = GetComponent<Renderer>();
+        
+    }
+    void Start()
+    {
+        variety = transform.GetComponentInParent<Pvr_ControllerModuleInit>().Variety;
     }
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        
-        if(Controller.UPvr_IsTouching())
+    // Update is called once per frame
+    void Update()
+    {
+        ChangeKeyEffects(variety == ControllerVariety.Controller0 ? 0 : 1);
+    }
+
+    
+    private void ChangeKeyEffects(int hand)
+    {
+        if (Controller.UPvr_GetKey(hand, Pvr_KeyCode.TOUCHPAD))
         {
-            touchpoint.SetActive(true);
-            touchpoint.transform.localPosition = new Vector3(1.4f - TouchPadPosition.y * 0.01098f, 0.9f, -0.8f - TouchPadPosition.x * 0.01098f);
+            controllerRenderMat.material.SetTexture("_MainTex", m_touchpad);
+            controllerRenderMat.material.SetTexture("_EmissionMap", m_touchpad);
+        }
+        else if (Controller.UPvr_GetKey(hand, Pvr_KeyCode.APP))
+        {
+            controllerRenderMat.material.SetTexture("_MainTex", m_app);
+            controllerRenderMat.material.SetTexture("_EmissionMap", m_app);
+        }
+        else if (Controller.UPvr_GetKey(hand, Pvr_KeyCode.HOME))
+        {
+            controllerRenderMat.material.SetTexture("_MainTex", m_home);
+            controllerRenderMat.material.SetTexture("_EmissionMap", m_home);
+        }
+        else if (Controller.UPvr_GetKey(hand, Pvr_KeyCode.VOLUMEUP))
+        {
+            controllerRenderMat.material.SetTexture("_MainTex", m_volUp);
+            controllerRenderMat.material.SetTexture("_EmissionMap", m_volUp);
+        }
+        else if (Controller.UPvr_GetKey(hand, Pvr_KeyCode.VOLUMEDOWN))
+        {
+            controllerRenderMat.material.SetTexture("_MainTex", m_volDn);
+            controllerRenderMat.material.SetTexture("_EmissionMap", m_volDn);
+        }
+        else if (Controller.UPvr_GetControllerTriggerValue(hand) > 0 || Controller.UPvr_GetKey(hand,Pvr_KeyCode.TRIGGER))
+        {
+            if (currentDevice != ControllerDevice.Goblin1)
+            {
+                controllerRenderMat.material.SetTexture("_MainTex", m_trigger);
+                controllerRenderMat.material.SetTexture("_EmissionMap", m_trigger);
+            }
         }
         else
         {
-            touchpoint.SetActive(false);
+            if (controllerRenderMat.material.GetTexture("_MainTex") != m_idle)
+            {
+                controllerRenderMat.material.SetTexture("_MainTex", m_idle);
+                controllerRenderMat.material.SetTexture("_EmissionMap", m_idle);
+            }
         }
-        if(Controller.UPvr_GetKey(Pvr_KeyCode.TOUCHPAD))
-        {
-            controllerRenderer.material = m_touchpad;
-        }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.APP))
-        {
-            controllerRenderer.material = m_app;
-        }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.HOME))
-        {
-            controllerRenderer.material = m_home;
-        }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEUP))
-        {
-            controllerRenderer.material = m_volUp;
-        }
-        else if (Controller.UPvr_GetKey(Pvr_KeyCode.VOLUMEDOWN))
-        {
-            controllerRenderer.material = m_volDn;
-        }
-        else
-        {
-            controllerRenderer.material = m_idle;
-        }
-        //touchpoint.transform.localPosition = new Vector3(1.4f- (127f + ((TouchPadPosition.x - 127) * Mathf.Cos(-20) - (TouchPadPosition.y - 127) * Mathf.Sin(-20))) * 0.01098f, 0.9f, -0.8f -  ((127f - ((TouchPadPosition.y - 127) * Mathf.Cos(-20) + (TouchPadPosition.x - 127) * Mathf.Sin(-20))))* 0.01098f);
-        
-	    tipsAlpha = (330 -  transform.parent.parent.localRotation.eulerAngles.x) / 45.0f;
-        if (transform.parent.parent.localRotation.eulerAngles.x >= 270 &&
-	        transform.parent.parent.localRotation.eulerAngles.x <= 330)
-        {
-            tipsAlpha = Mathf.Max(0.0f, tipsAlpha);
-            tipsAlpha = tipsAlpha > 1.0f ? 1.0f : tipsAlpha;
-        }
-	    else
-        {
-            tipsAlpha = 0.0f;
-        }
-        tips.GetComponent<CanvasGroup>().alpha = tipsAlpha;
-	}
+    }
 }

@@ -10,16 +10,13 @@ using System.Collections;
 
 
 [ExecuteInEditMode]
-public class Pvr_UnitySDKEditor : MonoBehaviour {
+public class Pvr_UnitySDKEditor : MonoBehaviour
+{
 
 
     /************************************    Properties  *************************************/
     #region Properties
-    /// <summary>
-    /// 凝视事件标志位
-    /// </summary>
-    /// 
-
+   
     private bool vrModeEnabled = true;   
     private float mouseX = 0;
     private float mouseY = 0;
@@ -28,16 +25,9 @@ public class Pvr_UnitySDKEditor : MonoBehaviour {
     private bool autoUntiltHead = false;
     private static readonly Vector3 neckOffset = new Vector3(0, 0.075f, 0.0805f);
 
-    /// <summary>
-    /// headView 矩阵
-    /// </summary>
     [HideInInspector]
     public Matrix4x4 headView;
 
-
-    /// <summary>
-    /// 左右眼无畸变矩阵（Unity Editor 模拟）
-    /// </summary>
     public Matrix4x4 UndistortedProjection(Pvr_UnitySDKAPI.Eye eye)
     {
         return eye == Pvr_UnitySDKAPI.Eye.LeftEye ? leftEyeUndistortedProj : rightEyeUndistortedProj;
@@ -47,9 +37,6 @@ public class Pvr_UnitySDKEditor : MonoBehaviour {
     [HideInInspector]
     public Matrix4x4 rightEyeUndistortedProj;
 
-    /// <summary>
-    /// 左右眼投影矩阵（Unity Editor 模拟）
-    /// </summary>
     public Matrix4x4 Projection(Pvr_UnitySDKAPI.Eye eye)
     {
         return eye == Pvr_UnitySDKAPI.Eye.LeftEye ? leftEyeProj : rightEyeProj;
@@ -58,9 +45,7 @@ public class Pvr_UnitySDKEditor : MonoBehaviour {
     public Matrix4x4 leftEyeProj;
     [HideInInspector]
     public Matrix4x4 rightEyeProj;
-    /// <summary>
-    /// SimulateInput 参数
-    /// </summary>
+
     private const float TOUCH_TIME_LIMIT = 0.2f;
     private float touchStartTime = 0;
 
@@ -128,7 +113,7 @@ public class Pvr_UnitySDKEditor : MonoBehaviour {
         mouseX = mouseY = mouseZ = 0;
         return true;
     }
-    #endregion            
+    #endregion
 
     /************************************ Private Interfaces  *********************************/
     #region Private Interfaces

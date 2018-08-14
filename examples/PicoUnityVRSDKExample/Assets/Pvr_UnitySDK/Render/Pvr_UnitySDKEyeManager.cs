@@ -14,7 +14,7 @@ using System;
 public class Pvr_UnitySDKEyeManager : MonoBehaviour
 {
 
-	public bool isfirst = true;
+    public bool isfirst = true;
 	private int framenum = 0;
     /************************************    Properties  *************************************/
     #region Properties
@@ -116,26 +116,23 @@ public class Pvr_UnitySDKEyeManager : MonoBehaviour
 
     void Update()
     {
-        ControllerCamera.enabled = !Pvr_UnitySDKManager.SDK.VRModeEnabled;
 
+        ControllerCamera.enabled = !Pvr_UnitySDKManager.SDK.VRModeEnabled;
+#if UNITY_EDITOR
         for (int i = 0; i < Eyes.Length; i++)
         {
-            Eyes[i].EyeRender();
-        }
-    }
+            Eyes[i].eyecamera.enabled = Pvr_UnitySDKManager.SDK.VRModeEnabled;
+        } 
+#endif
 
-    void OnPreCull()
-    {
-        if (!Pvr_UnitySDKManager.SDK.VRModeEnabled)
+        if (!Pvr_UnitySDKManager.SDK.IsViewerLogicFlow)
         {
             for (int i = 0; i < Eyes.Length; i++)
             {
-                Eyes[i].eyecamera.enabled = false;
+                Eyes[i].EyeRender();
             }
-            return;
         }
     }
-
     void OnDisable()
     {
         StopAllCoroutines();
@@ -160,11 +157,12 @@ public class Pvr_UnitySDKEyeManager : MonoBehaviour
 
 #if UNITY_5_6
 #else
-                      
-            Pvr_UnitySDKPluginEvent.IssueWithData(RenderEventType.TimeWarp, Pvr_UnitySDKManager.SDK.RenderviewNumber);			
-			Pvr_UnitySDKManager.SDK.currEyeTextureIdx = Pvr_UnitySDKManager.SDK.nextEyeTextureIdx;
+
+            Pvr_UnitySDKPluginEvent.IssueWithData(RenderEventType.TimeWarp, Pvr_UnitySDKManager.SDK.RenderviewNumber);
+            Pvr_UnitySDKManager.SDK.currEyeTextureIdx = Pvr_UnitySDKManager.SDK.nextEyeTextureIdx;
             Pvr_UnitySDKManager.SDK.nextEyeTextureIdx = (Pvr_UnitySDKManager.SDK.nextEyeTextureIdx + 1) % 3;
 #endif
+
 
         }
     }

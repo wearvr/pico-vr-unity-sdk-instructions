@@ -13,7 +13,7 @@ public class Pvr_VolumePowerBrightness : MonoBehaviour
 {
     /************************************    Properties  *************************************/
     #region Properties
-    bool VolEnable = false; 
+    bool VolEnable = false;
     bool BattEnable = false;
 
     public Text showResult;
@@ -61,7 +61,7 @@ public class Pvr_VolumePowerBrightness : MonoBehaviour
         bool enable = false;
         System.Random rm = new System.Random();
         int volume = rm.Next(0, 15);
-        setVolumnum.text = "随机数：" + volume.ToString();   
+        setVolumnum.text = "随机数：" + volume.ToString();
         enable = Pvr_UnitySDKAPI.VolumePowerBrightness.UPvr_SetVolumeNum(volume);
         if (!enable)
         {
@@ -75,7 +75,7 @@ public class Pvr_VolumePowerBrightness : MonoBehaviour
         int brightness = rm.Next(0, 255);
         setBrightnum.text = "随机数：" + brightness.ToString();
         enable = Pvr_UnitySDKAPI.VolumePowerBrightness.UPvr_SetCommonBrightness(brightness);
-       
+
         if (!enable)
         {
             Debug.LogError("SetBrightness Error");
@@ -85,30 +85,30 @@ public class Pvr_VolumePowerBrightness : MonoBehaviour
     {
         int lightness = 0;
         lightness = Pvr_UnitySDKAPI.VolumePowerBrightness.UPvr_GetCommonBrightness();
-       
+
         showResult.text = "当前亮度：" + lightness.ToString();
     }
 
-    //jar 调用 unity
-    public  bool setAudio(string s)
+    public bool setAudio(string s)
     {
         Debug.Log(s.ToString());
         // do what you want !
         return true;
     }
 
-    public  bool setBattery(string s)
+    public bool setBattery(string s)
     {
         Debug.Log(s.ToString());
         // do what you want !
         return true;
     }
-    //jar 调用 unity
+
     #endregion
 
     /************************************  Private Interfaces **********************************/
     #region Private Interfaces
 
+   
     private bool InitBatteryVolClass()
     {
         return Pvr_UnitySDKAPI.VolumePowerBrightness.UPvr_InitBatteryVolClass();
@@ -138,20 +138,6 @@ public class Pvr_VolumePowerBrightness : MonoBehaviour
     #region Unity API
     void Start()
     {
-        //底层有问题暂时注释掉！！！！
-        // bool enable = Pvr_UnitySDKAPI.Audio3D.UPvr_SpatializerUnlock();
-        // if (enable)
-        {
-            Pvr_UnitySDKAPI.Audio3D.UPvr_InitAm3d();
-            Debug.Log("The AM3d ability is enabled!");
-        }
-        /*
-        else
-        {
-            Debug.Log("Cannot enable this AM3d ability!!!");
-        }
-        */
-        MusicPath = "/sdcard/DCIM/GuitarLoop.wav";
         Pvr_UnitySDKAPI.Audio3D.UPvr_StartAudioEffect(MusicPath, true);
     }
 
@@ -177,6 +163,8 @@ public class Pvr_VolumePowerBrightness : MonoBehaviour
         }
 
     }
+
+  
     #endregion
 
 }

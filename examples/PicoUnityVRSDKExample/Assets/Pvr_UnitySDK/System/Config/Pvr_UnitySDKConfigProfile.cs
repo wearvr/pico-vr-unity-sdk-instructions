@@ -14,9 +14,9 @@ public class Pvr_UnitySDKConfigProfile
 {
     public struct Lenses
     {
-        public float separation;                //瞳距
-        public float offset;                //镜头中心到镜框上边沿的距离
-        public float distance;              //镜头到手机屏幕的垂直距离
+        public float separation;            
+        public float offset;                
+        public float distance;              
         public int alignment;
         public const int AlignTop = -1;    // Offset is measured down from top of device.
         public const int AlignCenter = 0;  // Center alignment ignores offset, hence scale is zero.
@@ -25,20 +25,18 @@ public class Pvr_UnitySDKConfigProfile
     }
 
     /// <summary>
-    /// MaxFOV （Unity Editor 模拟）
+    /// MaxFOV
     /// </summary>
     public struct MaxFOV
     {
-        public float upper;             //最大FOV --上
-        public float lower;             //最大FOV --下
-        public float inner;             //最大FOV --靠近中心点
-        public float outer;             //最大FOV --远离中心点
+        public float upper;            
+        public float lower;             
+        public float inner;           
+        public float outer;           
 
     }
 
-    /// <summary>
-    /// Distortion （Unity Editor 模拟）
-    /// </summary>
+  
     public struct Distortion
     {
         public float k1;
@@ -65,9 +63,7 @@ public class Pvr_UnitySDKConfigProfile
 
     }
 
-    /// <summary>
-    /// Device
-    /// </summary>
+ 
     public struct Device
     {
         public Lenses devLenses;
@@ -75,12 +71,7 @@ public class Pvr_UnitySDKConfigProfile
         public Distortion devDistortion;
         public Distortion devDistortionInv;
     }
-
-    /// <summary>
-    /// enum devicetype
-    /// </summary>
-
-
+    
     public static readonly Device SimulateDevice = new Device
     {
         devLenses = { separation = 0.062f, offset = 0.0f, distance = 0.0403196f, alignment = Lenses.AlignCenter },
@@ -105,20 +96,12 @@ public class Pvr_UnitySDKConfigProfile
         }
     };
 
-
-    /// <summary>
-    /// Pvr_UnitySDKConfigProfile.device
-    /// </summary>
     public Device device;
     public static readonly Pvr_UnitySDKConfigProfile Default = new Pvr_UnitySDKConfigProfile
     {
         device = SimulateDevice
     };
-
-    /// <summary>
-    /// clone
-    /// </summary>
-    /// <returns></returns>
+    
     public Pvr_UnitySDKConfigProfile Clone()
     {
         return new Pvr_UnitySDKConfigProfile
@@ -131,9 +114,6 @@ public class Pvr_UnitySDKConfigProfile
         return new Pvr_UnitySDKConfigProfile { device = SimulateDevice };
     }
 
-    /// <summary>
-    /// 根据选择的头盔参数以及设定的最大FOV 求解tan（Unity Editor 模拟）
-    /// </summary>
     public float[] GetLeftEyeVisibleTanAngles(float width, float height)
     {
         // Tan-angles from the max FOV.
@@ -160,9 +140,6 @@ public class Pvr_UnitySDKConfigProfile
         return new float[] { left, top, right, bottom };
     }
 
-    /// <summary>
-    /// （Unity Editor 模拟）
-    /// </summary>
     public float[] GetLeftEyeNoLensTanAngles(float width, float height)
     {
         // Tan-angles from the max FOV.
@@ -190,9 +167,6 @@ public class Pvr_UnitySDKConfigProfile
         return new float[] { left, top, right, bottom };
     }
 
-    /// <summary>
-    /// 求解Viewport （Unity Editor 模拟）
-    /// </summary>
     public Rect GetLeftEyeVisibleScreenRect(float[] undistortedFrustum, float width, float height)
     {
 

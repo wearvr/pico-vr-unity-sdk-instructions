@@ -23,15 +23,18 @@ using LitJson;
 using System.Collections;
 using System;
 
-public class Pvr_TouchPad : MonoBehaviour {
+public class Pvr_TouchPad : MonoBehaviour
+{
 
+#if ANDROID_DEVICE
+    public static AndroidJavaObject activity;
+    public static AndroidJavaClass javaVrActivityClass;
+#endif
     public const int SERVICE_STARTED = 0;
     public const int CONNECTE_SUCCESS = 1;
     public const int DISCONNECTE = 2;
     public const int CONNECTE_FAILED = 3;
     public const int NO_DEVICE = 4;
-    public static AndroidJavaObject activity;
-    public static AndroidJavaClass javaVrActivityClass;
     int status = DISCONNECTE;
     // Use this for initialization
     void Awake()
@@ -46,7 +49,7 @@ public class Pvr_TouchPad : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-      // if (status == CONNECTE_SUCCESS)     此条件在lark1s 启用
+      // if (status == CONNECTE_SUCCESS)     
         {
             float x = 0, z = 0;
             if (Input.GetKeyDown(KeyCode.UpArrow) )
@@ -73,7 +76,7 @@ public class Pvr_TouchPad : MonoBehaviour {
     }
     void ConnectBleService()
     {
-        #if ANDROID_DEVICE
+#if ANDROID_DEVICE
         try
         {
             UnityEngine.AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -86,7 +89,7 @@ public class Pvr_TouchPad : MonoBehaviour {
         {
             Debug.LogError("ConnectBleService------------------------catch" + e.Message);
         }
-       #endif
+#endif
     }
     public void ConnectBleDevice()
     {

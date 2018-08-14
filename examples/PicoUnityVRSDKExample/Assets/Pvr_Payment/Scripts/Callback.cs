@@ -14,7 +14,9 @@ using UnityEngine.UI;
 #if UNITY_ANDROID
 public class Callback : MonoBehaviour{
 
-
+    private static string IS_SUCCESS = "isSuccess";
+    private static string MSG = "msg";
+    private static string CODE = "code";
     /// <summary>
     /// 登陆后本地缓存一份token，用于查询
     /// </summary>
@@ -24,22 +26,12 @@ public class Callback : MonoBehaviour{
         SetMassage(LoginInfo);
         DemoController.showLoading();
         
-        if (jsrr["access_token"] != null ) {
-            CommonDic.getInstance().access_token = jsrr["access_token"].ToString();  
+        if (jsrr[IS_SUCCESS] != null ) {
+            CommonDic.getInstance().isSuccess = jsrr[IS_SUCCESS].ToString();  
         }
-        if( jsrr["open_id"] != null){
-            CommonDic.getInstance().open_id = jsrr["open_id"].ToString();
+        if( jsrr[MSG] != null){
+            CommonDic.getInstance().loginMsg = jsrr[MSG].ToString();
         }
-        if(  jsrr["refresh_token"] != null ){
-            CommonDic.getInstance().refresh_token = jsrr["refresh_token"].ToString();
-        }
-
-        if (jsrr["expires_in"] != null)
-        {
-            CommonDic.getInstance().expires_in = jsrr["expires_in"].ToString();
-        }
-
-
         
         Debug.Log("调用login回调:" + LoginInfo);
     }
@@ -49,19 +41,15 @@ public class Callback : MonoBehaviour{
     /// <param name="payInfo"></param>
     public void QueryOrPayCallback(string queryOrPayInfo){
         JsonData jsrr = JsonMapper.ToObject(queryOrPayInfo);
-        if (jsrr["code"] != null) {
+        if (jsrr[CODE] != null) {
             CommonDic.getInstance().code = jsrr["code"].ToString();
         }
-        if (jsrr["msg"] != null)
+        if (jsrr[MSG] != null)
         {
             CommonDic.getInstance().msg = jsrr["msg"].ToString();
         }
         if (jsrr != null) {
             CommonDic.getInstance().order_info = jsrr[1].ToString();
-        }
-        if (CommonDic.getInstance().code.Equals("13000") || CommonDic.getInstance().code.Equals("12004"))
-        {
-            return;
         }
 
         SetMassage(queryOrPayInfo);

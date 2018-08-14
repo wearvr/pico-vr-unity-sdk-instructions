@@ -122,6 +122,7 @@ public class Pvr_ExtraSensor : MonoBehaviour
             float w = 0, x = 0, y = 0, z = 0, px = 0, py = 0, pz = 0;
             try
             {
+                Pvr_UnitySDKManager.SDK.posStatus = Pvr_UnitySDKAPI.Sensor.UPvr_Get6DofSensorQualityStatus();
                 int returns = Pvr_UnitySDKAPI.Sensor.UPvr_GetSensorState(SensorIndex, ref x, ref y, ref z, ref w, ref px, ref py, ref pz);
                 if (returns == 0)
                 {
@@ -130,7 +131,7 @@ public class Pvr_ExtraSensor : MonoBehaviour
 
                 }
                 if (returns == -1)
-                    Debug.Log("sesnor update --- GetUnitySDKSensorState     -1    ");
+                    Debug.Log("sesnor update --- GetUnitySDKSensorState     -1    "); 
             }
             catch (System.Exception e)
             {
