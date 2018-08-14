@@ -49,7 +49,7 @@ Replace the following lines:
 <meta-data android:name="pico_app_key" android:value="25ba00fb73343ff1ec32e1c152fff291" />
 <meta-data android:name="pico_pay_key" android:value="d828c5d3a1cc11e6b7fe008cfaf3d930" />
 <meta-data android:name="pico_redirectUrl" android:value="http://www.picovr.com" />
-<!--授权范围-->
+<!--Scope of authorization-->
 <meta-data android:name="pico_scope" android:value="get_user_info" />
 ```
 
@@ -73,14 +73,17 @@ With these (substituting the `REPLACE_ME` values with the corresponding credenti
 <meta-data android:name="pico_scope_foreign" android:value="SCOPE"/>
 ```
 
-
 ## Managing user sessions
 
 ### Logging the user in
 
-Before making any in-app purchases, you must first sign the user into their account.
+The following method redirects the user to the Pico operating system and displays a login dialog if the user has not already signed in to their headset. Once the user has signed in, they are redirected back to your app and a callback is invoked (see below).
 
-To display the Pico login interface:
+<p align="center">
+  <img alt="Pico sign in dialog" width="500px" src="assets/PicoLoginDialog.png">
+</p>
+
+If the user is already signed in, it immediately invokes the user information callback.
 
 ```cs
 void PicoPaymentSDK.Login();
@@ -94,8 +97,9 @@ PicoPaymentSDK.Login();
 #endif
 ```
 
-To receive the result of the login, define a GameObject in your scene called `PicoPayment` (the name is important) and attach a script that defines a `LoginOrUserInfoCallback` method.
+To receive the result of the login, define a GameObject in your scene called `PicoPayment` and attach a `MonoBehaviour` script that defines a `LoginOrUserInfoCallback` method.
 
+> The Pico SDK expects a GameObject called `PicoPayment` to receive callback information from the underlying operating system. This is currently hard-coded, so must match exactly or your callbacks will not be triggered.
 
 ```
 void LoginOrUserInfoCallback(string result);
@@ -103,14 +107,12 @@ void LoginOrUserInfoCallback(string result);
 
 Where `result` is a string containing a serialized JSON object representing the result of the sign in request.
 
-> The Pico SDK expects a GameObject called `PicoPayment` to receive callback information from the underlying operating system. This is currently hard-coded, so must match exactly or your callbacks will not be triggered.
+#### Response attributes
 
-#### Successful sign in request
-
-The JSON object has the following attributes:
+The JSON response object has the following attributes:
 
 * `"isSuccess"` -  `"true"` when the request has succeed, otherwise `"false"`
-* `"msg"` - For successful requests, it is `"SUCCESS"`. For failed requests, it is a description of why the request failed.
+* `"msg"` - For successful requests, it is `"SUCCESS"`. For failed requests, it is a localized description of why the request failed.
 
 
 Example:
@@ -122,8 +124,6 @@ Example:
 }
 ```
 
-> The access token and open_id values must be stored in CommonDic for the subsequent user details request to work (see example implementation below).
-
 #### Example implementation
 
 ```cs
@@ -133,15 +133,11 @@ public class Callback : MonoBehaviour{
     public void LoginOrUserInfoCallback(string result) {
         JsonData response = JsonMapper.ToObject(result);
 
-        if (response["cancel"] != null ) {
-            // User closed sign in UI
-        } else if (response["exception"] != null ) {
-            // Sign in error occurred
+        if (response["isSuccess"] == "true" ) {
+            // User is now signed in
         } else {
-            // Access token and openID must be saved in CommonDic for user details
-            // request to work later
-            CommonDic.getInstance().access_token = response["access_token"].toString();
-            CommonDic.getInstance().open_id = response["open_id"].toString();
+            // Sign in error occurred - display response["msg"] to explain
+            // to the user what has occurred and what action they may take
         }
     }
 }
