@@ -82,9 +82,15 @@ Before making any in-app purchases, you must first sign the user into their acco
 
 To display the Pico login interface:
 
-```
-#if !UNITY_EDITOR
+```cs
 void PicoPaymentSDK.Login();
+```
+
+Example:
+
+```cs
+#if !UNITY_EDITOR
+PicoPaymentSDK.Login();
 #endif
 ```
 
