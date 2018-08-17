@@ -59,12 +59,13 @@ Optional:
 * [Adding in-app purchases](/docs/pico-payment-sdk-in-app-purchases.md)
 * [Troubleshooting](/docs/troubleshooting.md)
 * [Optimizing Pico experiences](/docs/optimizing-pico-experiences.md)
+* [Upgrading the Pico Goblin OS & Firmware](/docs/upgrading-pico-goblin-operating-system-firmware.md)
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
 
 ## Upgrade Guides
 
-[Upgrading from v2.5.0](/docs/upgrading/upgrading-from-v2-5-0-to-v2-7-4.md)
+[Upgrading from v2.3.0](/docs/upgrading/upgrading-from-v2-3-0-to-v2-7-4.md)
 
 ## Uploading and selling your experiences
 

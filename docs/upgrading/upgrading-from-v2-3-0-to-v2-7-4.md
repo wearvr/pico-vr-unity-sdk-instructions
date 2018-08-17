@@ -1,4 +1,4 @@
-# Upgrading from v2.5.0 to v2.7.4
+# Upgrading from v2.3.0 to v2.7.4
 
 ## Install the new unitypackage
 
