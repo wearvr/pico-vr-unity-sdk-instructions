@@ -29,7 +29,7 @@ View the **PUI Version**:
   <img alt="View the PUIVersion" width="500px" src="assets/PUIVersion.png">
 </p>
 
-Compase the PUI Version to [latest version of the Pico Goblin operation system available](https://users.wearvr.com/developers/devices/pico-goblin/resources/firmware).
+Compare the PUI Version to [latest version of the Pico Goblin operation system available](https://users.wearvr.com/developers/devices/pico-goblin/resources/firmware).
 
 ## Upgrade instructions
 
