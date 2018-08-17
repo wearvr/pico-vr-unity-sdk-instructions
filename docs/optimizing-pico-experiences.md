@@ -9,9 +9,23 @@ The following instructions are optional and should normally only be followed if 
 
 These steps can be completed even if you do not have a development kit to test on.
 
-### Check project settings
+## Check project settings
 
-Check your **Project Settings* match the [recommended values](/docs/pico-vr-unity-sdk-installation.md).
+Check your **Project Settings** match the [recommended values](/docs/pico-vr-unity-sdk-installation.md).
+
+## Slow Frame Rate
+
+The overall rendering requirements of a Unity VR application can be reduced by using the line `VRSettings.renderScale = x` anywhere in code, where x is the new desired render scale. It is not recommended that this value be changed very often because it can negatively impact performance whenever it's value is set, but changing a projects render scale to a value less than 1.0f will reduce the overall rendering cost of the entire application at the cost of some visual clarity.
+
+This method works by resizing the textel to pixel ratio of the application, before stretching or shrinking the result onto the devices screens. Thus, a project using a VRSettings.renderScale of 0.5f could potentially run at twice it's usual speed but would appear to be running on a device that had half the resolution and image quality as would be expected. This method should be used sparingly, and as a trade off between frame rates and image quality when other optimization methods are not effective. A minimum VRSettings.renderScale of 0.7f is suggested.
+https://docs.unity3d.com/540/Documentation/ScriptReference/VR.VRSettings-renderScale.html
+
+## Blurry Images / Pixel-Bleeding
+
+Pixel bleeding is a rendering issue that occurs on some devices and on some kinds of rendering, where the colors from one screen pixel appear to merge into those around it giving the impression of a blurry image. This can be solved at the expense of processing power by using `VRSettings.renderScale = x` anywhere in code, where x has a value greater than 1.0f. It is not recommended that this value be changed very often because it can negatively impact performance whenever it's value is set.
+
+This method works by resizing the textel to pixel ratio of the application, before stretching or shrinking the result onto the devices screens. In the case of blurry images this means that effects of image blur are shrunken and reduced, meaning that a sharper image is drawn. Although the number of textels increases the overall number of physical pixels on the device will always remain the same, and so setting VRSettings.renderScale to a high value will stop providing noticeable results quite quickly but will continue to reduce performance of the app overall. This method should be used sparingly, and as a trade off to balance between frame rates and image quality when other optimization methods are not effective. A maximum VRSettings.renderScale of 1.5f is suggested.
+https://docs.unity3d.com/540/Documentation/ScriptReference/VR.VRSettings-renderScale.html
 
 ## Performance Profiling
 
