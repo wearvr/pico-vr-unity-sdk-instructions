@@ -4,9 +4,9 @@
 
 To upgrade a Pico Goblin device's operating system and firmware, you will need:
 
-* A Pico Goblin device that is fully charged
-* A Micro-SD card 1GB or larger formatted as FAT32
-* A separate device to download the file and place it on the Micro-SD card
+* A Pico Goblin device that is *fully charged*
+* A Micro-SD card 1GB or larger, formatted as FAT32
+* A computer to download the file and place it on the Micro-SD card
 * A WEARVR developer account
 
 ## Checking the current Pico OS version
@@ -57,12 +57,14 @@ Open the **System Update** app:
   <img alt="Open the System Update app" width="500px" src="assets/SystemUpdateApp.png">
 </p>
 
+> Do **not** press the power button or remove the Micro-SD until the upgrade is complete or you may damage the device.
+
 Select the **Offline Update** option and follow the instructions.
 
 <p align="center">
   <img alt="Select Offline Update" width="500px" src="assets/OfflineUpdateOption.png">
 </p>
 
-Do **not** press the power button or remove the Micro-SD during the upgrade or you may damage the device. Once the device has updated and restarted, you now have the latest version of the Pico VR operating system and firmware installed.
+Once the device has updated and restarted, you now have the latest version of the Pico VR operating system and firmware installed.
 
 You can now remove the Micro-SD card from the headset.
