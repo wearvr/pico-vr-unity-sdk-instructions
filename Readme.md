@@ -60,6 +60,7 @@ Optional:
 * [Troubleshooting](/docs/troubleshooting.md)
 * [Optimizing Pico experiences](/docs/optimizing-pico-experiences.md)
 * [Upgrading the Pico Goblin OS & Firmware](/docs/upgrading-pico-goblin-operating-system-firmware.md)
+* [Localization](/docs/pico-unity-localization.md)
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
 
