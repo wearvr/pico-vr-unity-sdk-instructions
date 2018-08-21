@@ -52,6 +52,8 @@ public class PicoPaymentSDK {
     public static void GetUserAPI() {
         AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject mJo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+        Debug.LogWarning("Debug.LogWarning - GetUserAPI()");
+        
         jo.Call("init", mJo);
         jo.Call("getUserAPI");
     }

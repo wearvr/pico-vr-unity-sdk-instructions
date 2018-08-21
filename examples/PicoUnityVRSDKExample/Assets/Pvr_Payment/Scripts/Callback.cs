@@ -17,11 +17,14 @@ public class Callback : MonoBehaviour{
     private static string IS_SUCCESS = "isSuccess";
     private static string MSG = "msg";
     private static string CODE = "code";
+
     /// <summary>
     /// 登陆后本地缓存一份token，用于查询
     /// </summary>
     /// <param name="LoginInfo"></param>
     public void LoginCallback(string LoginInfo) {
+        Debug.Log("Debug.Log - LoginCallback: " + LoginInfo);
+        
         JsonData jsrr = JsonMapper.ToObject(LoginInfo);
         SetMassage(LoginInfo);
         DemoController.showLoading();
@@ -35,11 +38,19 @@ public class Callback : MonoBehaviour{
         
         Debug.Log("调用login回调:" + LoginInfo);
     }
+
+    public void LoginOrUserInfoCallback(string LoginInfo)
+    {
+        Debug.Log("Debug.Log - LoginOrUserInfoCallback: " + LoginInfo);
+    }
+    
     /// <summary>
     /// 接收支付或者查询订单操作的返回结果，根据提示码确定当前状态及订单信息
     /// </summary>
     /// <param name="payInfo"></param>
     public void QueryOrPayCallback(string queryOrPayInfo){
+        Debug.Log("Debug.Log - QueryOrPayCallback: " + queryOrPayInfo);
+        
         JsonData jsrr = JsonMapper.ToObject(queryOrPayInfo);
         if (jsrr[CODE] != null) {
             CommonDic.getInstance().code = jsrr["code"].ToString();
@@ -58,6 +69,7 @@ public class Callback : MonoBehaviour{
     }
 
     public void UserInfoCallback(string userInfo) {
+        Debug.Log("Debug.Log - UserInfoCallback: " + userInfo);
         
         CommonDic.getInstance().user_info = userInfo;
 

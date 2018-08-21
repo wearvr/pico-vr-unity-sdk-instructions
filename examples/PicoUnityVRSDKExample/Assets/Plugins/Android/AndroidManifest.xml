@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.pico.Integration" android:versionName="1.0.0" android:versionCode="1">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.wearvr.demo" android:versionName="1.0.0" android:versionCode="1">
   <!--payment-->
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -58,13 +58,20 @@
         <action android:name="android.service.vr.VrListenerService" />
       </intent-filter>
     </service>
-    <meta-data android:name="pico_merchant_id" android:value="81" />
-    <meta-data android:name="pico_app_id" android:value="5a189befeb3b33f7df101fbecffe4f98" />
-    <meta-data android:name="pico_app_key" android:value="25ba00fb73343ff1ec32e1c152fff291" />
-    <meta-data android:name="pico_pay_key" android:value="d828c5d3a1cc11e6b7fe008cfaf3d930" />
-    <meta-data android:name="pico_redirectUrl" android:value="http://www.picovr.com" />
-    <!--Scope of authorization-->
-    <meta-data android:name="pico_scope" android:value="get_user_info" />
+    <!-- Your app's credentials used for user sessions & payments within China -->
+    <meta-data android:name="pico_merchant_id" android:value="1335"/>
+    <meta-data android:name="pico_app_id" android:value="5ef0986f386e717e0ac259f1650769ad"/>
+    <meta-data android:name="pico_app_key" android:value="1b2b7ca6032f624ce198abe5530f333f"/>
+    <meta-data android:name="pico_pay_key" android:value="23888626f9bc6673b1a59bd1bfad4d84"/>
+    <meta-data android:name="pico_scope" android:value="SCOPE"/>
+
+    <!-- Your app's credentials used for user sessions & payments outside of China (currently not supported, but necessary for testing) -->
+    <meta-data android:name="pico_merchant_id_foreign" android:value="1335"/>
+    <meta-data android:name="pico_app_id_foreign" android:value="5ef0986f386e717e0ac259f1650769ad"/>
+    <meta-data android:name="pico_app_key_foreign" android:value="1b2b7ca6032f624ce198abe5530f333f"/>
+    <meta-data android:name="pico_pay_key_foreign" android:value="23888626f9bc6673b1a59bd1bfad4d84"/>
+    <meta-data android:name="pico_scope_foreign" android:value="SCOPE"/>
+    
     <meta-data android:name="com.pvr.instructionset" android:value="32" />
     <!--Whether the platform animation is displayed.-->
     <meta-data android:name="platform_logo" android:value="0" />
