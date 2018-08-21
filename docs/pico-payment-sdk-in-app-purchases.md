@@ -83,24 +83,21 @@ Where `result` is a string containing a serialized JSON object representing the 
 
 | Response (after being parsed as JSON) | Description |
 | :---: | :--- |
-| `"code": "12000", "msg": "支付成功"` | Payment succeeded. Your app can now give access to the purchased item. |
+| `"code": "12000", "msg": "PAY_SUCCESS"` | Payment succeeded. Your app can now give access to the purchased item. |
 
 #### App purchases error handling
 
-The following responses should be handled by your app (use the `"code"` attribute to do so - the `"msg"` value has only been included to make this page easier to search for error messages):
+The following responses should be handled by your app:
 
 | Response (after being parsed as JSON) | Description | Suggested app behaviour |
 | :---: | :--- | :--- |
-| `"code": "ORDER_EXIST", "msg": "订单已存在"` | A purchase with this `"order_id"` already exists. | Retry the purchase with a different purchase order ID. |
-| `"code": "PAY_CODE_EXIST", "msg": "用户已对商品代码消费"` | The user has already purchased this non-consumable item. | Give the user access to the purchased content as if they had just completed the purchase. |
-| `"code": "12003", "msg": "P币不足"` | The user did not have enough P coins. | Explain to the user that their account did not have enough P coins and that they will need to top up their balance at picovr.com before re-attempting the purchase. |
-| `"code": "11002", "msg": "用户参数错误或请求过期"` | Either the user was invalid or the request has expired. | Automatically re-attempt the purchase. If it fails again, explain to the user that there was a problem processing the purchase and ask them to check their account before trying again. |
-| `"code": "12001", "msg": "支付失败"` | The purchase was valid, but it failed. | Re-attempt the purchase. If it also fails, explain to the user that there was an error trying to create the purchase and ask them to try again soon. Return them to an appropriate place in your app. |
-| `"code": "13001", "msg": "获取数据失败"` | The server failed to retrieve some of the data necessary to process the purchase. | Same as above. |
-| `"code": "15001", "msg": "未输入预付ID"` | The server failed to complete the purchase process. | Same as above. |
-| `"code": "13002", "msg": "生成订单失败"` | An unknown server error occurred. | Same as above. |
-| `"code": "SYSTEMERROR", "msg": "系统错误"` | An system error occurred on the server. | Same as above. |
-| `"code": "00000", "msg": "网络异常"` | A network error occurred. | Re-attempt the purchase. If it also fails, ask the user to check their wireless connection before trying the purchase again. |
+| `"code": "11001", "msg": "USER_NOT_LOGIN_OR_EXPIRED"` | The request to check the current user’s available balance failed because the user was not signed in. | Call `PicoPaymentSDK.Login()` to log the user in. |
+| `"code": "12007", "msg": "PAY_ORDER_EXIST"` | A purchase with this `"order_id"` already exists. | Retry the purchase with a different purchase order ID. |
+| `"code": "12009", "msg": "PAY_CODE_ALERADY_CONSUMED"` | The user has already purchased this non-consumable item. | Give the user access to the purchased content as if they had just completed the purchase. |
+| `"code": "12003", "msg": "PCOIN_NOT_ENOUGH"` | The user did not have enough P coins. | Explain to the user that their account did not have enough P coins and that they will need to top up their balance at picovr.com before re-attempting the purchase. |
+| `"code": "15001", "msg": "SYSTEM_ERROR"` | An system error occurred on the server. | Automatically re-attempt the purchase. If it fails again, explain to the user that there was a problem processing the purchase and ask them to check their account before trying again. |
+| `"code": "14001", "msg": "SDK_LOCAL_ERROR"` | A local error in the Pico SDK has occurred. | Same as above. |
+| `"code": "14004", "msg": "NETWORK_ERROR"` | A network error occurred. | Re-attempt the purchase. If it also fails, ask the user to check their wireless connection before trying the purchase again. |
 
 #### Troubleshooting in-app purchases
 
@@ -108,15 +105,11 @@ The following error conditions should not normally occur. If they do, they may i
 
 | Response (after being parsed as JSON) | Description | Suggested app behaviour |
 | :---: | :--- | :--- |
-| `"code": "10002", "msg": "请输入正确金额或商品码"` | A purchase was attempted with a non-positive price. | Check the value of the `total` attribute you are using to create the purchase. |
-| `"code": "10001", "msg": "用户未登录"` | The request to check the current user’s available balance failed because the user was not signed in. | Make sure you sign in your user before attempting to make a purchase. |
-| `"code": "11004", "msg": "商户验证失败"` | The purchase failed because `pico_merchant_id`, `pico_app_id` or `pico_pay_key` is missing or invalid from the AndroidManifest file. | Check your AndroidManifest. |
-| `"code": "PAY_CODE_NOT_EXIST", "msg": "商品代码不存在"` | The `pay_code` parameter did not match any pre-registered items. | Check that you are using the correct value of this parameter and you have already registered the item.<br/>If you are not purchasing a pre-registered item, check that you are not submitting any value for pay_code. |
-| `"code": "15000", "msg": "未输入商品信息"` | `PicoPaymentSDK.Pay()` was called without a serialised JSON object | Check the serialised JSON object you are passing to `PicoPaymentSDK.Pay()`. |
-| `"code": "15003", "msg": "未生成订单号/订单号超过32位"` | The `"order_id"` value passed to `PicoPaymentSDK.Pay()` was longer than 32 characters. | Check that your app is not generating order ids longer than 32 characters. |
-| `"code": "APP_ID_NOT_EXIST", "msg": "APP_ID不存在"` | An app with the specified ID was not found on the server. | Check the pico_app_id in your AndroidManifest. |
-| `"code": "MCHID_NOT_EXIST", "msg": "MCHID不存在"` | WEARVR’s merchant ID could not be validated on the server. | Check the `pico_merchant_id` in your AndroidManifest. |
-| `"code": "NOAUTH", "msg": "商户无此接口权限"` | WEARVR’s merchant ID could not be validated on the server. | Check the `pico_merchant_id` in your AndroidManifest. |
+| `"code": "11004", "msg": "MISSING_APP_PARAMETERS"` | The purchase failed because `pico_merchant_id`, `pico_app_id` or `pico_pay_key` is missing from the AndroidManifest file. | Check your AndroidManifest. |
+| `"code": "15003", "msg": "SERVICE_APP_PARAMETER_NOT_MATCH"` | The purchase failed because `pico_merchant_id`, `pico_app_id` or `pico_pay_key` from the AndroidManifest file is invalid. | Check your AndroidManifest. |
+| `"code": "12002", "msg": "ENTER_AMOUNT_ERROR"` | A purchase was attempted with a non-positive price. | Check the value of the `total` attribute you are using to create the purchase. |
+| `"code": "12008", "msg": "PAY_CODE_NOT_EXIST"` | The `pay_code` parameter did not match any pre-registered items. | Check that you are using the correct value of this parameter and you have already registered the item.<br/>If you are not purchasing a pre-registered item, check that you are not submitting any value for pay_code. |
+| `"code": "12006", "msg": "NOT_ENTER_ORDER_INFO"` | `PicoPaymentSDK.Pay()` was called without a serialised JSON object, or one that is missing required parameters. | Check the serialised JSON object you are passing to `PicoPaymentSDK.Pay()`. |
 
 ## Recording a purchase
 

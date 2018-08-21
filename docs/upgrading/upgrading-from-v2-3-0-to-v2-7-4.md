@@ -172,3 +172,86 @@ Then [set up the new `Pvr_Controller`](/docs/pico-goblin-and-neo-controllers.md#
 
 If your app does not integrate the Pico's user or payment API, then you can skip this section.
 
+### Update user methods
+
+The JSON object passed to the `LoginCallback` callback method [has changed](/docs/pico-payment-sdk-user-management.md#logging-the-user-in) to have two attributes: `"isSuccess"` and `"msg"`.
+
+For example, this:
+
+```cs
+public class Callback : MonoBehaviour{
+    public void LoginCallback(string result) {
+        JsonData response = JsonMapper.ToObject(result);
+
+        if (response["cancel"] != null ) {
+            // User closed sign in UI
+        } else if (response["exception"] != null ) {
+            // Sign in error occurred
+        } else {
+            // Access token and openID must be saved in CommonDic for user details
+            // request to work later
+            CommonDic.getInstance().access_token = response["access_token"].toString();
+            CommonDic.getInstance().open_id = response["open_id"].toString();
+        }
+    }
+}
+```
+
+Becomes this:
+
+```cs
+public class Callback : MonoBehaviour{
+    public void LoginCallback(string result) {
+        JsonData response = JsonMapper.ToObject(result);
+
+        if (response["isSuccess"] == "true" ) {
+            PicoPaymentSDK.GetUserAPI();
+        } else {
+            if response["msg"] == "Network Exception,please check the network connection" {
+                // Display dialog with message ("Connection error, please check your connection and try again."):
+                // 网络链接错误，请检查网络稍后再试。
+            } else {
+                // Another error has occurred - typically handled by the operating system.
+                // Display a dialog with message ("An unknown error has occurred. Please try again later."):
+                // 未知错误，请稍后再试。
+            }
+        }
+    }
+}
+```
+
+### Update payment codes
+
+Status codes for `QueryOrPayCallback(string result)` have been updated in v2.7.4 to be more concise and consistent. (You can [see here](/docs/pico-payment-sdk-in-app-purchases.md#app-purchases-error-handling) for full details of the new error codes.).
+
+#### Removed status codes
+
+If your app references any of the error codes, they have now been removed and your app will not need to handle them.
+
+| Old code(s) | Comments |
+| :---: | :--- |
+| 11002 | |
+| 12001 | |
+| 13001 | |
+| 13002 | |
+| 15003 | This code has been re-purposed (see [Altered status codes](#altered-status-codes)). |
+
+#### Altered status codes
+
+If your code references any of the old codes, you need to substitute the new ones:
+
+| Old code(s) | New code | Description |
+| :---: | :---: | :--- |
+| 10001 | 11001 | The request to check the current user’s available balance failed because the user was not signed in. |
+| 10002 | 12002 | A purchase was attempted with a non-positive price. |
+| 15000 | 12006 | `PicoPaymentSDK.Pay()` was called without a serialised JSON object, or one that is missing required parameters. |
+| ORDER_EXIST | 12007 | A purchase with this `"order_id"` already exists. |
+| PAY_CODE_EXIST | 12009 | The user has already purchased this non-consumable item. |
+| PAY_CODE_NOT_EXIST | 12008 | The `pay_code` parameter did not match any pre-registered items. |
+| 00000 | 14004 | A network error occurred. |
+| SYSTEMERROR | 15001 | An system error occurred on the server. |
+| APP_ID_NOT_EXIST, MCHID_NOT_EXIST, NOAUTH | 15003 | The purchase failed because `pico_merchant_id`, `pico_app_id` or `pico_pay_key` from the AndroidManifest file is invalid. (Note that this error code used to represent a different error - see [Removed status codes](#removed-status-codes).) |
+
+#### New status codes
+
+The status code `14001` now occurs in the event that one of the operations the SDK performs fails. Your app should re-attempt the purchase and then display an error message if it fails again, asking the user to retry later. You can use the following copy in your message to the user: 未知错误，请稍后再试

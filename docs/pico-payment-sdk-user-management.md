@@ -97,12 +97,12 @@ PicoPaymentSDK.Login();
 #endif
 ```
 
-To receive the result of the login, define a GameObject in your scene called `PicoPayment` and attach a `MonoBehaviour` script that defines a `LoginOrUserInfoCallback` method.
+To receive the result of the login, define a GameObject in your scene called `PicoPayment` and attach a `MonoBehaviour` script that defines a `LoginCallback` method.
 
 > The Pico SDK expects a GameObject called `PicoPayment` to receive callback information from the underlying operating system. This is currently hard-coded, so must match exactly or your callbacks will not be triggered.
 
 ```
-void LoginOrUserInfoCallback(string result);
+void LoginCallback(string result);
 ```
 
 Where `result` is a string containing a serialized JSON object representing the result of the sign in request.
@@ -124,41 +124,47 @@ Example:
 }
 ```
 
+#### Logging in error handling
+
+The following responses should be handled by your app:
+
+| msg | Description |
+| :---: | :--- |
+| `"Network Exception,please check the network connection"` | The device is not currently connected to the internet. Display a dialog to the user with the following message, asking the user to check their connection and try again: 网络链接错误，请检查网络稍后再试。 |
+
+
 #### Example implementation
 
 ```cs
 using LitJson;
 
 public class Callback : MonoBehaviour{
-    public void LoginOrUserInfoCallback(string result) {
+    public void LoginCallback(string result) {
         JsonData response = JsonMapper.ToObject(result);
 
         if (response["isSuccess"] == "true" ) {
-            // User is now signed in
+            PicoPaymentSDK.GetUserAPI();
         } else {
-            // Sign in error occurred - display response["msg"] to explain
-            // to the user what has occurred and what action they may take
+            if response["msg"] == "Network Exception,please check the network connection" {
+                // Display dialog with message ("Connection error, please check your connection and try again."):
+                // 网络链接错误，请检查网络稍后再试。
+            } else {
+                // Another error has occurred - typically handled by the operating system.
+                // Display a dialog with message ("An unknown error has occurred. Please try again later."):
+                // 未知错误，请稍后再试。
+            }
         }
     }
 }
 ```
 
-#### Logging in error handling
-
-The following responses should be handled by your app:
-
-| Response (after being parsed as JSON) | Description | Suggested app behaviour |
-| :---: | :--- | :--- |
-| `{ "cancel": "cancel" }` | The user has closed the sign in UI without signing in.<br/><br/>No purchases can take place until the user has successfully signed in. | Honor the user’s wish to cancel and return them to before they selected the item to purchase. |
-| `{ "exception": "..." }` | The sign in attempt has failed. The user may be able to re-attempt the request immediately, or the problem may be more persistent.<br/><br/>No purchases can take place until the user has successfully signed in.<br/><br/>A non-exhaustive list of error codes:<br/>`00061000`: OAuth user token was not found<br/>`00061001`: OAuth user token was invalid<br/>`00061002`: Unknown token error<br/>`00060000`: User could not be found<br/>`00060001`: Password was incorrect<br/>`00060002`: Username was incorrect | Provide the user the option to either re-attempt to sign in, or cancel and return to a suitable place in your app. |
-
 #### Logging in troubleshooting
 
 The following error conditions should not normally occur. If they do, they may indicate that the SDK has not been correctly integrated into your project.
 
-| Response (after being parsed as JSON) | Description | Suggested app behaviour |
-| :---: | :--- | :--- |
-| `{ "exception": "Please install Pico Client" }` | The SDK cannot access the resources it needs to function. | Make sure you are running your app on the device and not in Unity. |
+| msg | Description |
+| :---: | :--- |
+| `"Login exception ，missing parameters <appId> <appKey> <scope>"` | The SDK could not read the correct values from the `AndroidManifest.xml` file. Check you have followed the [Credentials instructions](#credentials) correctly. |
 
 ### Getting the current user session
 
@@ -197,11 +203,11 @@ public class Callback : MonoBehaviour{
 
             JsonData user = response["data"];
         } else if (response["exception"] == "user is not login") {
-
-            PicoPaymentSDK.Login()
-
+            PicoPaymentSDK.Login();
         } else {
-            // Current user request failed
+            // Display a dialog with message ("An unknown error has occurred.
+            // Please try again later."):
+            // 未知错误，请稍后再试。
         }
     }
 }
@@ -215,7 +221,7 @@ public class Callback : MonoBehaviour{
 
 #### User attributes
 
-Users are required to have an email or a phone number. All other fields are optional.
+Aside from `"email"` and `"phone"` (users are required to have at least one of these values), all fields are optional and will not appear in the JSON object at all if their value is not defined.
 
 | results\["data"\]\[*\] | Type | Description |
 | :--- | :--- | :--- |
@@ -238,11 +244,8 @@ The following responses should be handled by your app:
 
 | Response (after being parsed as JSON) | Description | Suggested app behaviour |
 | :---: | :--- | :--- |
-| `"ret_code": "00080001"`<br/>`"ret_code": "00090001"`<br/>`"ret_code": "00100001"` | The server refused one of the OAuth parameters.<br/><br/>`00080001`: Invalid OAUTH_CODE<br/>`00090001`: Invalid REFRESH_TOKEN<br/>`00100001`: Invalid ACCESS_TOKEN | Explain the request to receive the current user’s details has failed and provide the user the option to sign in again or cancel and return to a suitable place in your app. |
-| `"ret_code": "00020000"` | The server found the user data, but it failed some validation checks. | Explain to the user that their user details were invalid and ask them to check their account before attempting again. |
-| `"ret_code": "00003000"`<br/>`"ret_code": "00003001"`<br/>`"ret_code": "9999"` | The server refused one of the OAuth parameters.<br/><br/>`00003000`: The response signature could not be verified.<br/>`00003001`: The times on the device and the server did not match.<br/>`9999`: A system error occurred on the server. | Retry the request before explaining there was an error retrieving their user details and to try again later. Return them to a suitable place in your app in the meantime. |
 | `"exception": "user is not login"` | The user is not logged in. | Call `PicoPaymentSDK.Login()` to display the login workflow and try again. |
-| `"exception": "..."` | A client-side exception has occurred somewhere in creating, sending or receive the request for the user details. | Retry the request before explaining there was an error retrieving their user details and to try again later. Return them to a suitable place in your app in the meantime. |
+| `"exception": "..."` | An exception has occurred somewhere in creating, sending or receive the request for the user details. | Retry the request before explaining there was an error retrieving their user details and to try again later. Return them to a suitable place in your app in the meantime. |
 
 #### User details troubleshooting
 
@@ -250,7 +253,6 @@ The following error conditions should not normally occur. If they do, they may i
 
 | Response (after being parsed as JSON) | Description | Suggested app behaviour |
 | :---: | :--- | :--- |
-| `"ret_code": "00001000"` | The `access_key` or `open_id` parameters stored in `CommonDic` are invalid. | Check that you are setting access_key or open_id correctly in LoginOrUserInfoCallback() before calling PicoPaymentSDK.GetUserAPI(). |
 | `"ret_code": "00070001"` | The App credentials failed validation. | Check the `pico_app_id` in your AndroidManifest. |
 | `"ret_code": "00071001"` | Invalid app secret key. | Check the `pico_app_key` in your AndroidManifest. |
 | `"ret_code": "00110001"` | Invalid Scope.	 | Check the `pico_scope` in your AndroidManifest. |
