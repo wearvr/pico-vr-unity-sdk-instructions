@@ -54,17 +54,82 @@ Add a `PhysicsRaycaster` component to the `Head` camera.
   <img alt="Add PhysicsRaycaster to Head camera" width="500px" src="assets/AddPhysicsRaycasterImage.png">
 </p>
 
-## GraphicRaycaster setup
+## Setting up Canvases
 
-Add a `Canvas` and `Layer` to your scene if you do not already have one.
-
-Configure the `Canvas` to render in **World Space**.
-
-Set the **Event Camera** to the `Head` inside the `Pvr_UnitySDK` prefab you added to your scene.
+All `Canvas`es must be rendered in **World Space** to work with the Pico SDK and have the **Event Camera** set to `Head` inside the `Pvr_UnitySDK` prefab you added to your scene.
 
 <p align="center">
   <img alt="Add a worldspace canvas with Head as the event camera" width="500px" src="assets/SelectWorldSpaceImage.png">
 </p>
+
+## Selecting an input module
+
+The Pico SDK provides a two build-in input modules that you can chose to use, or opt to use your own.
+
+### Using input modules that come with the SDK
+
+The two input modules included in the Pico SDK are:
+
+* `Pvr_UnitySDKSightInputModule`: Requires the user to look at an object or UGUI element and press the **Menu** button to trigger a click action. This is the default input module used in the `Pvr_UnitySDK` prefab and to use it, you do not need to make any changes.
+* `Pvr_GazeInputModule`: Displays a time-based cursor that “completes” when a user gazes at a GameObject or UGUI element for long enough to automatically trigger a click action. To use this input module, remove all other input modules from `Pvr_UnitySDK/Event` in your scene and add `Pvr_UnitySDK/System/Event/Pvr_GazeInputModule`. Drag `Pvr_UnitySDK/System/Event/Pvr_GazeInputModuleCrosshair` into the **Crosshair** field.
+
+Both input modules work by raycasting on all raycastable layers from the centre of the user's point of view, and interacting with any components that implement `IEventSystemHandler`.
+
+> These input modules will *not* work on objects that are on layers that ignore raycasting.
+
+### Using your own input module
+
+The following example code may be a good starting point if you want to use your own input module instead of one that come with the Pico SDK:
+
+```cs
+using Pvr_UnitySDKAPI;
+using UnityEngine;
+public class WEARVRInputRaycaster : MonoBehaviour
+{
+    [SerializeField]
+    private Transform headsetPosition; //Assign to 'Pvr_UnitySDK/Head' in inspector.
+    [SerializeField]
+    private Transform controller0Position; //Assign to 'Pvr_UnitySDK/PvrController0' in inspector.
+    [SerializeField]
+    private Transform controller1Position; //Assign to 'Pvr_UnitySDK/PvrController1' in inspector.
+    private Ray ray = new Ray();
+    private void Update()
+    {
+        if (RaycastFromHeadInput())
+        {
+            PerformRaycast(headsetPosition);
+        }
+        else if (RaycastFromHandInput(0))
+        {
+            PerformRaycast(controller0Position);
+        }
+        else if (RaycastFromHandInput(1))
+        {
+            PerformRaycast(controller1Position);
+        }
+    }
+    private void PerformRaycast(Transform rayStart)
+    {
+        ray.direction = rayStart.forward;
+        ray.origin = rayStart.position;
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(ray); //This can be given a maximum range, if needed.
+        foreach(var hit in hits)
+        {
+            //Activation code should go here. Searching for button or event components, and then actioning them, is common.
+        }
+    }
+    private bool RaycastFromHeadInput()
+    {
+        return Input.GetKey(KeyCode.JoystickButton0);
+    }
+    private bool RaycastFromHandInput(int handIndex)
+    {
+        if (Pvr_UnitySDKAPI.Controller.UPvr_GetControllerState(handIndex) != Pvr_UnitySDKAPI.ControllerState.Connected) return false;
+        return Controller.UPvr_GetKey(handIndex, Pvr_KeyCode.TOUCHPAD);
+    }
+}
+```
 
 ## Pointer input
 
@@ -72,16 +137,6 @@ The Pico VR SDK adapts the motion of the headset or Hummingbird controller to Un
 
 * Attach an `EventTrigger` with one or more `Pointer*` events
 * Attach a script that implements one or more of the [Unity pointer handler interfaces](https://docs.unity3d.com/ScriptReference/EventSystems.IPointerClickHandler.html).
-
-### Selecting an input module
-
-The Pico SDK provides a choice of two input modules:
-
-`Pvr_UnitySDKSightInputModule`: Requires the user to look at an object or UGUI element and press the **Menu** button to trigger a click action. This is the default input module used in the `Pvr_UnitySDK` prefab and to use it, you do not need to make any changes.
-
-`Pvr_GazeInputModule`: Displays a time-based cursor that “completes” when a user gazes at a GameObject or UGUI element for long enough to automatically trigger a click action.
-
-To use this input module, remove all other input modules from `Pvr_UnitySDK/Event` in your scene and add `Pvr_UnitySDK/System/Event/Pvr_GazeInputModule`. Drag `Pvr_UnitySDK/System/Event/Pvr_GazeInputModuleCrosshair` into the **Crosshair** field.
 
 ### Using an EventTrigger
 
