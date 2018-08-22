@@ -94,10 +94,10 @@ The following responses should be handled by your app:
 | `"code": "11001", "msg": "USER_NOT_LOGIN_OR_EXPIRED"` | The request to check the current user’s available balance failed because the user was not signed in. | Call `PicoPaymentSDK.Login()` to log the user in. |
 | `"code": "12007", "msg": "PAY_ORDER_EXIST"` | A purchase with this `"order_id"` already exists. | Retry the purchase with a different purchase order ID. |
 | `"code": "12009", "msg": "PAY_CODE_ALERADY_CONSUMED"` | The user has already purchased this non-consumable item. | Give the user access to the purchased content as if they had just completed the purchase. |
-| `"code": "12003", "msg": "PCOIN_NOT_ENOUGH"` | The user did not have enough P coins. | Explain to the user that their account did not have enough P coins and that they will need to top up their balance at picovr.com before re-attempting the purchase. |
-| `"code": "15001", "msg": "SYSTEM_ERROR"` | An system error occurred on the server. | Automatically re-attempt the purchase. If it fails again, explain to the user that there was a problem processing the purchase and ask them to check their account before trying again. |
+| `"code": "12003", "msg": "PCOIN_NOT_ENOUGH"` | The user did not have enough P coins. | Display a dialog with 你的 Pico 账号里没有足够的P币来完成这次购买。你可以在 Pico 网站上充值。(“Your Pico account does not have enough P-coins to make this purchase. You can top up your balance on the Pico website.”) |
+| `"code": "15001", "msg": "SYSTEM_ERROR"` | An system error occurred on the server. | Automatically re-attempt the purchase. If it fails again, display a dialog with message: 未知错误，请稍后再试。("An unknown error has occurred. Please try again later.") |
 | `"code": "14001", "msg": "SDK_LOCAL_ERROR"` | A local error in the Pico SDK has occurred. | Same as above. |
-| `"code": "14004", "msg": "NETWORK_ERROR"` | A network error occurred. | Re-attempt the purchase. If it also fails, ask the user to check their wireless connection before trying the purchase again. |
+| `"code": "14004", "msg": "NETWORK_ERROR"` | A network error occurred. | Re-attempt the purchase. If it also fails, display a dialog saying 网络链接错误，请检查网络稍后再试。("Connection error, please check your connection and try again."). |
 
 #### Troubleshooting in-app purchases
 
