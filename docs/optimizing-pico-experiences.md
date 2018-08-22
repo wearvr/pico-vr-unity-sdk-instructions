@@ -27,6 +27,18 @@ Pixel bleeding is a rendering issue that occurs on some devices and on some kind
 This method works by resizing the textel to pixel ratio of the application, before stretching or shrinking the result onto the devices screens. In the case of blurry images this means that effects of image blur are shrunken and reduced, meaning that a sharper image is drawn. Although the number of textels increases the overall number of physical pixels on the device will always remain the same, and so setting VRSettings.renderScale to a high value will stop providing noticeable results quite quickly but will continue to reduce performance of the app overall. This method should be used sparingly, and as a trade off to balance between frame rates and image quality when other optimization methods are not effective. A maximum VRSettings.renderScale of 1.5f is suggested.
 https://docs.unity3d.com/540/Documentation/ScriptReference/VR.VRSettings-renderScale.html
 
+## Visual issues with Shaders and Materials
+
+Virtual Reality applications are often very demanding for mobile devices to cope with, and visual problems often occur. Even if an application performs at a decent framerate it is common for visual issues unique to the hardware to present themselves.
+
+Shaders are a common source of visual faults, and shaders that appear to run faultlessly in the unity editor can break on device. Particularly shaders that rely on reflections, specular lighting, or other visual tricks that rely on the shader knowing the cameras position relative to a surface are often prone to failure. This is because some shaders do not cope well with the fact that Virtual reality relies on two cameras and two points of view to achive it's desired effect. It is reccomended that complicated shaders be simplified or replaced where neccesary.
+
+Often shaders or rendered objects can fail to draw correctly due to system limitations. Complicated materials rendered onto a large object can often appear to break and seem to flicker in and out of view disorentatlingly on some platforms. One proven way to help reduce this is to ensure that on problematic materials do not have 'GPU Instancing' enabled, as this Unity feature does not seem to behave stabily on some platforms.
+
+<p align="center">
+  <img alt="Disabling GPU Instancing can often solve graphical issues on device" width="500px" src="assets/GPUInstancing.png">
+</p>
+
 ## Performance Profiling
 
 Unity provides the ability to run performance profiling tools on a Pico device that can help you diagnose the root cause of any performance issues your VR experience may have.
