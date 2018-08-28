@@ -16,12 +16,11 @@ Select the About option. Click eight times on the **PUI Version** with the contr
   <img alt="Select the About option" width="500px" src="assets/PicoPUIVersion.png">
 </p>
 
-Select the **Developer** option now present in the menu.
+Select the **Developer** or **Advanced Options** now present in the menu.
 
 <p align="center">
   <img alt="Select the Developer option" width="500px" src="assets/PicoDeveloperSettings.png">
 </p>
-
 
 Scroll down and select **About device**
 

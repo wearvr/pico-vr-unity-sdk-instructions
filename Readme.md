@@ -57,11 +57,17 @@ Optional:
 
 * [Working with the current user](/docs/pico-payment-sdk-user-management.md)
 * [Adding in-app purchases](/docs/pico-payment-sdk-in-app-purchases.md)
+* [Testing in-app purchases](/docs/testing-in-app-purchases.md)
 * [Troubleshooting](/docs/troubleshooting.md)
 * [Optimizing Pico experiences](/docs/optimizing-pico-experiences.md)
-* [Upgrading the Pico Goblin OS & Firmware](/docs/upgrading-pico-goblin-operating-system-firmware.md)
 * [Localization](/docs/pico-unity-localization.md)
 * [Getting device information at runtime](/docs/getting-device-information-at-runtime.md)
+
+Device:
+
+* [Connecting to a Wifi network](/docs/connecting-to-a-wifi-network.md)
+* [Upgrading the Pico Goblin OS & Firmware](/docs/upgrading-pico-goblin-operating-system-firmware.md)
+* [Changing the Pico Goblin's language](/docs/changing-pico-goblins-language.md)
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
 
