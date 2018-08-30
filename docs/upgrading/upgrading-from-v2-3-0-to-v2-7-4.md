@@ -1,18 +1,24 @@
 # Upgrading from v2.3.0 to v2.7.4
 
-## Install the new unitypackage
+### Remove old files
+
+Delete `Assets/Plugins/Android/Pico_PaymentSDK_Unity_V1.0.16.jar` if it appears in your project - this is replaced by `Pico_PaymentSDK_Unity_V1.0.19.jar`.
+
+Delete `Assets/Plugins/Android/hummingbirdservicecontroller.jar` if it appears in your project - this is replaced by `hbcserviceclient.jar`.
+
+Delete folders containing old SDK assets, to ensure that anything that isn't merged over dosn't remain to cause conflcits.
+
+<p align="center">
+  <img alt="Remove these folders when upgrading to ensure no old code or assets remain" width="500px" src="/docs/assets/PVR Folders.png.png">
+</p>
+
+### Install the new unitypackage
 
 <a href="https://users.wearvr.com/developers/devices/pico-goblin/resources/vr-unity-package/versions/v2-7-4" target="_blank">Download v2.7.4 of the Pico VR Unity SDK</a> from WEARVR and import it into your Unity project
 
 <p align="center">
   <img alt="Import the .unitypackage as custom package" width="500px" src="/docs/assets/ImportUnityPackageImage.png">
 </p>
-
-### Remove old files
-
-Delete `Assets/Plugins/Android/Pico_PaymentSDK_Unity_V1.0.16.jar` if it appears in your project - this is replaced by `Pico_PaymentSDK_Unity_V1.0.19.jar`.
-
-Delete `Assets/Plugins/Android/hummingbirdservicecontroller.jar` if it appears in your project - this is replaced by `hbcserviceclient.jar`.
 
 ### Fix broken reference
 
