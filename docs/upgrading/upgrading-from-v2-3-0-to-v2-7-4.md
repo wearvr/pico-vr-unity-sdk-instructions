@@ -9,7 +9,7 @@ Delete `Assets/Plugins/Android/hummingbirdservicecontroller.jar` if it appears i
 Delete folders containing old SDK assets, to ensure that anything that isn't merged over dosn't remain to cause conflcits.
 
 <p align="center">
-  <img alt="Remove these folders when upgrading to ensure no old code or assets remain" width="500px" src="/docs/assets/PVR Folders.png.png">
+  <img alt="Remove these folders when upgrading to ensure no old code or assets remain" width="500px" src="/docs/assets/PVR Folders.png">
 </p>
 
 ### Install the new unitypackage
