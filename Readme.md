@@ -69,7 +69,7 @@ Device:
 
 * [Connecting to a Wifi network](/docs/connecting-to-a-wifi-network.md)
 * [Upgrading the Pico Goblin OS & Firmware](/docs/upgrading-pico-goblin-operating-system-firmware.md)
-* [Changing the Pico Goblin's language](/docs/changing-pico-goblins-language-setting.md.md)
+* [Changing the Pico Goblin's language](/docs/changing-pico-goblins-language-setting.md)
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
 
