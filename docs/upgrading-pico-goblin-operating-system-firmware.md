@@ -68,3 +68,37 @@ Select the **Offline Update** option and follow the instructions.
 Once the device has updated and restarted, you now have the latest version of the Pico VR operating system and firmware installed.
 
 You can now remove the Micro-SD card from the headset.
+
+## Troubleshooting
+
+If the device does not detect the updated operating system file on the Micro-SD, check that the file has its original name and is a directory called `dload`, at the root of the Micro-SD card's file system.
+
+If that has no effect, try the following steps:
+
+Open settings:
+
+<p align="center">
+  <img alt="Select the Settings option" width="500px" src="assets/SettingsMenuOption.png">
+</p>
+
+Select the **Developer** or **Advanced Options**:
+
+<p align="center">
+  <img alt="Select the Developer option" width="500px" src="assets/PicoDeveloperSettings.png">
+</p>
+
+Select the **Storage & USB**:
+
+<p align="center">
+  <img alt="Select Storage & USB" width="500px" src="assets/SelectStorageAndUSB.png">
+</p>
+
+Select the Micro-SD card:
+
+<p align="center">
+  <img alt="Select th Micro SD card" width="500px" src="assets/SelectSDCard.png">
+</p>
+
+Navigate to the `dload` directory. If there are two files that appear in that directory with the same name, delete the one with the smaller size (usually around 4kb).
+
+Re-attempt the instructions above.
