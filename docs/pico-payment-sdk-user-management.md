@@ -165,6 +165,7 @@ The following error conditions should not normally occur. If they do, they may i
 | msg | Description |
 | :---: | :--- |
 | `"Login exception ，missing parameters <appId> <appKey> <scope>"` | The SDK could not read the correct values from the `AndroidManifest.xml` file. Check you have followed the [Credentials instructions](#credentials) correctly. |
+| `"ErrorMsg: APP_CHECK_ERROR"` | The app_id in your AndroidManifest.xml did not match any registered with the Pico services. The most likely casue of this is you have not yet [changed the device's locale](/docs/testing-in-app-purchases.md) |
 
 ### Getting the current user session
 
