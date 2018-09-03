@@ -20,20 +20,6 @@ Delete folders containing old SDK assets, to ensure that anything that isn't mer
   <img alt="Import the .unitypackage as custom package" width="500px" src="/docs/assets/ImportUnityPackageImage.png">
 </p>
 
-### Fix broken reference
-
-Unfortunately, there is a bug in the latest version of the SDK that requires fixing. Replace line 944 of `Assets/Pvr_UnitySDK/Pvr_UnitySDKManager.cs`:
-
-```cs
-ViewerToast = transform.Find("Head").Find("Viewertoast").gameObject;
-```
-
-with the following:
-
-```cs
-ViewerToast = transform.Find("Height").Find("Head").Find("Viewertoast").gameObject;
-```
-
 ## API changes
 
 ### Add controller indexes
