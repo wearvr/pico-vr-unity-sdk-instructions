@@ -4,6 +4,8 @@ The Pico SDK provides the ability to integrate with Pico’s payment and user ma
 
 This is an optional step that is only required if your app has in-app purchases or needs user information to function.
 
+> It's strongly recommended that you [upgrade to the latest version of the Pico Goblin firmware and operating system](/docs/upgrading-pico-goblin-operating-system-firmware.md) before attempting these steps.
+
 ## Update AndroidManifest.xml
 
 Edit the `Plugins/Android/AndroidManifest.xml` file:
