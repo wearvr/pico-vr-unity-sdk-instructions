@@ -246,6 +246,8 @@ If your code references any of the old codes, you need to substitute the new one
 
 #### New status codes
 
+Your app should now reference these new codes:
+
 | New code(s) | Comments |
 | :---: | :--- |
 | 14001 | Occurs in the event that one of the operations the SDK performs fails. Your app should re-attempt the purchase and then display an error message if it fails again, asking the user to retry later. You can use the following copy in your message to the user: 未知错误，请稍后再试 |
