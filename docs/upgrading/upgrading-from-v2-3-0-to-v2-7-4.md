@@ -164,6 +164,10 @@ Then [set up the new `Pvr_Controller`](/docs/pico-goblin-and-neo-controllers.md#
 
 If your app does not integrate the Pico's user or payment API, then you can skip this section.
 
+### Update AndroidManifest.xml
+
+After updating the Pico SDK the apps AndroidManifest.xml may be rebuilt. It is reccomended that the android permissions and the values 'pico_merchant_id', 'pico_app_id', 'pico_app_key' as well at [the other values that were changed when the Pico payment SDK was first integrated](/docs/pico-payment-sdk-user-management.md) be checked.
+
 ### Update user methods
 
 The JSON object passed to the `LoginCallback` callback method [has changed](/docs/pico-payment-sdk-user-management.md#logging-the-user-in) to have two attributes: `"isSuccess"` and `"msg"`.
