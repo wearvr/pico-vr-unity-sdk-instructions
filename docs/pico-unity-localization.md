@@ -31,6 +31,16 @@ However, if you wish to maximise engagement with all of your users, the current 
 | 日本語 | Japanese | `SystemLanguage.Japanese` |
 | Español | Spanish | `SystemLanguage.Spanish` |
 
+Chinese is particularly important, as it represents a large segment of the Pico Goblin and Neo market.
+
+## Translation Resources
+
+Where possible, we have included standard Chinese text you can copy and paste into your app for displaying error messages.
+
+[Google Translate](https://translate.google.co.uk/) provides adequate translations for smaller bodies of text (please use "Simplified Chinese" when translating into Chinese). 
+
+However, if you have a lot of text or would like assistance with localisation or checking copy provided by Google Translate, WEARVR can assist. Just get in touch on devs@wearvr.com to discuss your needs.
+
 ## Testing localization
 
 See [Changing a Pico Goblin's language setting](/docs/changing-pico-goblins-language-setting.md).
