@@ -1,5 +1,7 @@
 # Upgrading Pico Goblin operating system firmware
 
+Currently the latest version of the Pico Goblin OS is 2.3.0. This is the lowest version of the OS your app will need to support.
+
 ## Prerequisites
 
 To upgrade a Pico Goblin device's operating system and firmware, you will need:
