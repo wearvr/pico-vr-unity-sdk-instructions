@@ -42,7 +42,7 @@ Where `purchaseDetails` is a string containing a serialized JSON object with the
 | :---: | :--- | :--- |
 | `"subject"` | String | A short description of the purchase |
 | `"body"` | String | A longer description of the purchase |
-| `"order_id"` | String | An identifier unique to the current user and purchase. It's up to you how you generate this, but it must be less than 32 characters. |
+| `"order_id"` | String | A unique identifier for the purchase (no two purchase transactions within the same game can have the same order_id). It's up to you how you generate this, but it must be less than 32 characters. |
 | `"pay_code"` | String | Product code - this must match the one you have provided when registering your purchase item. |
 | `"goods_tag"` | String | An optional tag to attach to the purchase. |
 
@@ -66,7 +66,7 @@ Where `purchaseDetails` is a string containing a serialized JSON object with the
 | :---: | :--- | :--- |
 | `"subject"` | String | A short description of the purchase |
 | `"body"` | String | A longer description of the purchase |
-| `"order_id"` | String | An identifier unique to the current user and purchase. It's up to you how you generate this, but it must be less than 32 characters. |
+| `"order_id"` | String | A unique identifier for the purchase (no two purchase transactions within the same game can have the same order_id). It's up to you how you generate this, but it must be less than 32 characters. |
 | `"total"` | Integer | The total price of the purchase in P-coins. |
 | `"goods_tag"` | String | An optional tag to attach to the purchase. |
 
