@@ -225,7 +225,7 @@ public class Callback : MonoBehaviour{
 
 #### User attributes
 
-Aside from `"email"` and `"phone"` (users are required to have at least one of these values), all fields are optional and will not appear in the JSON object at all if their value is not defined.
+Aside from `"email"` and `"phone"` (users are required to have at least one of these values), all fields are optional and will not appear in the JSON object at all if their value is not defined. Any value can be changed across a user account's lifetime (including email and phone) - so cannot be relied upon for a consistent user identity.
 
 | results\["data"\]\[*\] | Type | Description |
 | :--- | :--- | :--- |
