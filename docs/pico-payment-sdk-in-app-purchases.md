@@ -14,6 +14,12 @@ Buyers in the Pico ecosystems add P-Coins to their account through Pico’s webs
 | :---: | :---: | :---: |
 | 10 | ¥ 1 | $0.15 (approx - check the current exchange rate) |
 
+## Displaying a confirmation dialog
+
+The Pico Unity SDK and the Pico operating system do not provide a confirmation dialog to the user before deducting funds from the users account. It's up to you to build messaging into your app to ensure the user understands that they are about to make a purchase, and the cost of that purchase.
+
+Please see [Pico localisation](/docs/pico-unity-localization.md) for guidance on how to display this information to the user.
+
 ## Creating in-app purchases
 
 > Before your app can create any in-app purchases, you must first have [requested credentials for your app](https://users.wearvr.com/developers/devices/pico-goblin/store-listings/) and [signed the current user in](/docs/pico-payment-sdk-user-management.md).
@@ -41,6 +47,10 @@ Where `purchaseDetails` is a string containing a serialized JSON object with the
 | `"goods_tag"` | String | An optional tag to attach to the purchase. |
 
 > It's important the purchaseDetails *not* have a "total" attribute at all (with any value), if you use this option.
+
+#### Dynamic or updating item pricing
+
+Although Pico allows developers to update the price of thier items after launch, the Pico payment API does not currently provide a way for apps to query the current price of items. This unfortunately means if you plan to alter prices after release, you will need to record the current value of each item on your own game server and query them that way in your app.
 
 ### Option 2: Creating purchases with arbitrary amounts
 
