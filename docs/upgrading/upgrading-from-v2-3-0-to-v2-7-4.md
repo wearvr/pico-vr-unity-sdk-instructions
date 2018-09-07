@@ -6,7 +6,7 @@ Delete `Assets/Plugins/Android/Pico_PaymentSDK_Unity_V1.0.16.jar` if it appears 
 
 Delete `Assets/Plugins/Android/hummingbirdservicecontroller.jar` if it appears in your project - this is replaced by `hbcserviceclient.jar`.
 
-Delete folders containing old SDK assets, to ensure that anything that isn't merged over dosn't remain to cause conflcits.
+Delete folders containing old SDK assets, to ensure that anything that isn't merged over dosn't remain to cause conflcits. During the upgrade new versions of these files will be imported into the asssets folder "PicoMobileSdk/".
 
 <p align="center">
   <img alt="Remove these folders when upgrading to ensure no old code or assets remain" width="500px" src="/docs/assets/PVR Folders.png">
