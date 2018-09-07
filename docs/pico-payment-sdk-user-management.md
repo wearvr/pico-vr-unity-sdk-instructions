@@ -225,10 +225,11 @@ public class Callback : MonoBehaviour{
 
 #### User attributes
 
-Aside from `"email"` and `"phone"` (users are required to have at least one of these values), all fields are optional and will not appear in the JSON object at all if their value is not defined. Any value can be changed across a user account's lifetime (including email and phone) - so cannot be relied upon for a consistent user identity.
+Aside from `"email"`, `"openid"` and `"phone"` (users are required to have an email *or* a phone number), all fields are optional and will not appear in the JSON object at all if their value is not defined. 
 
 | results\["data"\]\[*\] | Type | Description |
 | :--- | :--- | :--- |
+| `"openid"` | String | Alphanumeric id that is unique to the user and the app. i.e. This value will be the same whenever the same user opens the same app, on any Pico device. |
 | `"username"` | String | User’s account name |
 | `"email"` | String | User’s email address |
 | `"avatar"` | String | URL to the user’s (.jpg or .png) avatar image |
@@ -241,6 +242,13 @@ Aside from `"email"` and `"phone"` (users are required to have at least one of t
 | `"country"` | String | User’s country name ("China" for all users of the Chinese store) |
 | `"city"` | String | User’s city name |
 
+#### Maintaining a persistent user identity
+
+You should use `"openid"` if you need a consistent id for the current user, as any other value can be changed across a user account's lifetime (including email and phone). 
+
+`openid` is an alphanumeric string that is unique to the user and the app. i.e. This value will be the same whenever the same user opens the same app, on any Pico device. 
+
+Unfortunately, `openid` will *not* be the same across different apps (apps with a different id) - so if the same user opens two of the same developer's apps, their `openid` will *not* be the same in both of them. If you need the user's identity to persist across apps, you will need to have them create a new account on your own game servers and create a separate identity for them that can persist across your apps.
 
 #### User details error handling
 
