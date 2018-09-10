@@ -57,8 +57,6 @@ Replace the following lines:
 
 With these (substituting the `REPLACE_ME` values with the corresponding credentials from the WEARVR developer dashboard):
 
-> Make sure you use the same values for the `pico_*` and `pico_*_foreign` fields.
-
 ```
 <!-- Your app's credentials used for user sessions & payments within China -->
 <meta-data android:name="pico_merchant_id" android:value="1335"/>
@@ -66,13 +64,6 @@ With these (substituting the `REPLACE_ME` values with the corresponding credenti
 <meta-data android:name="pico_app_key" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_pay_key" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_scope" android:value="SCOPE"/>
-
-<!-- Your app's credentials used for user sessions & payments outside of China (currently not supported, but necessary for testing) -->
-<meta-data android:name="pico_merchant_id_foreign" android:value="1335"/>
-<meta-data android:name="pico_app_id_foreign" android:value="REPLACE_ME"/>
-<meta-data android:name="pico_app_key_foreign" android:value="REPLACE_ME"/>
-<meta-data android:name="pico_pay_key_foreign" android:value="REPLACE_ME"/>
-<meta-data android:name="pico_scope_foreign" android:value="SCOPE"/>
 ```
 
 ## Managing user sessions
@@ -167,8 +158,8 @@ The following error conditions should not normally occur. If they do, they may i
 | msg | Description |
 | :---: | :--- |
 | `"Login exception ，missing parameters <appId> <appKey> <scope>"` | The SDK could not read the correct values from the `AndroidManifest.xml` file. Check you have followed the [Credentials instructions](#credentials) correctly. |
-| `"ErrorMsg: APP_CHECK_ERROR"` | The `app_id` or `pico_app_id_foreign` in your AndroidManifest.xml did not match any registered with the Pico services. Check that you have [entered them correctly](#update-androidmanifestxml). If so, the most likely casue of this is you have not yet [changed the device's locale](/docs/testing-in-app-purchases.md). This can also occur when you need to update the [Pico OS version](/docs/upgrading-pico-goblin-operating-system-firmware.md). |
-| `"ErrorMsg: SYSTEM_SIGNAGURE_ERROR"` | The `pico_app_key` or `pico_app_key_foreign` in your AndroidManifest.xml did not match any registered with the Pico services. The most likely casue of this is you have not yet [changed the device's locale](/docs/testing-in-app-purchases.md) | 
+| `"ErrorMsg: APP_CHECK_ERROR"` | The `app_id` in your AndroidManifest.xml did not match any registered with the Pico services. Check that you have [entered them correctly](#update-androidmanifestxml). If so, the most likely casue of this is you have not yet [changed the device's locale](/docs/testing-in-app-purchases.md). This can also occur when you need to update the [Pico OS version](/docs/upgrading-pico-goblin-operating-system-firmware.md). |
+| `"ErrorMsg: SYSTEM_SIGNAGURE_ERROR"` | The `pico_app_key` in your AndroidManifest.xml did not match any registered with the Pico services. The most likely casue of this is you have not yet [changed the device's locale](/docs/testing-in-app-purchases.md) | 
 
 ### Getting the current user session
 
