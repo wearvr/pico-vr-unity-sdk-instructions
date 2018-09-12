@@ -32,7 +32,7 @@ You will require the following in order to develop a Pico app:
 
 A compatible version of Unity:
 
-* Unity 5: Unity 5.2 or greater
+* ~~Unity 5: Unity 5.2 or greater~~ (Depricted: This was supported on previous versions of the Pico SDK, but will have issues on modern SDKs)
 * Unity 2017: 2017.1.1, 2017.2.0, 2017.3.0 or 2017.4.2
 * Unity 2018: 2018.1.1 (2018.1.2 and above is currently not supported)
 
