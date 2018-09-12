@@ -21,7 +21,11 @@ If your application behaves unusually when compiled, try checking the **Use 32-b
 
 ## UGUI problems
 
-If you are having trouble with **UGUI** and you’re using a version of Unity below Unity 5.3.5 P5, try updating to Unity 5.3.5 P5 or higher.
+If you are having trouble with **UGUI** and you’re using a version of Unity below Unity 5.3.5 P5, try updating to a compatible version or higher as outlined by your current Pico SDK documentation.
+
+## Application freezes when minimised and reloaded
+
+If you’re using a version of Unity below Unity v2017.1.1, and are using a Pico SDK v2.7.4 or above, some technical issues will be present when minimising your app. It is strongly reccomended that you update your app to run on a newer version of Unity, as specified by your current Pico SDK doumentation.
 
 ## Frame rate or performance issues
 
