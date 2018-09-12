@@ -45,6 +45,7 @@ And a dialog with your app's Pico credentials will appear:
 </p>
 
 Replace the following lines:
+
 ```
 <meta-data android:name="pico_merchant_id" android:value="81" />
 <meta-data android:name="pico_app_id" android:value="5a189befeb3b33f7df101fbecffe4f98" />
@@ -55,7 +56,9 @@ Replace the following lines:
 <meta-data android:name="pico_scope" android:value="get_user_info" />
 ```
 
-With these (substituting the `REPLACE_ME` values with the corresponding credentials from the WEARVR developer dashboard):
+With one of the following (substituting the `REPLACE_ME` values with the corresponding credentials from the WEARVR developer dashboard):
+
+For a build to be *released in China*:
 
 ```
 <!-- Your app's credentials used for user sessions & payments within China -->
@@ -64,6 +67,17 @@ With these (substituting the `REPLACE_ME` values with the corresponding credenti
 <meta-data android:name="pico_app_key" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_pay_key" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_scope" android:value="SCOPE"/>
+```
+
+Or, for a build to be *released outside of China*:
+
+```
+<!-- Your app's credentials used for user sessions & payments of China  -->
+<meta-data android:name="pico_merchant_id_foreign" android:value="1335"/>
+<meta-data android:name="pico_app_id_foreign" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_app_key_foreign" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_pay_key_foreign" android:value="REPLACE_ME"/>
+<meta-data android:name="pico_scope_foreign" android:value="SCOPE"/>
 ```
 
 ## Managing user sessions
