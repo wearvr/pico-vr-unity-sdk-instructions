@@ -58,6 +58,8 @@ Replace the following lines:
 
 With one of the following (substituting the `REPLACE_ME` values with the corresponding credentials from the WEARVR developer dashboard):
 
+###### Domestic values (inside China)
+
 For a build to be *released in China*:
 
 ```
@@ -68,6 +70,8 @@ For a build to be *released in China*:
 <meta-data android:name="pico_pay_key" android:value="REPLACE_ME"/>
 <meta-data android:name="pico_scope" android:value="SCOPE"/>
 ```
+
+###### Foreign values (outside China)
 
 Or, for a build to be *released outside of China*:
 
