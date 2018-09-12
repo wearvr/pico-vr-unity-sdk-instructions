@@ -2,9 +2,20 @@
 
 This is an optional step that is only required if your app has in-app purchases.
 
-Currently, only apps sold in China support in-app purchases.
+## Support
 
-> If you wish to release your app in China with in-app purchases, you will need to submit different release builds: one with in-app purchases to be released in China and one without, for the global market.
+Currently the Payment API (required for in-app purchases) is not supported on the Pico Goblin outside of China.
+
+| Device | Region | User API | Payment API |
+| :---: | :---: | :---: | :---: |
+| Pico Goblin | China | Yes | Yes |
+| Pico Goblin | Outside China | Yes | No |
+| Pico Neo | China | Yes | Yes |
+| Pico Neo | Outside China | Yes | Yes |
+
+> If you wish to release your app for the Pico Goblin in China with in-app purchases, you will need to submit different release builds: one with in-app purchases to be released in China and one without, for the sale outside of China.
+
+## Currency 
 
 All purchases through the Pico ecosystem are done in Pico’s own virtual currency as an integer value of P-Coins.
 
