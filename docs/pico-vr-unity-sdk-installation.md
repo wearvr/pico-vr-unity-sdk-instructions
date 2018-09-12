@@ -70,7 +70,7 @@ Open **Edit › Project Settings › Quality** and change the following settings
 
 ### Turn off vertical sync
 
-When using Unity 5.4 or higher in the **Other** section, change **V sync Count** to **Don’t Sync**
+In the **Other** section, change **V sync Count** to **Don’t Sync**
 
 <p align="center">
   <img alt="Turn off vertical sync" width="500px" src="assets/DisableVerticalSyncImage.png">
