@@ -53,11 +53,39 @@ Where `purchaseDetails` is a string containing a serialized JSON object with the
 | :---: | :--- | :--- |
 | `"subject"` | String | A short description of the purchase |
 | `"body"` | String | A longer description of the purchase |
-| `"order_id"` | String | A unique identifier for the purchase (no two purchase transactions within the same game can have the same order_id). It's up to you how you generate this, but it must be less than 32 characters. |
+| `"order_id"` | String | A unique identifier for the purchase (no two purchase transactions within the same game can have the same order_id). It must be less than 32 characters - see [Generating an order id](#generating-an-order-id). |
 | `"pay_code"` | String | Product code - this must match the one you have provided when registering your purchase item. |
 | `"goods_tag"` | String | An optional tag to attach to the purchase. |
 
 > It's important the purchaseDetails *not* have a "total" attribute at all (with any value), if you use this option.
+
+#### Generating an order id
+
+To allow querying whether a user has already purchased a particular non-consumable item, you will need to make the `order_id` depend on the user's `openid` and the item's `pay_code`. You can use a function like the following to generate a MD5 hash 32 characters long:
+
+```cs
+public string PurchaseId(string userOpenId, string itemPayCode)
+
+{
+    string purchaseString = userOpenId + '-' + itemPayCode;
+    byte[] purchaseStringBytes = System.Text.Encoding.ASCII.GetBytes(purchaseString);
+
+    MD5 md5 = System.Security.Cryptography.MD5.Create();
+    byte[] purchaseHash = md5.ComputeHash(purchaseStringBytes);
+
+    StringBuilder stringBuilder = new StringBuilder();
+
+    for (int i = 0; i < purchaseHash.Length; i++)
+
+    {
+
+        stringBuilder.Append(purchaseHash[i].ToString(“X2”));
+
+    }
+
+    return stringBuilder.ToString();
+}
+```
 
 #### Dynamic or updating item pricing
 
@@ -132,11 +160,26 @@ The following error conditions should not normally occur. If they do, they may i
 | `"code": "12008", "msg": "PAY_CODE_NOT_EXIST"` | The `pay_code` parameter did not match any pre-registered items. | Check that you are using the correct value of this parameter and you have already registered the item.<br/>If you are not purchasing a pre-registered item, check that you are not submitting any value for pay_code. |
 | `"code": "12006", "msg": "NOT_ENTER_ORDER_INFO"` | `PicoPaymentSDK.Pay()` was called without a serialised JSON object, or one that is missing required parameters. | Check the serialised JSON object you are passing to `PicoPaymentSDK.Pay()`. |
 
-## Recording a purchase
+## Determining whether a user has already purchased an (non-consumable) item
 
-Once the Pico servers has confirmed the purchase was successful, it’s up to your application to record that a user has paid for a particular in-app purchase (this information is not easily queried at a later time, or on a different device).
+Once the Pico servers has confirmed the purchase was successful, it’s preferreable for your application to record this information on your own game server. It's ok (and encouraged) to cache this information on the device - but on-devie storage *should not* be the only method of recording whether a user has purchased a particular item before - if the user switches Pico devices, the user's purchase must still be honoured.
 
-Saving a record of the purchase will typically involve a request to your own game servers to create a record of the item the user has just purchased, or to increase a value associated with the users account (e.g. gold coins, extra lives, etc).
+If you this option is not available to you (you do not have a game server or are concerned about its availability world-wide), you can query the Pico servers to establish whether a particular item has been purchased providing the following conditions:
+
+* The item is non-consumable (the user cannot purchase it more than once and therefore is unique)
+* You are using a unique, `order_id` that depends on the current user's `openid` and the item's `pay_code` (see [Generating an order id](#generating-an-order-id)).
+
+You do this by querying whether a particular `order_id` already exists using:
+
+```cs
+void QueryOrder(string orderId)
+```
+
+This method accepts an orderId as its only parameter and calls the [QueryOrPayCallback()](#processing-the-purchase-response) function when the Pico server responds. If the purchase already exists on the server, you will get the details of that purchase, otherwise the response will be as follows:
+
+```
+{"code ":"13006","msg":"Order does not exist"}
+```
 
 ## Next: Testing your in-app purchases
 
