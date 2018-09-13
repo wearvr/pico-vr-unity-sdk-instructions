@@ -4,7 +4,7 @@
 
 The Pico Unity VR SDK comes as a .unitypackage that you can import into your project via the **Assets › Import Package › Custom Package...** menu option in Unity.
 
-You can <a href="https://users.wearvr.com/developers/devices/pico-goblin/resources/vr-unity-package" target="_blank">download the Pico VR Unity SDK</a> from WEARVR. You will be asked to create or sign in to your developer account.
+You can <a href="https://users.wearvr.com/developers/devices/pico-goblin/resources/vr-unity-package/versions/v2-7-4" target="_blank">download the Pico VR Unity SDK</a> from WEARVR. You will be asked to create or sign in to your developer account.
 
 <p align="center">
   <img alt="Import the .unitypackage as custom package"  width="500px" src="assets/ImportUnityPackageImage.png">
