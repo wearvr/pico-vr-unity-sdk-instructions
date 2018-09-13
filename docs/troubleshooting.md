@@ -25,7 +25,7 @@ If you are having trouble with **UGUI** and you’re using a version of Unity be
 
 ## Application freezes when minimised and reloaded
 
-If you’re using a version of Unity below Unity v2017.1.1, and are using a Pico SDK v2.7.4 or above, some technical issues will be present when minimising your app. It is strongly reccomended that you update your app to run on a newer version of Unity, as specified by your current Pico SDK doumentation.
+If you’re using a version of Unity below Unity v2017.1.1, and are using a Pico SDK v2.7.4 or above, some technical issues may be present when minimising your app. It is strongly reccomended that you update your app to run on a newer version of Unity, as specified by your current Pico SDK doumentation.
 
 ## Frame rate or performance issues
 
@@ -36,3 +36,6 @@ Check the Simple level in the Android column.
 <p align="center">
   <img alt="Check the Simple quality option" width="500px" src="assets/ReduceQualitySettingsImage.png">
 </p>
+
+The documentation within the Pico SDK has a recommended range for what they consider acceptable ranges of frame-rate covered in their FAQ. They also document what they consider a reasonable amount of resources that their devices can consume before issues may start to arise.
+As of Pico SDK v2.7.5 frame rates of 45+ frames per second are considered ideal, with 30 FPS being considered the minimum acceptable for a finished project.
