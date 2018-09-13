@@ -1,6 +1,6 @@
 # Pico Unity SDK Instructions
 
-> These instructions are for v2.7.4 of the Pico Unity SDK. If you are looking for the instructions for v2.3.0, you can find them [here](https://github.com/wearvr/pico-vr-unity-sdk-instructions/tree/v2.3.0).
+> These instructions are for v2.7.5 of the Pico Unity SDK. If you are looking for the instructions for v2.3.0, you can find them [here](https://github.com/wearvr/pico-vr-unity-sdk-instructions/tree/v2.3.0).
 
 Instructions for how to create new Unity virtual reality experiences for the Pico Goblin & Pico Neo headsets (or port existing ones).
 
@@ -87,7 +87,7 @@ Please get in touch on `devs@wearvr.com` to discuss your needs and how WEARVR ma
 
 ### What build variants do I need?
 
-If you have used v2.7.4 or higher of the Pico Unity SDK and you have not used the [Pico User API](/docs/pico-payment-sdk-user-management.md) or [Payment API](/docs/pico-payment-sdk-in-app-purchases.md), then you will only need one build that can be sold inside and outside of China, for both the Pico Goblin and the Pico Neo.
+If you have used v2.7.5 or higher of the Pico Unity SDK and you have not used the [Pico User API](/docs/pico-payment-sdk-user-management.md) or [Payment API](/docs/pico-payment-sdk-in-app-purchases.md), then you will only need one build that can be sold inside and outside of China, for both the Pico Goblin and the Pico Neo.
 
 If you have used the [Pico User API](/docs/pico-payment-sdk-user-management.md), you will need two build variants - one that includes the [domestic credential fields in your AndroidManifest.xml](/docs/pico-payment-sdk-user-management.md#credentials#domestic-values-inside-china) for the China store and one that includes the [foreign credential fields](/docs/pico-payment-sdk-user-management.md#credentials#foreign-values-outside-china) for stores outside of China (these are the same builds and same credential values in the AndroidManifest.xml - just with different attribute names).
 
