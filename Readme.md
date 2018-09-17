@@ -91,8 +91,6 @@ If you have used v2.7.5 or higher of the Pico Unity SDK and you have not used th
 
 If you have used the [Pico User API](/docs/pico-payment-sdk-user-management.md), you will need two build variants - one that includes the [domestic credential fields in your AndroidManifest.xml](/docs/pico-payment-sdk-user-management.md#credentials#domestic-values-inside-china) for the China store and one that includes the [foreign credential fields](/docs/pico-payment-sdk-user-management.md#credentials#foreign-values-outside-china) for stores outside of China (these are the same builds and same credential values in the AndroidManifest.xml - just with different attribute names).
 
-If you have used the [Payment API](/docs/pico-payment-sdk-in-app-purchases.md), you will need an extra, third, variant that does not use the Payment API and uses the [foreign credential fields](/docs/pico-payment-sdk-user-management.md#credentials#foreign-values-outside-china) in your AndroidManifest, for the Pico Goblin store outside of China.
-
 ### Submission process
 
 When you are ready, it's time to release your Pico VR experiences to the global and Chinese Pico stores [through WEARVR.com](https://users.wearvr.com/apps).
