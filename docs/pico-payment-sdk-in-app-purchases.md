@@ -2,9 +2,9 @@
 
 This is an optional step that is only required if your app has in-app purchases.
 
-## Support
+## Warning
 
-Currently the Payment API (required for in-app purchases) is not supported outside of China.
+**Currently the Payment API (required for in-app purchases) is not supported outside of China.**
 
 > If you wish to release your app in China with in-app purchases, you will need to submit different release builds: one with in-app purchases to be released in China and one without, for the sale outside of China.
 
