@@ -33,7 +33,7 @@ You will require the following in order to develop a Pico app:
 A compatible version of Unity:
 
 * ~~Unity 5: Unity 5.2 or greater~~ (Deprecated: Some Unity5 versions were supported on previous versions of the Pico SDK, but will have issues with modern kits)
-* Unity 2017: 2017.1.1, 2017.2.0, 2017.3.0 or 2017.4.2
+* Unity 2017: All versions supported. Versions 2017.1.1, 2017.2.0, 2017.3.0 or 2017.4.1 are reccomended.
 * Unity 2018: 2018.1.1 (2018.1.2 and above is currently not supported)
 
 * Either an Android 4.4 (or later) phone running Android API Level 19 or above, or a Pico Goblin or Pico Neo headset
