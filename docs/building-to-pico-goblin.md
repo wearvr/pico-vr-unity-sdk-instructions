@@ -12,6 +12,8 @@ Select **Android** and then click the **Switch Platform** button.
 
 Change the **Texture Compression** option to **ETC2 (GLES 3.0)**.
 
+Make sure the  **Build System ** is set to **Internal**.
+
 <p align="center">
   <img alt="Switch platforms to Android" width="500px" src="assets/ChangeTextureCompressionImage.png">
 </p>
