@@ -37,7 +37,6 @@ A compatible version of Unity:
 Unity2017.4.1 are recommended. 
 For Unity2018, it is currently supported to Unity2018.2.11, and Unity2018.1.0 and Unity2018.2.0 are 
 recommended. 
-* Unity 2018: 2018.1.1 (2018.1.2 and above is currently not supported)
 
 * Either an Android 4.4 (or later) phone running Android API Level 19 or above, or a Pico Goblin or Pico Neo headset
 * JDK v1.7.0_01 or later
