@@ -67,6 +67,7 @@ Optional:
 * [Localization](/docs/pico-unity-localization.md)
 * [Getting device information at runtime](/docs/getting-device-information-at-runtime.md)
 * [Overview of API](/docs/api-overview.md)
+* [Using Unity splash screens](/docs/using-unity-splash-screens.md)
 
 Device:
 
