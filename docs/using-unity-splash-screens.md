@@ -2,13 +2,13 @@
 
 ## The problem with splash screens
 
-Unity provides a system to display a splash screen as the app is launched and loaded for the first time. On Pico devices it is reccomended that users of the proffesional version of Unity disable this functionality, and create their own implimentation of a splash screen if neccesary. However, this method does not help users of the personal version of Unity or those who are unable to create their own splash screen implimentation for their own reasons.
+Unity provides a system to display a splash screen as the app is launched and loaded for the first time. On Pico devices it is recommended that users of the professional version of Unity disable this functionality, and create their own implementation of a splash screen if necessary. However, this method does not help users of the personal version of Unity or those who are unable to create their own splash screen implementation for their own reasons.
 
-As stated in the [installation guide](/docs/pico-vr-unity-sdk-installation.md) the Pico SDK requires it's apps to run with XR/VR settings disabled, as it provides it's own VR implimentation. This has the unfortunate effect of telling Unity to use the screenspace splashscreen, which causes the splash image to be stetched out across both the users eye displays as the app is launched. This effect is unpleasent and confusing on the eyes, and should be resolved using the method beneath.
+As stated in the [installation guide](/docs/pico-vr-unity-sdk-installation.md) the Pico SDK requires it's apps to run with XR/VR settings disabled, as it provides it's own VR implementation. This has the unfortunate effect of telling Unity to use the screenspace splashscreen, which causes the splash image to be stretched out across both the users eye displays as the app is launched. This effect is unpleasant and confusing on the eyes, and should be resolved using the method beneath.
 
 ## Using Unity's VR Splash screen with the Pico SDK.
 
-> Code and tehnique courtesy of developer cmdr2.
+> Code and technique courtesy of developer cmdr2.
 
 To enable Unity's XR splash screen, while still using a non-xr setting during the apps runtime apply these steps to your project.
 
