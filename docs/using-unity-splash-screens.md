@@ -26,4 +26,4 @@ To enable Unity's XR splash screen, while still using a non-xr setting during th
 ### For Unity 2017+:
 1.  In Player Settings, set "XR Supported" checkbox to true, and pick "Mock HMD" in the headset option.
 2.  You can use any VR Splash Screen image in Player Settings, but don't need to invert the image.
-3.  Same code needs to be called in the Start() method as above.
+3.  Same code needs to be called in the Start() method as above, replacing the reference of 'VRSettings' to 'XRSettings'.
