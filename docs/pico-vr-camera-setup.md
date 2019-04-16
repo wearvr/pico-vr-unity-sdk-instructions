@@ -32,6 +32,34 @@ The **Use Default Range** option indicates that your app should use the default 
 
 The **Moving Ratios** sets how movement in the real world corresponds to movement within your app. The default setting is 1:1.
 
+## Set up Pvr_UnitySDKManager
+
+Many core settings of the Pico SDK as a whole can be changed inside the  Pvr_UnitySDK prefab and it's attached `Pvr_UnitySDKManager.cs` component. 
+
+In the section above it has already be reccomended that the HeadPose and HandPose settings be changed to match the apps target platform, however many other settings are worth considering here.
+
+<p align="center">
+  <img alt="Pico Goblin degrees of freedom" width="500px" src="/docs/assets/PicoTrackingOptions.png.svg">
+</p>
+
+Head Recenter: When Head Pose is Six Dof, you can only reset position by checking “Six Dof Head Recenter”, otherwise, long press Home key can only reset controller poses. 
+
+- Show SafePanel: When Show SafePanel is checked, safe panel will be shown when the game starts. 
+
+- Head Pose: 
+  1. Three Dof, indicates that head tracking is 3 DOF, tracking only poses, not position;  
+  2. Six Dof, indicates that head tracking is 6 DOF, tracking both poses and position. 
+  
+- Hand Pose: 
+  1. Three of, indicates that hand tracking is 3 DOF. It tracks poses, but the position is computed based on the head pose and the data of controller sensor. The tracking scope is limited.  
+  2. Six Dof, the hand tracking is 6 DOF. Both poses and positions are tracked. 
+
+- Use Default Range: The radius of the safe area, the default is 0.8 meters. There will be area prompts and visual darkening effects beyond safe range.   
+
+- Moving Ratios：The ratio of movement, which is the ratio of moving distance in reality and moving in the scene, by default is 1 to 1.
+
+If you want to customize the radius of the safe region, you first need to change the private bool defaultRange=true in the pvr_unitysdkmanager.cs file to false, and then the Use Default Range will be checked. Once this has been done you will freely set the range of safe areas in the scene inspector. 
+
 ## Running in the Unity editor
 
 The Pico VR SDK supports running your VR app in the Unity editor. You can use this to test your progress as you complete the remaining instructions.
