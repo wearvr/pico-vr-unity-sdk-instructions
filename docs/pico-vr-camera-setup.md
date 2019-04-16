@@ -39,7 +39,7 @@ Many core settings of the Pico SDK as a whole can be changed inside the  Pvr_Uni
 In the section above it has already be reccomended that the HeadPose and HandPose settings be changed to match the apps target platform, however many other settings are worth considering here.
 
 <p align="center">
-  <img alt="Pico Goblin degrees of freedom" width="500px" src="/docs/assets/PicoTrackingOptions.png.svg">
+  <img alt="Pico Goblin degrees of freedom" width="500px" src="/docs/assets/PicoTrackingOptions.png">
 </p>
 
 Head Recenter: When Head Pose is Six Dof, you can only reset position by checking “Six Dof Head Recenter”, otherwise, long press Home key can only reset controller poses. 
