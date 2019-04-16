@@ -1,6 +1,6 @@
 # Overview of API functions
 
-> Instuctions relevant for Pico SDK version 2.7.6
+> Instuctions relevant for Pico SDK version 2.7.7
 
 Sections:
 * Version Info
