@@ -22,6 +22,14 @@ Delete the existing `MainCamera` from your scene and drag the prefab `PicoMobile
   <img alt="Drag the Pvr_UnitySDK.prefab into your scene" width="500px" src="assets/DragPrefabIntoScene.png">
 </p>
 
+## Differences between Unity versions
+
+Unity2017.2.0 compilation requires setting target API level to Android 6.0. 
+
+The project package name can be dependent on Player Setting or to AndroidManifest. In Unity 5.x it is dependent on AndroidManifest, and in Unity2017 or above is dependent on Player Setting.
+
+There may exist difference of FPS frame rates between different Unity versions. If performing a Unity version upgrade it is worth testing any changes on device to ensure that the project has not been badly affected.
+
 ## Project settings
 
 ### Enable 32-Bit display buffer
