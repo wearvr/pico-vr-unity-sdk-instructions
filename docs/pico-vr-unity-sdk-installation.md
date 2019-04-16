@@ -44,6 +44,8 @@ Some games can only run normally when Use 32-bit Display Buffer in Player Settin
 
 Open **Edit › Project Settings › Player**. In the Android tab, uncheck **Multithreaded Rendering**
 
+When multi-thread rendering is active, the frame rate is improved, but there are restrictions on the use of multi-thread rendering that can cause unpredictable and unwanted behaviour. For this reason it is advised to have it disabled.
+
 <p align="center">
   <img alt="Uncheck multi-threaded rendering"  width="500px" src="assets/UncheckMultithreadedRenderingImage.png">
 </p>
