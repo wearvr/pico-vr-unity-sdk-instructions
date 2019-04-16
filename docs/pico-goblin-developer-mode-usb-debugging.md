@@ -2,15 +2,23 @@
 
 In order to build your Pico VR experience to the device, developer mode and USB debugging must first be enabled.
 
-## Enabling developer mode
+## Accessing the settings menu
 
-In the Pico headset, select the **Settings** option from the main menu.
+### Pico Neo
+
+To access the settings menu for the pico Neo, select the **Settings** option from the main menu.
 
 <p align="center">
   <img alt="Select Settings" width="500px" src="assets/PicoSettings.png">
 </p>
 
-Select the About option. Click eight times on the **PUI Version** with the controller.
+### Pico Goblin, Goblin 2, Goblin 2 4K
+
+To access the settings menu on Goblin devices press "Confirm" and "Volume Down" button together to go into 2D Setting menu. 
+
+## Enabling developer mode
+
+From the settings menu select the About option. Click eight times on the **PUI Version** with the controller.
 
 <p align="center">
   <img alt="Select the About option" width="500px" src="assets/PicoPUIVersion.png">
@@ -45,6 +53,8 @@ Turn on the **Developer options** and **USB debugging** toggles.
 <p align="center">
   <img alt="Turn on USB Debugging" width="500px" src="assets/PicoUSBDebuggingSettings.png">
 </p>
+
+To allow your computer to access the Goblins files you will also need to select USB configuration, and reset it to 'MTP (Media Transfer Protocol)'. 
 
 ## Next: Building to the Pico Goblin
 
