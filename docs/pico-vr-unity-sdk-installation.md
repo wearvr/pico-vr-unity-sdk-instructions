@@ -24,6 +24,14 @@ Delete the existing `MainCamera` from your scene and drag the prefab `PicoMobile
 
 ## Project settings
 
+### Enable 32-Bit display buffer
+
+Some games can only run normally when Use 32-bit Display Buffer in Player Settings is checked during integration. It is recommended that this be enabled wherever possible.
+
+<p align="center">
+  <img alt="Uncheck multi-threaded rendering"  width="500px" src="assets/32BitBuffer.png">
+</p>
+
 ### Disable multi-threaded rendering
 
 Open **Edit › Project Settings › Player**. In the Android tab, uncheck **Multithreaded Rendering**
