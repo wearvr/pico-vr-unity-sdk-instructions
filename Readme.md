@@ -1,6 +1,6 @@
 # Pico Unity SDK Instructions
 
-> These instructions are for v2.7.6 of the Pico Unity SDK. If you are looking for the instructions for v2.3.0, you can find them [here](https://github.com/wearvr/pico-vr-unity-sdk-instructions/tree/v2.3.0).
+> These instructions are for v2.7.7 of the Pico Unity SDK. If you are looking for the instructions for v2.3.0, you can find them [here](https://github.com/wearvr/pico-vr-unity-sdk-instructions/tree/v2.3.0).
 
 Instructions for how to create new Unity virtual reality experiences for the Pico Goblin & Pico Neo headsets (or port existing ones).
 
