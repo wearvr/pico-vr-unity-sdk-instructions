@@ -51,7 +51,7 @@ Head Recenter: When Head Pose is Six Dof, you can only reset position by checkin
   2. Six Dof, indicates that head tracking is 6 DOF, tracking both poses and position. 
   
 - Hand Pose: 
-  1. Three of, indicates that hand tracking is 3 DOF. It tracks poses, but the position is computed based on the head pose and the data of controller sensor. The tracking scope is limited.  
+  1. Three Dof, indicates that hand tracking is 3 DOF. It tracks poses, but the position is computed based on the head pose and the data of controller sensor. The tracking scope is limited.  
   2. Six Dof, the hand tracking is 6 DOF. Both poses and positions are tracked. 
 
 - Use Default Range: The radius of the safe area, the default is 0.8 meters. There will be area prompts and visual darkening effects beyond safe range.   
