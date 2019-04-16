@@ -82,7 +82,26 @@ In the **Other** section, change **V sync Count** to **Don’t Sync**
 
 If your project does not already have a `Assets/Plugins/Android/AndroidManifest.xml` file, you can use the one installed by the Pico SDK unity package.
 
-If you already have an `AndroidManifest.xml` file in your project, you will need to manually merge in the values found in the unity package’s `AndroidManifest.xml`.
+If you already have an `AndroidManifest.xml` file in your project, you will need to manually merge in the values found in the unity package's `AndroidManifest.xml`. Please do not allow Unity to automatically consolidate other AndroidManifest files with the file provided by Pico, as it rarely does so successfully.
+
+The necessary parts of the Pico AndroidManifest,xml to implant into an existing manifest are:
+
+Pico all-in-one VR projects import special meta-data, necessary for the app to be displayed properly.
+`<meta-data android:name=" pvr.app.type " android:value="vr"/>`
+
+`<meta-data android:name=" pvr.display.orientation " android:value="180"/>`
+
+In Pico VR all-in-one projects, all Activity that require display must inherit.  
+`com.unity3d.player.UnityPlayerNativeActivityPico`
+
+Add necessary permissions. 
+`<uses-permission android:name="android.permission.WRITE_SETTINGS"/>` 
+
+`<uses-permission android:name="android.permission.BLUETOOTH" />` 
+
+`<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />` 
+
+`<uses-permission android:name="android.permission.INJECT_EVENTS" />`
 
 ### Next: Camera setup and input
 
