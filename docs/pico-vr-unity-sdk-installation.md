@@ -87,14 +87,17 @@ If you already have an `AndroidManifest.xml` file in your project, you will need
 The necessary parts of the Pico AndroidManifest,xml to implant into an existing manifest are:
 
 Pico all-in-one VR projects import special meta-data, necessary for the app to be displayed properly.
+
 `<meta-data android:name=" pvr.app.type " android:value="vr"/>`
 
 `<meta-data android:name=" pvr.display.orientation " android:value="180"/>`
 
 In Pico VR all-in-one projects, all Activity that require display must inherit.  
+
 `com.unity3d.player.UnityPlayerNativeActivityPico`
 
-Add necessary permissions. 
+Add necessary permissions.
+
 `<uses-permission android:name="android.permission.WRITE_SETTINGS"/>` 
 
 `<uses-permission android:name="android.permission.BLUETOOTH" />` 
