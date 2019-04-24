@@ -10,7 +10,9 @@ Clone this repository to your hard drive
 git clone https://github.com/wearvr/pico-vr-unity-sdk-instructions
 ```
 
-Open this folder in Unity as a new project.
+Open the 'PicoUnityVRSDKExample' folder in Unity as a new project.
+
+This example is developed for Unity version 2017.2.0f3, although it can be opened and recompiled for other compatible versions.
 
 Once in Unity, open the `Assets\Demo` scene.
 
