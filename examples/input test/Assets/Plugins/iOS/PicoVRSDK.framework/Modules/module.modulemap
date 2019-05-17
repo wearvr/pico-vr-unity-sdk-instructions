@@ -1,0 +1,6 @@
+framework module PicoVRSDK {
+  umbrella header "PicoVRSDK.h"
+
+  export *
+  module * { export * }
+}

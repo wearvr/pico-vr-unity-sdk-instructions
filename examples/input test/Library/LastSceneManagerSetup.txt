@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/PicoMobileSDK/Pvr_Controller/Scenes/Pvr_Controller_UI.unity
+  isLoaded: 1
+  isActive: 1
