@@ -44,8 +44,15 @@ As of Pico SDK v2.7.5 frame rates of 45+ frames per second are considered ideal,
 
 Please make sure that your headset is updated to the newest version. This was a common issue but was solved with the 2.7.7 version of the Pico SDK. Some headsets distributed to developers may not yet be updated.
 
+Another reason for this issue to appear is because of incompatible .NET versions. 
+In **'Player Settings > Other Settings > Configuration'** change **'Scripting Runtime Version'** to '.Net 4.x Equivalent', and **'API Compatibility Level'** to .NET 4x.
+
+<p align="center">
+  <img alt="Check the .NET option" width="500px" src="assets/NetSettings.png">
+</p>
+
 ## Rotating my head 45 degrees to the left or right causes eye flickering issues.
 
-Please ensure that your applications default orientation is set to 'Landscape Left' in **'Player Settings > Resolution and Presentation> Orientation > Default Orientation'**
+Please ensure that your applications default orientation is set to 'Landscape Left' in **'Player Settings > Resolution and Presentation > Orientation > Default Orientation'**
 Please also ensure that no code is changing this orientation.
 Within the Pico SDK changing the orientation to anything else will cause visual issues, which may persist even if the orientation is corrected afterwards.
