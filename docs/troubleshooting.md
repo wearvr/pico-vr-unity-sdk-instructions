@@ -42,10 +42,10 @@ As of Pico SDK v2.7.5 frame rates of 45+ frames per second are considered ideal,
 
 ## Quitting an application on my Goblin2 device causes a black screen when I try to reload
 
-Please make sure that your headset is updated to the newset version. This was a common issue but was solved with the 2.7.7 version of the Pico SDK. Some headsets distributed to developers may not yet be updated.
+Please make sure that your headset is updated to the newest version. This was a common issue but was solved with the 2.7.7 version of the Pico SDK. Some headsets distributed to developers may not yet be updated.
 
 ## Rotating my head 45 degrees to the left or right causes eye flickering issues.
 
-Please ensure that your applications default oritentation is set to 'Landscape Left' in **'Player Settings > Resolution and Presentation> Orientation > Default Orientation'**
+Please ensure that your applications default orientation is set to 'Landscape Left' in **'Player Settings > Resolution and Presentation> Orientation > Default Orientation'**
 Please also ensure that no code is changing this orientation.
 Within the Pico SDK changing the orientation to anything else will cause visual issues, which may persist even if the orientation is corrected afterwards.
