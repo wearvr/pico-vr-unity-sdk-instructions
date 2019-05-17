@@ -77,6 +77,8 @@ Device:
 
 There is an [example project](examples/PicoUnityVRSDKExample/Readme.md) to use as a reference as you follow this guide.
 
+There is also an [example project](examples/input test/Readme.md) of input, and how to make UI elements work for VR platforms.
+
 ## Upgrade Guides
 
 [Upgrading from v2.3.0](/docs/upgrading/upgrading-from-v2-3-0-to-v2-7-4.md)
