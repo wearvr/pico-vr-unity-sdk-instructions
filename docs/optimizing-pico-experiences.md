@@ -39,6 +39,22 @@ Often shaders or rendered objects can fail to draw correctly due to system limit
   <img alt="Disabling GPU Instancing can often solve graphical issues on device" width="500px" src="assets/GPUInstancing.png">
 </p>
 
+## Foveated Rendering
+
+Foveated Rendering is a VR optimisation that can improve the headsets ability to render scenes quickly. It's purpose is to render the screen centre to the users line of sight in high resolution, but to render the scenery in the users pheripheral vision with far less detail.
+
+Foveation settings can be found in the **Pvr_Unity_SDK_Eye.cs** script, which is attached to the **'LeftEye'** and **'RightEye'** objects found in the **Pvr_UnitySDK** prefab.
+
+<p align="center">
+  <img alt="Foveated Rendering" width="500px" src="assets/FoveatedRendering.png">
+</p>
+
+The variable 'Foveaton Level' can be set to define a preset level of Foveaton for each eye (It is reccomended that each eye be set to the same level), or the individual Foveaton levels can be tweaked to get more specific behaviour:
+
+**Fovtion Gain Value:** A vector 2 to declare the Fovation rate of peripheral pixels in the X and Y axis. The larger the value, the larger the reduction. 
+**Foveation Area:** The area in the centre of the users vision that will not be altered by Fovtion.
+**Foveation Minimum:** The texture coordinate parameter of the texture filter function.
+
 ## Performance Profiling
 
 Unity provides the ability to run performance profiling tools on a Pico device that can help you diagnose the root cause of any performance issues your VR experience may have.
