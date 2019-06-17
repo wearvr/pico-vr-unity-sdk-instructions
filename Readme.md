@@ -1,6 +1,6 @@
 # Pico Unity SDK Instructions
 
-> These instructions are for v2.7.7 of the Pico Unity SDK. If you are looking for the instructions for v2.3.0, you can find them [here](https://github.com/wearvr/pico-vr-unity-sdk-instructions/tree/v2.3.0).
+> These instructions are for v2.7.8 of the Pico Unity SDK. If you are looking for the instructions for v2.3.0, you can find them [here](https://github.com/wearvr/pico-vr-unity-sdk-instructions/tree/v2.3.0).
 
 Instructions for how to create new Unity virtual reality experiences for the Pico Goblin & Pico Neo headsets (or port existing ones).
 
@@ -32,14 +32,12 @@ You will require the following in order to develop a Pico app:
 
 A compatible version of Unity:
 
-* ~~Unity 5: Unity 5.2 or greater~~ (Deprecated: Some Unity5 versions were supported on previous versions of the Pico SDK, but will have issues with modern kits)
-* For Unity2017, all versions are supported. Unity2017.1.0, Unity2017.2.0, Unity 2017.3.0 and 
-Unity2017.4.1 are recommended. 
-For Unity2018, it is currently supported to Unity2018.2.11, and Unity2018.1.0 and Unity2018.2.0 are 
-recommended. 
+* For Unity2017, all versions above and including Unity2017.4.0 are supported. 
+* Unity2018 is currently supported up until to Unity2018.4.0.
 
-* Either an Android 4.4 (or later) phone running Android API Level 19 or above, or a Pico Goblin or Pico Neo headset
-* JDK v1.7.0_01 or later
+* Android API Level 24 (Android 7.0) or above.
+* A Pico Goblin or Pico Neo headset of any kind.
+* JDK v1.8 or later.
 
 ### User accounts and adding in-app purchases
 
