@@ -66,7 +66,7 @@ Optional:
 * [Getting device information at runtime](/docs/getting-device-information-at-runtime.md)
 * [Overview of API](/docs/api-overview.md)
 * [Using Unity splash screens](/docs/using-unity-splash-screens.md)
-* [Using Unity splash screens](/docs/compositor-layers.md)
+* [Using Pico transmission layers](/docs/compositor-layers.md)
 
 Device:
 
