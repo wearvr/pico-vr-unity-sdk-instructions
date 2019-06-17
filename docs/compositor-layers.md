@@ -39,7 +39,7 @@ Then create a Quad object in the scene that you wish to be used to render a tran
 The mesh itself does not need a texture assigned to it, and instead will use the texture specified in Pvr_UnitySDKEyeOverlay.
 
 <p align="center">
-  <img alt="Splash Screen Menu" width="500px" src="/docs/assets/2DOverlay.png">
+  <img alt="2D" width="500px" src="/docs/assets/2DOverlay.png">
 </p>
 
 ### Equirectangular Textures
@@ -49,5 +49,5 @@ There is an example scene showing the concept of 3D transmission textures includ
 To set up a 360 degree vision texture many of the steps are similar to creating a 2D texture. Set the components 'Image Type' value to Equirectangular, and assign a panoramic texture to 'Image Texture'. Any panoramic texture will work, but an example one has been provided with the Pico SDK under: **Assets -> PicoMobileSDK -> Pvr_UnitySDK -> Resources -> 360.jpg** 
 
 <p align="center">
-  <img alt="Splash Screen Menu" width="500px" src="/docs/assets/360Overlay.png">
+  <img alt="360" width="500px" src="/docs/assets/360Overlay.png">
 </p>
